@@ -2,11 +2,42 @@
 
 开发测试推荐通过 Git 同步同一个分支和提交。源码、声骸模型和模板资源随仓库一起获取，每台电脑分别建立 Python 环境。当前测试分支是 `feat/3c-echo-pathing`，包含局部地面路线首版；能力和限制见[声骸刷取说明](echo-farming.md)。
 
+## 已经在 WSL 中克隆了仓库
+
+如果提示符类似 `vv@DESKTOP:/mnt/e/Better_ww$`，当前是 WSL/Linux 的 Bash。下面的 `py` 和 `.venv\Scripts\python.exe` 命令需要 Windows PowerShell；游戏自动化依赖 Windows API 和 Windows 版 Python，不能通过安装 WSL 的 `python3` 或终端提示的 `pythonpy` 来启动。
+
+仓库和子模块已经下载成功时，无需重新克隆。Windows Terminal 中切换到“PowerShell”或“Windows PowerShell”，或者从 Windows 开始菜单打开 PowerShell。`/mnt/e/Better_ww` 对应 Windows 的 `E:\Better_ww`，在 Windows PowerShell 中执行：
+
+```powershell
+Set-Location 'E:\Better_ww'
+py -3.12 --version
+```
+
+如果 Windows 中尚未安装 Python 3.12，可在这个 PowerShell 窗口安装：
+
+```powershell
+winget install --exact --id Python.Python.3.12 --source winget
+```
+
+安装后关闭并重新打开 Windows PowerShell，再执行 `py -3.12 --version`。没有 WinGet 时，可使用 [Python 3.12 的 Windows 64 位安装程序](https://www.python.org/downloads/release/python-31210/)；保留 Python Launcher 的安装选项。
+
+确认版本为 3.12 后，在已有仓库目录执行：
+
+```powershell
+Set-Location 'E:\Better_ww'
+py -3.12 -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip check
+.\.venv\Scripts\python.exe main_debug.py
+```
+
+这些步骤使用已经下载的源码和子模块，每台电脑建立自己的 Windows 虚拟环境。WinGet 用法见[微软安装说明](https://learn.microsoft.com/en-us/windows/package-manager/winget/install)，包标识可在[官方包清单](https://github.com/microsoft/winget-pkgs/tree/master/manifests/p/Python/Python/3/12)核对。
+
 ## 首次安装
 
 准备 Windows 64 位电脑、Git、Python 3.12 和鸣潮 PC 客户端。首次游戏测试建议使用 1920×1080、16:9，并保持默认游戏亮度、关闭自动奔跑、使用北向固定的小地图。队伍中的每个角色都需要装备主声骸。
 
-在 PowerShell 中进入想保存项目的目录，再执行：
+在 **Windows PowerShell** 中进入想保存项目的目录，再执行；不要粘贴到 WSL/Ubuntu/Bash 中：
 
 ```powershell
 git clone --depth 1 --branch feat/3c-echo-pathing --recurse-submodules https://github.com/vv910/better-ww.git Better_ww
