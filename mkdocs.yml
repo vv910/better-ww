@@ -41,6 +41,8 @@ nav:
   - 日本語: ja/index.md
   - Development:
       - Contributing: development/contributing.md
+      - Echo farming / 声骸刷取: development/echo-farming.md
+      - Testing on another PC / 跨电脑测试: development/testing-on-another-pc.md
 
 markdown_extensions:
   - admonition

@@ -33,6 +33,8 @@ The developer group is for developers who can contribute to the project. Please 
 
 This project only supports Python 3.12. Prefer using the repository-local virtual environment when running commands.
 
+另一台 Windows 电脑首次测试本 fork 的 3C 分支时，请参阅[跨电脑测试指南](testing-on-another-pc.md)。For the 3C branch on another Windows PC, see the [setup guide](testing-on-another-pc.md) (Chinese).
+
 ```powershell
 # 安装或更新依赖 / Install or update dependencies
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt --upgrade

@@ -1395,3 +1395,48 @@ msgstr "特異悪夢"
 
 msgid "Which Special Nightmare to Teleport"
 msgstr "テレポートする特異悪夢"
+
+msgid "🗺️ Farm 3C Echo by Route"
+msgstr "🗺️ ルートで3C音骸を周回"
+
+msgid "Follow an ordered local route, fight enemies and absorb Echoes."
+msgstr "ローカルルートを順に進み、敵を倒して音骸を吸収します。"
+
+msgid "📍 Record 3C Route from Map"
+msgstr "📍 マップから3Cルートを記録"
+
+msgid "Start on the map with a diamond at the start and stars along the route."
+msgstr "マップ上で記録を開始します。開始地点はひし形、経路上は星印で示してください。"
+
+msgid "Route File"
+msgstr "ルートファイル"
+
+msgid "routes/3c/local-route.json"
+msgstr "routes/3c/local-route.json"
+
+msgid "Combat Timeout"
+msgstr "戦闘タイムアウト"
+
+msgid "Pickup Timeout"
+msgstr "拾得タイムアウト"
+
+msgid "Local JSON route saved by Record 3C Route. Start near its diamond marker."
+msgstr "「3Cルートを記録」で保存したローカルJSONルートです。ひし形マーカーの近くから開始してください。"
+
+msgid "Maximum seconds for one battle before stopping the route."
+msgstr "ルートを停止するまでの1戦あたりの上限時間（秒）。"
+
+msgid "Maximum seconds to search for Echoes after each battle."
+msgstr "各戦闘後に音骸を探す上限時間（秒）。"
+
+msgid "Route Name"
+msgstr "ルート名"
+
+msgid "Local 3C Route"
+msgstr "ローカル3Cルート"
+
+msgid "Save a new JSON route and map image. Existing files are never overwritten."
+msgstr "新しいJSONルートとマップ画像を保存します。既存ファイルは上書きされません。"
+
+msgid "Name of this local route."
+msgstr "このローカルルートの名前。"

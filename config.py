@@ -271,6 +271,8 @@ config = {
         ["src.task.EnhanceEchoTask", "EnhanceEchoTask"],
         ["src.task.ChangeEchoTask", "ChangeEchoTask"],
         ["src.task.GardenTask", "GardenTask"],
+        ["src.task.Farm3CEchoTask", "Farm3CEchoTask"],
+        ["src.task.Farm3CEchoTask", "Record3CEchoRouteTask"],
         # ["src.task.DiagnosisTask", "DiagnosisTask"],
     ], 'trigger_tasks': [
         ["src.task.AutoCombatTask", "AutoCombatTask"],

@@ -1322,3 +1322,48 @@ msgstr "Pesadilla especial"
 
 msgid "Which Special Nightmare to Teleport"
 msgstr "Pesadilla especial a la que teletransportar"
+
+msgid "🗺️ Farm 3C Echo by Route"
+msgstr "🗺️ Farmear ecos 3C por ruta"
+
+msgid "Follow an ordered local route, fight enemies and absorb Echoes."
+msgstr "Sigue una ruta local ordenada, derrota enemigos y absorbe ecos."
+
+msgid "📍 Record 3C Route from Map"
+msgstr "📍 Grabar ruta 3C desde el mapa"
+
+msgid "Start on the map with a diamond at the start and stars along the route."
+msgstr "Empieza en el mapa con un rombo en el inicio y estrellas a lo largo de la ruta."
+
+msgid "Route File"
+msgstr "Archivo de ruta"
+
+msgid "routes/3c/local-route.json"
+msgstr "routes/3c/local-route.json"
+
+msgid "Combat Timeout"
+msgstr "Límite de combate"
+
+msgid "Pickup Timeout"
+msgstr "Límite de recogida"
+
+msgid "Local JSON route saved by Record 3C Route. Start near its diamond marker."
+msgstr "Ruta JSON local guardada con «Grabar ruta 3C». Empieza cerca de su marcador en forma de rombo."
+
+msgid "Maximum seconds for one battle before stopping the route."
+msgstr "Tiempo máximo de un combate antes de detener la ruta, en segundos."
+
+msgid "Maximum seconds to search for Echoes after each battle."
+msgstr "Tiempo máximo para buscar ecos tras cada combate, en segundos."
+
+msgid "Route Name"
+msgstr "Nombre de la ruta"
+
+msgid "Local 3C Route"
+msgstr "Ruta 3C local"
+
+msgid "Save a new JSON route and map image. Existing files are never overwritten."
+msgstr "Guarda una nueva ruta JSON y una imagen del mapa. No se sobrescriben archivos existentes."
+
+msgid "Name of this local route."
+msgstr "Nombre de esta ruta local."

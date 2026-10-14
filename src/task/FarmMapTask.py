@@ -27,7 +27,7 @@ class BigMap(WWOneTimeTask, BaseCombatTask):
         self.my_box = None
         self.diamond = None
 
-    def load_stars(self, wait_world=True):
+    def load_stars(self, wait_world=True, max_distance=None):
         self.reset()
         self.click_relative(0.94, 556 / 1080, after_sleep=1)
         self.big_map_frame = self.frame
@@ -38,7 +38,8 @@ class BigMap(WWOneTimeTask, BaseCombatTask):
         self.stars = self.find_feature('big_map_star', threshold=0.7, frame=self.big_map_frame,
                                        box=Box(0, 0, self.big_map_frame.shape[1], self.big_map_frame.shape[0]))
         all_star_len = len(self.stars)
-        self.stars = sort_stars(self.stars, self.diamond, self.height_of_screen(0.2))
+        self.stars = sort_stars(self.stars, self.diamond,
+                                self.height_of_screen(0.2) if max_distance is None else max_distance)
         self.stars.insert(0, self.diamond)
         mini_map_box = self.get_box_by_name('box_minimap')
         self.my_box = self.diamond.scale(mini_map_box.width / self.diamond.width * 2)

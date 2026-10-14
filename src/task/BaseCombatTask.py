@@ -381,6 +381,10 @@ class BaseCombatTask(CombatCheck):
         """
         if wait_combat_time > 0:
             result = self.wait_combat(target=target, time_out=wait_combat_time, raise_if_not_found=raise_if_not_found)
+        else:
+            result = self.in_combat(target=target)
+        if not result:
+            return False
         if self.switch_healer_enabled():
             self.load_chars()
             self.switch_healer()

@@ -224,7 +224,11 @@ class FarmEchoTask(WWOneTimeTask, BaseCombatTask):
                 continue
             except Exception as e:
                 if self.should_reteleport_after_farm_exception():
+                    recovery_retries += 1
+                    if recovery_retries >= max_recovery_retries:
+                        raise RuntimeError('Farm 4C exceeded recovery retries after boss teleport') from e
                     self.log_error('Farm failed after walking into boss combat, teleporting again', e)
+                    count = round_start_count
                     self.is_revived = False
                     self.teleport_to_configured_boss_and_prepare()
                     continue

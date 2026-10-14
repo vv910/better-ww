@@ -74,10 +74,8 @@ class BaseWWTask(BaseTask):
             return True, None
 
     def absorb_echo_text(self, ignore_config=False):
-        if self.game_lang == 'zh_CN' or self.game_lang == 'en_US' or self.game_lang == 'zh_TW':
-            return re.compile(r'(吸收|Absorb)')
-        else:
-            return None
+        # An unknown window title must not turn an Echo search into an arbitrary F interaction.
+        return re.compile(r'(吸收|Absorb)', re.IGNORECASE)
 
     @property
     def absorb_echo_feature(self):
@@ -156,42 +154,42 @@ class BaseWWTask(BaseTask):
         last_direction = None
         start = time.time()
         no_echo_start = 0
-        while time.time() - start < time_out:
-            self.next_frame()
-            if self.pick_f():
-                self.log_debug('pick echo success')
-                self._stop_last_direction(last_direction)
-                return True
-            if self.in_combat():
-                self.log_debug('pick echo has_target return fail')
-                self._stop_last_direction(last_direction)
-                return False
-            echos = self.find_echos(threshold=echo_threshold)
-            if not echos:
-                if no_echo_start == 0:
-                    no_echo_start = time.time()
-                elif time.time() - no_echo_start > 3:
-                    self.log_debug(f'walk front to_echo, no echos found, break')
-                    break
-                next_direction = 'w'
-            else:
-                no_echo_start = 0
-                echo = echos[0]
-                center_distance = echo.center()[0] - self.width_of_screen(0.5)
-                threshold = 0.05 if not last_direction else 0.15
-                if abs(center_distance) < self.height_of_screen(threshold):
-                    if echo.y + echo.height > self.height_of_screen(0.65):
-                        next_direction = 's'
-                    else:
-                        next_direction = 'w'
-                elif center_distance > 0:
-                    next_direction = 'd'
+        try:
+            while time.time() - start < time_out:
+                self.next_frame()
+                if self.pick_echo():
+                    self.log_debug('pick echo success')
+                    return True
+                if self.in_combat():
+                    self.log_debug('pick echo has_target return fail')
+                    return False
+                echos = self.find_echos(threshold=echo_threshold)
+                if not echos:
+                    if no_echo_start == 0:
+                        no_echo_start = time.time()
+                    elif time.time() - no_echo_start > 3:
+                        self.log_debug(f'walk front to_echo, no echos found, break')
+                        break
+                    next_direction = 'w'
                 else:
-                    next_direction = 'a'
-            last_direction = self._walk_direction(last_direction, next_direction)
-            if update_function is not None:
-                update_function()
-        self._stop_last_direction(last_direction)
+                    no_echo_start = 0
+                    echo = echos[0]
+                    center_distance = echo.center()[0] - self.width_of_screen(0.5)
+                    threshold = 0.05 if not last_direction else 0.15
+                    if abs(center_distance) < self.height_of_screen(threshold):
+                        if echo.y + echo.height > self.height_of_screen(0.65):
+                            next_direction = 's'
+                        else:
+                            next_direction = 'w'
+                    elif center_distance > 0:
+                        next_direction = 'd'
+                    else:
+                        next_direction = 'a'
+                last_direction = self._walk_direction(last_direction, next_direction)
+                if update_function is not None:
+                    update_function()
+        finally:
+            self._stop_last_direction(last_direction)
 
     def _walk_direction(self, last_direction, next_direction):
         if next_direction != last_direction:

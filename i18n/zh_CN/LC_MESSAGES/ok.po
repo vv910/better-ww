@@ -1447,3 +1447,48 @@ msgstr "特异梦魇"
 
 msgid "Which Special Nightmare to Teleport"
 msgstr "传送到第几个特异梦魇"
+
+msgid "🗺️ Farm 3C Echo by Route"
+msgstr "🗺️ 按路线刷取3C声骸"
+
+msgid "Follow an ordered local route, fight enemies and absorb Echoes."
+msgstr "按顺序沿本地路线移动，击败敌人并吸收声骸。"
+
+msgid "📍 Record 3C Route from Map"
+msgstr "📍 从地图录制3C路线"
+
+msgid "Start on the map with a diamond at the start and stars along the route."
+msgstr "在大地图上开始录制，起点使用菱形标记，路线沿途使用星形标记。"
+
+msgid "Route File"
+msgstr "路线文件"
+
+msgid "routes/3c/local-route.json"
+msgstr "routes/3c/local-route.json"
+
+msgid "Combat Timeout"
+msgstr "战斗超时"
+
+msgid "Pickup Timeout"
+msgstr "拾取超时"
+
+msgid "Local JSON route saved by Record 3C Route. Start near its diamond marker."
+msgstr "由“录制3C路线”保存的本地JSON路线。请在菱形标记附近开始。"
+
+msgid "Maximum seconds for one battle before stopping the route."
+msgstr "单场战斗的最长时间，超时后停止路线。"
+
+msgid "Maximum seconds to search for Echoes after each battle."
+msgstr "每场战斗后搜索声骸的最长时间。"
+
+msgid "Route Name"
+msgstr "路线名称"
+
+msgid "Local 3C Route"
+msgstr "本地3C路线"
+
+msgid "Save a new JSON route and map image. Existing files are never overwritten."
+msgstr "保存新的JSON路线和地图图像，不会覆盖已有文件。"
+
+msgid "Name of this local route."
+msgstr "此本地路线的名称。"

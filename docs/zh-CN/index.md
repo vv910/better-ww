@@ -88,7 +88,9 @@
 
 ### 从源码运行 (Python)
 
-推荐使用 Python 3.12。要求 Python 3.9 及以上版本，但其他版本尚未经过完整测试。
+使用已验证的 Python 3.12；项目声明的最低版本为 Python 3.11，其他版本尚未经过完整测试。
+
+本 fork 的 3C 首版位于 `feat/3c-echo-pathing` 分支。跨电脑测试请按[另一台电脑测试指南](../development/testing-on-another-pc.md)准备环境；路线使用和功能边界见[声骸刷取说明](../development/echo-farming.md)。
 
 ```bash
 # 安装或更新依赖

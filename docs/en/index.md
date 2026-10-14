@@ -83,7 +83,7 @@ If you encounter issues, please check the following steps one by one before aski
 
 ### Running from Source (Python)
 
-Python 3.12 is recommended. Python 3.9 or later is required, but other versions have not been fully tested.
+Use the tested Python 3.12 environment. The project declares Python 3.11 as its minimum; other versions have not been fully tested.
 
 ```bash
 # Install or update dependencies
