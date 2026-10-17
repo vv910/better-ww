@@ -1,13 +1,13 @@
 import unittest
 import tempfile
 from pathlib import Path
-from types import SimpleNamespace
 from unittest.mock import Mock, call, patch
 
 import cv2
 from ok import Box, TaskDisabledException
 from src.pathing.EchoRoute import EchoRoute, RoutePoint
 from src.pathing.MapLocalizer import MapPosition
+from src.pathing.MinimapHeading import HeadingEstimate
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
 from src.task.WWOneTimeTask import WWOneTimeTask
@@ -21,13 +21,14 @@ def make_task():
     task.combat_timeout = task.pickup_timeout = 10
     for name in ('wait_in_team_and_world', 'center_camera', 'next_frame', 'locate', 'in_combat',
                  'send_key', 'send_key_up', 'mouse_up', 'sleep', 'log_info', 'log_error', 'info_set',
-                 'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'rotate_arrow_and_find'):
+                 'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'read_route_heading',
+                 'log_debug', 'save_heading_diagnostic'):
         setattr(task, name, Mock())
     task.in_combat.return_value = False
     task.pick_echo.return_value = False
     task.yolo_find_echo.return_value = (False, False)
     task.locate.return_value = MapPosition(10, 10, 1, 20)
-    task.rotate_arrow_and_find.return_value = (0, SimpleNamespace(confidence=0.9))
+    task.read_route_heading.return_value = HeadingEstimate(0, 0.9, 0.2)
     task.wait_until = lambda condition, **kwargs: condition()
     return task
 
@@ -90,6 +91,42 @@ class TestFarm3CEchoTask(unittest.TestCase):
             self.task.follow_point(RoutePoint(100, 100))
         self.task.send_key.assert_not_called()
         self.task.send_key_up.assert_any_call('w')
+
+    def test_transient_heading_failure_retries_fresh_frames_before_moving(self):
+        self.task.read_route_heading.side_effect = [HeadingEstimate(0, 0.55, 0.2), None,
+                                                    HeadingEstimate(90, 0.9, 0.2)]
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+        self.task.follow_point(RoutePoint(30, 0, tolerance=2))
+        self.task.send_key.assert_called_once_with('a', down_time=0.3, after_sleep=0.05)
+        self.assertEqual(3, self.task.read_route_heading.call_count)
+        self.assertEqual(2, self.task.sleep.call_count)
+        self.task.save_heading_diagnostic.assert_not_called()
+
+    def test_uncertain_heading_stops_after_three_frames_with_diagnostics(self):
+        ambiguous = HeadingEstimate(90, 0.85, 0.01)
+        self.task.read_route_heading.return_value = ambiguous
+        with self.assertRaisesRegex(RuntimeError, 'heading after 3 frames'):
+            self.task.follow_point(RoutePoint(100, 100))
+        self.assertEqual(3, self.task.read_route_heading.call_count)
+        self.task.save_heading_diagnostic.assert_called_once_with(ambiguous)
+        self.task.send_key.assert_not_called()
+        self.task.send_key_up.assert_any_call('w')
+
+    def test_cancellation_during_heading_retry_releases_inputs(self):
+        self.task.read_route_heading.return_value = None
+        self.task.sleep.side_effect = TaskDisabledException()
+        with self.assertRaises(TaskDisabledException):
+            self.task.follow_point(RoutePoint(100, 100))
+        self.task.send_key.assert_not_called()
+        self.task.send_key_up.assert_any_call('d')
+        self.task.save_heading_diagnostic.assert_not_called()
+
+    def test_heading_retry_yields_to_combat(self):
+        self.task.read_route_heading.return_value = None
+        self.task.in_combat.return_value = True
+        self.assertIsNone(self.task.confirm_route_heading())
+        self.task.send_key.assert_not_called()
+        self.task.save_heading_diagnostic.assert_not_called()
 
     def test_stuck_recovery_is_bounded(self):
         self.task.next_frame.side_effect = self.tick

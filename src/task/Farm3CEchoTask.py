@@ -8,6 +8,7 @@ from ok import get_path_relative_to_exe
 
 from src.pathing.EchoRoute import EchoRoute, movement_direction, number, read_map_image, target_angle
 from src.pathing.MapLocalizer import MapLocalizer
+from src.pathing.MinimapHeading import MinimapHeading
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.task.FarmMapTask import BigMap
 from src.task.WWOneTimeTask import WWOneTimeTask
@@ -37,6 +38,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             'Pickup Timeout': 'Maximum seconds to search for Echoes after each battle.',
         })
         self._combat_deadline = None
+        self._heading_detector = None
 
     def validate_config(self, key, value):
         if key in ('Combat Timeout', 'Pickup Timeout'):
@@ -141,15 +143,43 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.next_frame()
                 if self.in_combat():
                     continue
-                heading, arrow = self.rotate_arrow_and_find()
-                if arrow is None or arrow.confidence < 0.6:
-                    raise RuntimeError('Cannot confirm minimap player heading')
+                heading = self.confirm_route_heading()
+                if heading is None:  # Combat started while waiting for a clear arrow frame.
+                    continue
                 direction = movement_direction(heading, target_angle(position.xy, point))
                 self.send_key(direction, down_time=0.15 if distance < point.tolerance * 2 else 0.3,
                               after_sleep=0.05)
             raise RuntimeError('Route waypoint timed out')
         finally:
             self.stop_route_movement()
+
+    def read_route_heading(self):
+        if self._heading_detector is None:
+            self._heading_detector = MinimapHeading(self.get_feature_by_name('arrow').mat)
+        minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
+        return self._heading_detector.estimate(minimap)
+
+    def confirm_route_heading(self):
+        result = None
+        for attempt in range(3):
+            result = self.read_route_heading()
+            if result is not None and result.reliable:
+                return result.angle
+            self.log_debug(f'3C heading retry {attempt + 1}/3: {result}')
+            if attempt < 2:
+                self.sleep(0.2)
+                self.next_frame()
+                if self.in_combat():
+                    return None
+        self.save_heading_diagnostic(result)
+        raise RuntimeError('Cannot confirm minimap player heading after 3 frames / '
+                           '连续3帧无法确认小地图朝向，已保存3c-heading-minimap截图')
+
+    def save_heading_diagnostic(self, result):
+        minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
+        self.log_warning(f'3C heading failed: capture={self.frame.shape[1]}x{self.frame.shape[0]}, '
+                         f'minimap={minimap.shape[1]}x{minimap.shape[0]}, estimate={result}')
+        self.screenshot('3c-heading-minimap', frame=minimap)
 
     def recover_stuck(self, attempt):
         self.stop_route_movement()

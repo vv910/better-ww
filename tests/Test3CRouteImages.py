@@ -25,12 +25,30 @@ class Test3CRouteImages(TaskTestCase):
         self.assertAlmostEqual(1207, result.x, delta=5)
         self.assertAlmostEqual(469, result.y, delta=5)
 
-    def test_native_arrow_template_passes_route_heading_confidence_gate(self):
+    def test_route_heading_on_real_minimap_at_1080p_1440p_and_2160p(self):
+        original = cv2.imread('tests/images/mini_map.png')
+        with tempfile.TemporaryDirectory() as directory:
+            for width, height in ((1920, 1080), (2560, 1440), (3840, 2160)):
+                with self.subTest(resolution=(width, height)):
+                    path = str(Path(directory) / f'minimap-{height}.png')
+                    cv2.imwrite(path, cv2.resize(original, (width, height)))
+                    self.set_image(path)
+                    self.task._heading_detector = None
+                    result = self.task.read_route_heading()
+                    self.assertIsNotNone(result)
+                    self.assertTrue(result.reliable, result)
+                    self.assertAlmostEqual(24, result.angle, delta=6)
+
+    def test_heading_failure_saves_the_actual_minimap_and_logs_scores(self):
         self.set_image('tests/images/mini_map.png')
-        angle, arrow = self.task.rotate_arrow_and_find()
-        self.assertIsNotNone(arrow)
-        self.assertGreaterEqual(arrow.confidence, 0.6)
-        self.assertTrue(0 <= angle < 360)
+        result = self.task.read_route_heading()
+        with patch.object(self.task, 'screenshot') as screenshot, \
+                patch.object(self.task, 'log_warning') as warning:
+            self.task.save_heading_diagnostic(result)
+        self.assertEqual('3c-heading-minimap', screenshot.call_args.args[0])
+        self.assertEqual((185, 186, 3), screenshot.call_args.kwargs['frame'].shape)
+        self.assertIn('capture=1920x1080', warning.call_args.args[0])
+        self.assertIn('confidence=', warning.call_args.args[0])
 
     def test_record_real_map_markers_to_loadable_route(self):
         self.set_image('tests/images/path.png')

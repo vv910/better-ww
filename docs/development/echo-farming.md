@@ -20,7 +20,7 @@
 
 执行链路为：校验路线和起点 → 小地图定位 → 按文件中的点序移动 → 遇敌暂停并战斗 → 搜索并吸收多个声骸 → 重新定位并继续。途经点、战斗点和专门拾取点可分别设置。
 
-定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。定位失败时停下，连续 5 秒无法定位则退出；朝向不可信时退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
+定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。朝向使用小地图中心的金色箭头轮廓，统一尺寸后搜索角度与大小；同时检查匹配分数和其他方向的分数差，避免把圆形图标当作箭头。定位失败时停下，连续 5 秒无法定位则退出；朝向不可信时取新帧重试，连续 3 帧失败则保存小地图截图并退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
 
 “3C”由路线中的怪物点位决定。现有检测模型只识别掉落声骸，并不识别怪物种类或声骸 COST；途中遭遇的其他敌人也会被处理。
 
@@ -76,12 +76,14 @@
 
 开发环境使用仓库 `.venv`、Python 3.12.15，以及锁定的 `requirements.txt`。
 
-本次 57 项路线/恢复/4C 逻辑测试和 17 项截图测试均通过，共 74 项；截图测试覆盖声骸模型、吸收 OCR、Boss 地图、战斗识别、小地图、朝向和真实星标导出。未进行游戏中的运行验收。
+基础版本的 57 项路线/恢复/4C 逻辑测试和 17 项截图测试均通过，共 74 项。2026-10-17 测试电脑首次运行时，起点定位得到 49 个有效特征，随后因旧 RGB 箭头匹配未通过置信度校验而停止。已改用箭头轮廓匹配和有限重试，完整游戏路线仍待复测。
+
+本次朝向修复另通过 21 项逻辑测试和 4 项截图测试，包含暂时失败后的重试、持续失败停止、战斗打断、取消释放按键，以及真实小地图截图在 1080p、缩放至 1440p 和 2160p 下的识别。缩放截图测试不等于这些分辨率下的实机运行验收。
 
 运行路线、恢复和 4C 逻辑测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：

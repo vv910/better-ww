@@ -71,7 +71,7 @@ git submodule update --init --recursive
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install pytest polib
-.\.venv\Scripts\python.exe -u run_test.py tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
+.\.venv\Scripts\python.exe -u run_test.py tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestEcho
 ```
@@ -103,3 +103,5 @@ git submodule update --init --recursive
 如果 `git pull` 提示本地文件有修改，先保留或提交自己的修改，再更新。`--ff-only` 会在分支发生分叉时停止，避免自动产生合并。
 
 反馈测试问题时，附上 `git rev-parse --short HEAD`、游戏分辨率、队伍角色、路线文件、停在哪一步，以及 `logs/ok-ww.log` 和 `logs/ok-ww_error.log` 中对应时间的内容，便于复现同一个版本的问题。
+
+如果提示 `Cannot confirm minimap player heading after 3 frames`，日志会包含画面尺寸、匹配分数和方向分数差；请同时保留“截图目录”中名称包含 `3c-heading-minimap` 的图片。程序重启可能清理旧截图，先保存诊断图片再重启。现有路线可以继续使用，不需要因朝向识别失败重新录制。
