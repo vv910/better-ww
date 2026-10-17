@@ -39,12 +39,20 @@
 ```
 
 1. 使用鸣潮北向固定的小地图。当前仅针对地面路线；队伍需满足现有自动战斗的角色识别和主声骸配置要求。
-2. 打开大地图，将待刷区域保持在同一张截图可见范围内。用菱形标记起点，用至少两个星标标出可通行路径；在障碍物、弯道附近增加途经点。菱形和星标应位于画面中央地图区域。
-3. 运行“从地图记录 3C 路线”。默认保存 `routes/3c/local-route.json` 和 `local-route.map.png`；已有文件不会覆盖，换一个文件名即可保存新路线。
-4. 打开 JSON 检查点序。记录器从菱形开始按最近邻生成初始顺序，这不保证地形上可通行。按实际道路调整 `waypoints` 的顺序，把普通途经点设为 `walk`，怪物点设为 `combat`，拾取点设为 `pickup`。
+2. 打开大地图，将当前一条路线放在画面中央。用一个菱形标记起点，用至少两个星标标出可通行路径；在障碍物、弯道附近增加途经点。其他类型的图标不会加入路线。菱形上半部应可见；同一视野内有多个菱形时会停止并提示调整视野。
+3. 运行“从地图记录 3C 路线”。保持当前缩放，不自动点击缩放滑条。默认保存 `routes/3c/local-route.json`、识别用原图 `local-route.map.png` 和检查用 `local-route.preview.png`；三者都不会覆盖已有文件，换一个文件名即可保存新路线。
+4. 先检查预览，再检查 JSON 点序。预览中 `S` 是起点，绿色数字/连线是纳入路线的星标顺序，红叉是未纳入的星标。记录器从菱形开始按最近邻生成初始顺序，这不保证地形上可通行。按实际道路调整 `waypoints` 的顺序，把普通途经点设为 `walk`，怪物点设为 `combat`，拾取点设为 `pickup`。
 5. 角色站到菱形附近，关闭地图，在“按路线刷取 3C 声骸”的 `Route File` 中选择对应 JSON，然后启动任务。起点或地图匹配失败会停止，避免按错误位置行走。
 
 路线使用截图像素坐标；图片和 JSON 配套。不能直接导入 BetterGI 的原神地图坐标，也不能用另一张缩放或裁剪不同的地图图片替换原图。
+
+录制会限制点位范围，避免把其他路线的远处星标串进来：
+
+- “相邻星标最大距离 / Maximum Marker Gap”默认 200。从当前点选择距离不超过此值的最近星标，找不到下一点即结束。
+- “录制范围半径 / Recording Radius”默认 500。只考虑起点周围这个半径内的星标，防止沿一串星标不断延伸到另一条路线。
+- 两个数值均以 1080p 像素为基准，按截图高度换算；2560×1440 下默认约为 267 和 667 个截图像素。它们不是游戏米数，地图缩放变化后对应的地理范围也会变化。
+
+如果近邻的两条路线仍被连接，调小相邻距离或录制半径，并检查预览。任务日志会记录识别到的菱形/星标数、匹配分数以及纳入/排除数量。完全找不到起点时保留大地图并保存 `3c-record-marker-failed` 截图；星标不足两个时保存 `3c-record-markers` 诊断预览。不会把骷髅、叶子、任务图标等自动转换成星标。
 
 ## 多条路线与自动传送 {#route-queue}
 
@@ -107,10 +115,12 @@ routes/3c/route-c.json
 
 随后测试日志确认可以移动，但每轮约 1.9 秒中只走 0.3 秒。持续移动与传送队列改动共通过 65 项针对性离线测试，覆盖按键保持、8 方向/相机漂移模拟、队列顺序、传送失败、录制信标、真实地图缩放平移、被动遇敌检测以及实际声骸模型；游戏中的连续移动和跨区域传送仍需复测。开发机用 1080p 真实截图测试，限制两个 OpenCV 线程后单次位置与方向计算均值约 73 ms；这不包含截图采集与战斗检查，也不代表测试电脑的实际帧率。
 
+录制器另加入玩家箭头/信标遮挡起点的真实回归图（已裁去账号UI）。旧 RGB 匹配约 0.63，未达到 0.7 门槛；白色轮廓与菱形上半部联合识别可定位同一个起点，并在 1080p、1440p、2160p 缩放下保持三个星标。完整录制测试加入两个远处星标，确认它们被排除并保存点序预览；普通地图与已有路线导出也继续通过。本次录制器修复共通过 38 项逻辑测试与 8 项截图测试，合计 46 项。
+
 运行路线、恢复和 4C 逻辑测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：

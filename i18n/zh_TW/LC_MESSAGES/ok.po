@@ -1594,3 +1594,19 @@ msgid ""
 "Optional: nearby fixed Boss name in your game language. Keep the start "
 "within 50 map pixels of an unlocked beacon."
 msgstr "選填：附近固定Boss的名稱，使用遊戲目前語言。起點應在已解鎖信標50個地圖像素以內。"
+
+msgid "Maximum Marker Gap"
+msgstr "相鄰星標最大距離"
+
+msgid "Recording Radius"
+msgstr "錄製範圍半徑"
+
+msgid ""
+"Maximum distance between consecutive stars, in 1080p pixels. Distant groups "
+"are excluded. Reduce this to separate nearby routes."
+msgstr "相鄰星標之間的最大距離，按1080p像素換算。遠處點組會被排除；調小可分開相鄰路線。"
+
+msgid ""
+"Only include stars within this radius of the start, in 1080p pixels. Check "
+"the saved preview before farming."
+msgstr "僅納入起點周圍此半徑內的星標，按1080p像素換算。開始刷取前請檢查儲存的預覽。"

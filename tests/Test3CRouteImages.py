@@ -95,6 +95,36 @@ class Test3CRouteImages(TaskTestCase):
             # A hand-placed marker has an offset from the player arrow in this real fixture.
             self.assertLessEqual(route.start.distance_to((1207, 469)), route.start.tolerance)
 
+    def test_record_user_overlapping_start_ignores_other_icons_and_distant_stars(self):
+        frame = np.zeros((1440, 2560, 3), np.uint8)
+        crop = cv2.imread('tests/images/3c-map-overlap.png')
+        frame[400:1120, 600:2250] = crop
+        reference = cv2.imread('assets/images/0.png')[1022:1078, 764:824]
+        star = cv2.resize(reference, (40, 37))
+        white = star.min(axis=2) >= 170
+        for x, y in ((1940, 930), (2090, 600)):
+            region = frame[y:y + 37, x:x + 40]
+            region[white] = star[white]
+        with tempfile.TemporaryDirectory() as directory:
+            capture = str(Path(directory) / 'capture.png')
+            cv2.imwrite(capture, frame)
+            self.set_image(capture)
+            recorder = Record3CEchoRouteTask(self.task.executor, None)
+            recorder.feature_set = self.task.feature_set
+            recorder.after_init(executor=self.task.executor, scene=self.task.scene)
+            path = Path(directory) / 'user-route.json'
+            recorder.config = {'Route File': str(path), 'Route Name': 'overlap regression'}
+            with patch.object(WWOneTimeTask, 'run'), patch.object(recorder, 'click_relative') as click:
+                recorder.run()
+            click.assert_not_called()  # Preserve the user's zoom and selected map view.
+            route = EchoRoute.load(path)
+            self.assertEqual(3, len(route.waypoints))
+            self.assertEqual(2, len(recorder.excluded_stars))
+            self.assertAlmostEqual(1431, route.start.x, delta=3)
+            self.assertAlmostEqual(908, route.start.y, delta=3)
+            self.assertTrue(path.with_suffix('.preview.png').exists())
+            self.assertAlmostEqual(1477, route.waypoints[0].x, delta=3)
+
 
 if __name__ == '__main__':
     unittest.main()

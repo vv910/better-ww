@@ -9,9 +9,10 @@ from ok import Box, get_path_relative_to_exe, og
 from src.pathing.EchoRoute import EchoRoute, number, read_map_image, route_files, target_angle
 from src.pathing.MapLocalizer import MapLocalizer
 from src.pathing.MinimapHeading import MinimapHeading
+from src.pathing.RouteMarkers import RouteMarkerDetector
 from src.pathing.RouteSteering import RouteSteering
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
-from src.task.FarmMapTask import BigMap
+from src.task.FarmMapTask import BigMap, sort_stars
 from src.task.WWOneTimeTask import WWOneTimeTask
 
 
@@ -382,25 +383,102 @@ class Record3CEchoRouteTask(BigMap):
         self.name = '📍 Record 3C Route from Map'
         self.description = RECORD_DESCRIPTION
         self.default_config.update({'Route File': 'routes/3c/local-route.json', 'Route Name': 'Local 3C Route',
-                                    'Teleport Anchor': ''})
+                                    'Teleport Anchor': '', 'Maximum Marker Gap': 200, 'Recording Radius': 500})
         self.config_description.update({
             'Route File': 'Save a new JSON route and map image. Existing files are never overwritten.',
             'Route Name': 'Name of this local route.',
             'Teleport Anchor': 'Optional: nearby fixed Boss name in your game language. Keep the start within 50 map pixels of an unlocked beacon.',
+            'Maximum Marker Gap': 'Maximum distance between consecutive stars, in 1080p pixels. Distant groups are excluded. Reduce this to separate nearby routes.',
+            'Recording Radius': 'Only include stars within this radius of the start, in 1080p pixels. Check the saved preview before farming.',
         })
+
+    def validate_config(self, key, value):
+        if key in ('Maximum Marker Gap', 'Recording Radius'):
+            try:
+                number(value, key, 10, 2000)
+            except ValueError as error:
+                return str(error)
+
+    @staticmethod
+    def recording_region(frame):
+        height, width = frame.shape[:2]
+        return [round(width * 0.28), round(height * 0.12), round(width * 0.87), round(height * 0.90)]
+
+    def load_stars(self, wait_world=True, max_distance=None):
+        # The legacy FarmMapTask keeps its original detector/zoom behaviour. Record the
+        # user's current view here, so hidden zoom changes cannot merge unrelated routes.
+        self.reset()
+        self.excluded_stars = []
+        self.next_frame()
+        self.big_map_frame = self.frame.copy()
+        region = self.recording_region(self.big_map_frame)
+        detector = RouteMarkerDetector(self.get_feature_by_name('big_map_diamond').mat,
+                                       self.get_feature_by_name('big_map_star').mat)
+        diamonds, stars = detector.detect(self.big_map_frame, region)
+        def convert(match):
+            return Box(round(match.x), round(match.y), round(match.width), round(match.height),
+                       confidence=match.confidence)
+        self.log_info(f'3C map markers: capture={self.big_map_frame.shape[1]}x{self.big_map_frame.shape[0]}, '
+                      f'diamonds={len(diamonds)}, stars={len(stars)}, scores={detector.best_scores}')
+        if len(diamonds) != 1:
+            self.screenshot('3c-record-marker-failed', frame=self.big_map_frame)
+            if diamonds:
+                raise ValueError('Multiple start diamonds found / 发现多个起点菱形，请调整地图视野，只保留当前路线的一个菱形')
+            raise ValueError('Start diamond not found / 未识别到起点菱形，请移开遮挡并将菱形放在中央地图区域，已保存3c-record-marker-failed截图')
+        self.diamond = convert(diamonds[0])
+        scale = self.big_map_frame.shape[0] / 1080
+        gap = number(self.config.get('Maximum Marker Gap', 200), 'Maximum Marker Gap', 10, 2000) * scale
+        radius = number(self.config.get('Recording Radius', 500), 'Recording Radius', 10, 2000) * scale
+        if max_distance is not None:
+            gap = number(max_distance, 'max_distance', 0)
+        candidates = [convert(star) for star in stars]
+        nearby = [star for star in candidates if star.center_distance(self.diamond) <= radius]
+        selected = sort_stars(nearby, self.diamond, gap)
+        self.stars = [self.diamond, *selected]
+        self.excluded_stars = [star for star in candidates if star not in selected]
+        self.info_set('Selected Route Stars', len(selected))
+        self.info_set('Excluded Route Stars', len(self.excluded_stars))
+        self.screenshot('3c-record-markers', frame=self.render_recording_preview())
+        if len(selected) < 2:
+            raise ValueError('Need at least two nearby stars / 当前范围内需至少两个相连星标，请检查相邻距离与录制半径；其他标记类型不会加入路线')
+        self.log_info(f'3C route selected {len(selected)} stars, excluded {len(self.excluded_stars)}, '
+                      f'max_gap={gap:.0f}, radius={radius:.0f} / 请检查路线预览中的点序')
+        self.send_key('esc')
+        if wait_world:
+            self.wait_in_team_and_world()
+
+    def render_recording_preview(self):
+        preview = self.big_map_frame.copy()
+        left, top, right, bottom = self.recording_region(preview)
+        cv2.rectangle(preview, (left, top), (right, bottom), (210, 130, 40), 2)
+        for star in getattr(self, 'excluded_stars', []):
+            center = tuple(round(value) for value in star.center())
+            cv2.drawMarker(preview, center, (60, 60, 240), cv2.MARKER_TILTED_CROSS, 24, 2)
+        previous = None
+        for index, star in enumerate(self.stars):
+            center = tuple(round(value) for value in star.center())
+            if previous is not None:
+                cv2.line(preview, previous, center, (80, 230, 80), 2)
+            cv2.circle(preview, center, max(12, round(star.width * 0.7)), (80, 230, 80), 2)
+            cv2.putText(preview, 'S' if index == 0 else str(index), (center[0] + 16, center[1] - 16),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 0), 5, cv2.LINE_AA)
+            cv2.putText(preview, 'S' if index == 0 else str(index), (center[0] + 16, center[1] - 16),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.8, (100, 255, 100), 2, cv2.LINE_AA)
+            previous = center
+        return preview
 
     def run(self):
         path = Path(get_path_relative_to_exe(self.config.get('Route File'))).resolve()
         image_path = path.with_suffix('.map.png')
+        preview_path = path.with_suffix('.preview.png')
         if path.suffix.lower() != '.json':
             raise ValueError('Route File must end in .json')
-        if path.exists() or image_path.exists():
+        if path.exists() or image_path.exists() or preview_path.exists():
             raise FileExistsError('Route already exists. Choose a new Route File.')
         WWOneTimeTask.run(self)
-        self.load_stars(wait_world=False, max_distance=0)
-        height, width = self.big_map_frame.shape[:2]
+        self.load_stars(wait_world=False)
         # Exclude map-side UI from feature matching. Keep all route markers visible here.
-        region = [round(width * 0.28), round(height * 0.12), round(width * 0.87), round(height * 0.90)]
+        region = self.recording_region(self.big_map_frame)
         x, y = self.diamond.center()
         data = {
             'schema_version': 1, 'echo_cost': 3, 'name': self.config.get('Route Name'),
@@ -426,12 +504,16 @@ class Record3CEchoRouteTask(BigMap):
         MapLocalizer(self.big_map_frame, region)  # reject unusable snapshots before saving
         path.parent.mkdir(parents=True, exist_ok=True)
         encoded, image = cv2.imencode('.png', self.big_map_frame)
-        if not encoded:
+        preview_encoded, preview = cv2.imencode('.png', self.render_recording_preview())
+        if not encoded or not preview_encoded:
             raise ValueError('Cannot encode route map')
         with image_path.open('xb') as output:
             output.write(image.tobytes())
         with path.open('x', encoding='utf-8') as output:
             json.dump(data, output, ensure_ascii=False, indent=2)
+        with preview_path.open('xb') as output:
+            output.write(preview.tobytes())
         self.info_set('Route File', str(path))
+        self.info_set('Route Preview', str(preview_path))
         self.info_set('Route Points', len(data['waypoints']))
         self.log_info('Route saved. Check point order before farming / 路线已保存，请检查点序后开始刷取', notify=True)

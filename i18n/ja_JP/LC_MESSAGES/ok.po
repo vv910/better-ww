@@ -1464,3 +1464,19 @@ msgid ""
 "Optional: nearby fixed Boss name in your game language. Keep the start "
 "within 50 map pixels of an unlocked beacon."
 msgstr "任意。付近の固定出現ボス名をゲームの言語で入力します。開始地点は解放済みのビーコンからマップ上50ピクセル以内に置いてください。"
+
+msgid "Maximum Marker Gap"
+msgstr "隣接する星マーカーの最大間隔"
+
+msgid "Recording Radius"
+msgstr "記録範囲の半径"
+
+msgid ""
+"Maximum distance between consecutive stars, in 1080p pixels. Distant groups "
+"are excluded. Reduce this to separate nearby routes."
+msgstr "連続する星マーカーの最大間隔（1080p換算のピクセル）。遠いグループは除外します。近接ルートを分けるには値を小さくしてください。"
+
+msgid ""
+"Only include stars within this radius of the start, in 1080p pixels. Check "
+"the saved preview before farming."
+msgstr "開始地点からこの半径内の星マーカーのみ記録します（1080p換算のピクセル）。周回前に保存したプレビューを確認してください。"

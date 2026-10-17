@@ -330,7 +330,8 @@ class TestFarm3CEchoTask(unittest.TestCase):
             self.assertEqual('3C test', route.name)
             self.assertEqual([(1110, 550), (1040, 610)], [(point.x, point.y) for point in route.waypoints])
             self.assertTrue(route.map_image.is_file())
-            task.load_stars.assert_called_once_with(wait_world=False, max_distance=0)
+            task.load_stars.assert_called_once_with(wait_world=False)
+            self.assertTrue(route_path.with_suffix('.preview.png').exists())
 
     def test_recorder_exports_nearby_beacon_and_anchor_for_automatic_teleport(self):
         with tempfile.TemporaryDirectory() as directory:

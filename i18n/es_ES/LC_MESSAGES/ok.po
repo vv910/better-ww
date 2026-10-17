@@ -1397,3 +1397,23 @@ msgid ""
 msgstr ""
 "Opcional: nombre de un jefe fijo cercano en el idioma del juego. El inicio "
 "debe estar a menos de 50 píxeles del mapa de una baliza desbloqueada."
+
+msgid "Maximum Marker Gap"
+msgstr "Distancia máxima entre estrellas"
+
+msgid "Recording Radius"
+msgstr "Radio de grabación"
+
+msgid ""
+"Maximum distance between consecutive stars, in 1080p pixels. Distant groups "
+"are excluded. Reduce this to separate nearby routes."
+msgstr ""
+"Distancia máxima entre estrellas consecutivas, en píxeles a 1080p. Se "
+"excluyen los grupos lejanos. Reduzca el valor para separar rutas cercanas."
+
+msgid ""
+"Only include stars within this radius of the start, in 1080p pixels. Check "
+"the saved preview before farming."
+msgstr ""
+"Solo incluye estrellas dentro de este radio desde el inicio, en píxeles a "
+"1080p. Revise la vista previa guardada antes de farmear."

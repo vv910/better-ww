@@ -71,7 +71,7 @@ git submodule update --init --recursive
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install pytest polib
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestEcho
 ```
@@ -83,6 +83,8 @@ git submodule update --init --recursive
 选择一条短、平坦、能覆盖少量目标 3C 怪物的路线。大地图上用菱形标起点，用至少两个星标标出通行路径，运行“从地图录制3C路线”。检查生成 JSON 的点序和 `walk`/`combat`/`pickup` 动作，再让角色站到菱形附近，关闭地图，启动“按路线刷取3C声骸”。
 
 首次重点观察三个结果：能否到达怪物点、能否完成战斗、能否吸收声骸并继续。当前还没有已标定的成品 3C 路线，首次运行需要创建路线。
+
+录制后先打开同名 `.preview.png` 检查纳入的星标和点序。远处星标会受“相邻星标最大距离”和“录制范围半径”限制；其他图标不加入路线。起点菱形上半部保持可见，避免完全被玩家箭头遮挡；识别失败时保留地图，截图目录会保存 `3c-record-marker-failed` 或 `3c-record-markers` 诊断图片。
 
 启动后会先准备模板和声骸模型，准备期间请等待。当前默认持续移动，导航间隔 0.2 秒；先使用默认值。若路线里的拐弯只是经过位置，将相应点的 `action` 改成 `walk`，避免每个点都停下来搜怪和拾取。
 

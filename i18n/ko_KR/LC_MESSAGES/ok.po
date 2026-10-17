@@ -1465,3 +1465,20 @@ msgid ""
 "Optional: nearby fixed Boss name in your game language. Keep the start "
 "within 50 map pixels of an unlocked beacon."
 msgstr "선택 사항: 근처 고정 보스 이름을 게임 언어로 입력하세요. 시작점은 잠금 해제한 비콘에서 지도상 50픽셀 이내여야 합니다."
+
+msgid "Maximum Marker Gap"
+msgstr "인접 별 표식 최대 간격"
+
+msgid "Recording Radius"
+msgstr "기록 범위 반경"
+
+msgid ""
+"Maximum distance between consecutive stars, in 1080p pixels. Distant groups "
+"are excluded. Reduce this to separate nearby routes."
+msgstr ""
+"연속된 별 표식 사이의 최대 간격(1080p 환산 픽셀)입니다. 먼 그룹은 제외합니다. 가까운 경로를 분리하려면 값을 줄이세요."
+
+msgid ""
+"Only include stars within this radius of the start, in 1080p pixels. Check "
+"the saved preview before farming."
+msgstr "시작점에서 이 반경 이내의 별 표식만 포함합니다(1080p 환산 픽셀). 파밍 전에 저장된 미리보기를 확인하세요."
