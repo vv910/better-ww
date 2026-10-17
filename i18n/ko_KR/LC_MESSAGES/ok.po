@@ -1494,3 +1494,36 @@ msgstr "이동 중 카메라를 중앙으로 맞추고 회전 후에는 전진�
 
 msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
 msgstr "출발 전에 레비테이터를 선택하세요. 공중에 뜨면 활공을 한 번 시작하며, 경로 실행 중에는 점프를 직접 누르지 마세요."
+
+msgid "Mark a route with stars. Use the nearest visible beacon as its starting point."
+msgstr "별표로 경로를 기록하고 가장 가까이 보이는 신호기를 시작 지점으로 사용합니다."
+
+msgid "Select Levitator Automatically"
+msgstr "레비테이터 자동 선택"
+
+msgid "Local JSON route saved by Record 3C Route. Routes with a beacon entry teleport before departure."
+msgstr "3C 경로 기록에서 저장한 로컬 JSON 경로입니다. 신호기 진입점이 있는 경로는 출발 전에 순간이동합니다."
+
+msgid "Use the selected Levitator to detect airborne motion. Open the glider once per fall; do not press Jump manually."
+msgstr "선택한 레비테이터로 공중 상태를 감지합니다. 낙하마다 한 번만 활공을 시작합니다. 점프를 직접 누르지 마세요."
+
+msgid "Optional tool-wheel preparation. Disabled by default; unavailable Levitator disables fall protection without stopping the route."
+msgstr "도구 휠 준비는 선택 사항이며 기본적으로 꺼져 있습니다. 레비테이터를 사용할 수 없어도 경로를 중단하지 않고 낙하 방지만 비활성화합니다."
+
+msgid "Start Method"
+msgstr "시작 방식"
+
+msgid "Nearest Beacon"
+msgstr "가장 가까운 신호기"
+
+msgid "Diamond"
+msgstr "마름모"
+
+msgid "Capture Teleport Overview"
+msgstr "순간이동 개요 캡처"
+
+msgid "Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview."
+msgstr "가장 가까운 신호기 방식은 마름모가 필요 없습니다. 대상 별표 그룹을 지도 중앙에 두고 미리보기에서 선택된 신호기와 경로 순서를 확인하세요."
+
+msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
+msgstr "별표를 읽은 뒤 지도를 축소해 신호기 자동 검색용으로 검증된 지도 보기를 저장합니다. 원래 경로 좌표는 바뀌지 않습니다."

@@ -2,11 +2,11 @@
 
 ## 下载使用
 
-下载入口为 [vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)。选择 `BetterWW-v版本号-windows-x64.zip`，完整解压后双击 `BetterWW.exe`。软件为 Windows x64 便携版，包含 Python 3.12、Qt、OCR 和声骸模型及运行库，不需要额外安装 Python。
+下载入口为 [vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)。选择 `BetterWW-v版本号-windows-x64.zip`，完整解压到英文路径（例如 `E:\BetterWW`）后双击 `BetterWW.exe`。安装目录及其父目录不能含中文，ok-script 框架会拒绝非 ASCII 安装路径。软件为 Windows x64 便携版，包含 Python 3.12、Qt、OCR 和声骸模型及运行库，不需要额外安装 Python。
 
 启动失败会在软件目录写入 `startup-error.log`；运行日志和个人设置保存在同一目录下。程序需要能写入该目录。若游戏以管理员权限运行，软件也需要以管理员权限运行。
 
-本 fork 不使用上游发布证书或更新仓库。更新时先退出旧版，再完整解压新版，将自己的 `configs`、`routes` 和需要保留的 `logs` 文件复制到新版对应位置。路线的 JSON 和 `.map.png` 必须一起保留。不要用 GitHub 自动生成的 Source code 包代替完整软件包。
+本 fork 不使用上游发布证书或更新仓库。更新时先退出旧版，再完整解压新版，将自己的 `configs`、`routes` 和需要保留的 `logs` 文件复制到新版对应位置。路线的 JSON、`.map.png`、`.preview.png` 和生成的 `.view-N.png` 必须一起保留。不要用 GitHub 自动生成的 Source code 包代替完整软件包。
 
 ## 本地构建
 

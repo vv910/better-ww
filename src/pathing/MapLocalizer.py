@@ -6,6 +6,8 @@ import cv2
 import numpy as np
 
 from src.pathing.MinimapTracker import MinimapTracker
+from src.pathing.TerrainMask import terrain_feature_mask
+from src.pathing.TerrainMatcher import TerrainMatcher
 
 
 @dataclass(frozen=True)
@@ -29,35 +31,79 @@ class MapLocalizer:
         self.height, self.width = self.gray.shape
         self.region = region or (0, 0, self.width, self.height)
         self.sift = cv2.SIFT_create(nfeatures=8000, contrastThreshold=0.02)
-        self.keypoints, self.descriptors = self._region_features(self.gray, self.region)
+        self.keypoints, self.descriptors = self._region_features(self.gray, self.region, source_image=image)
         if self.descriptors is None or len(self.keypoints) < min_inliers:
             raise ValueError('Route map has too few visible terrain features')
         self.locations = np.float32([keypoint.pt for keypoint in self.keypoints])
         self.matcher = cv2.BFMatcher(cv2.NORM_L2)
+        self.terrain_matcher = TerrainMatcher()
         self.min_inliers = min_inliers
         self.max_jump = max_jump
         self.tracker = MinimapTracker()
         self.reset()
 
-    def _region_features(self, gray, region):
+    def _region_features(self, gray, region, mask=None, source_image=None):
         # SIFT applies its feature quota BEFORE its mask. Detect on the ROI itself so
         # bright UI/out-of-route terrain cannot consume the budget, then restore coordinates.
-        left, top, right, bottom = region
+        try:
+            values = tuple(region)
+        except TypeError:
+            raise ValueError('Map feature region must contain four pixel coordinates') from None
+        if (len(values) != 4 or any(not isinstance(value, (int, np.integer))
+                                    or isinstance(value, (bool, np.bool_)) for value in values)):
+            raise ValueError('Map feature region must contain four integer pixel coordinates')
+        left, top, right, bottom = map(int, values)
         height, width = gray.shape
         if not (0 <= left < right <= width and 0 <= top < bottom <= height):
             raise ValueError('Map feature region must be a non-empty rectangle inside the image')
-        keypoints, descriptors = self.sift.detectAndCompute(gray[top:bottom, left:right], None)
+        roi_mask = None
+        if source_image is not None:
+            if source_image.shape[:2] != gray.shape:
+                raise ValueError('Map feature source image must match the grayscale image dimensions')
+            roi_mask = terrain_feature_mask(source_image[top:bottom, left:right])
+        elif mask is not None:
+            if mask.shape == gray.shape:
+                roi_mask = mask[top:bottom, left:right]
+            elif mask.shape == (bottom - top, right - left):
+                roi_mask = mask
+            else:
+                raise ValueError('Map feature mask must match the source image dimensions')
+        keypoints, descriptors = self.sift.detectAndCompute(gray[top:bottom, left:right], roi_mask)
         for keypoint in keypoints:
             x, y = keypoint.pt
             keypoint.pt = x + left, y + top
         return keypoints, descriptors
 
-    def reset(self):
-        self.previous = None
+    def reset(self, position_hint=None):
+        """Clear visual tracking, optionally keeping a map-screen position hint.
+
+        The hint only limits/validates the next absolute minimap match; it is never
+        returned as a minimap localization result on its own.
+        """
+        if position_hint is None:
+            self.previous = None
+        elif isinstance(position_hint, MapPosition):
+            if position_hint.source != 'map':
+                raise ValueError('MapPosition hints must come from locate_map_player')
+            x, y = position_hint.xy
+            confidence, inliers = position_hint.confidence, position_hint.inliers
+        else:
+            try:
+                x, y = position_hint
+            except (TypeError, ValueError):
+                raise ValueError('position_hint must be an (x, y) pair or MapPosition') from None
+            confidence, inliers = 1.0, 0
+        if position_hint is not None:
+            x, y = float(x), float(y)
+            x1, y1, x2, y2 = self.region
+            if not math.isfinite(x) or not math.isfinite(y) or not (x1 <= x < x2 and y1 <= y < y2):
+                raise ValueError('position_hint must be inside the recorded map region')
+            self.previous = MapPosition(x, y, confidence, inliers, source='hint')
         self.last_diagnostic = {}
         self.tracker.reset()
         self._last_sift_at = -math.inf
         self._candidate_transform = None
+        self._terrain_proposal = None
 
     def _reject(self, reason):
         self.last_diagnostic.update(status='rejected', reason=reason)
@@ -78,6 +124,7 @@ class MapLocalizer:
         radius = int(min(width, height) * 0.46)
         cv2.circle(mask, center, radius, 255, -1)
         cv2.circle(mask, center, int(radius * 0.23), 0, -1)  # player arrow/camera cone
+        mask = cv2.bitwise_and(mask, terrain_feature_mask(minimap))
         now = time.monotonic()
         tracked = self.tracker.track(gray, mask, now)
         self.last_diagnostic['tracking'] = dict(self.tracker.last_diagnostic)
@@ -98,7 +145,7 @@ class MapLocalizer:
         if result is not None:
             self.previous = result
             self.tracker.anchor(gray, mask, self._candidate_transform, result.xy, now)
-            self.last_diagnostic.update(status='matched', reason='matched', method='sift', position=result.xy,
+            self.last_diagnostic.update(status='matched', reason='matched', method=result.source, position=result.xy,
                                         inliers=result.inliers, confidence=round(result.confidence, 3))
             return result
         if tracked is not None:
@@ -120,6 +167,7 @@ class MapLocalizer:
 
     def _locate_absolute(self, gray, mask, center):
         height, width = gray.shape
+        self._terrain_proposal = None
         keypoints, descriptors = self.sift.detectAndCompute(gray, mask)
         self.last_diagnostic['minimap_features'] = len(keypoints)
         if descriptors is None or len(keypoints) < self.min_inliers:
@@ -138,6 +186,23 @@ class MapLocalizer:
                 self.last_diagnostic.update(previous_position=self.previous.xy, candidate_position=result.xy,
                                             jump=round(math.dist(result.xy, self.previous.xy), 2))
                 return self._reject('position_jump')
+        if result is None and self._terrain_proposal is not None:
+            proposal = self._terrain_proposal
+            verified = self.terrain_matcher.verify(self.gray, gray, mask, self.region,
+                                                    proposal['transform'])
+            self.last_diagnostic['terrain_verification'] = dict(self.terrain_matcher.last_diagnostic)
+            if verified is not None:
+                if self.previous is not None and math.dist(verified.xy, self.previous.xy) > self.max_jump:
+                    self.last_diagnostic.update(previous_position=self.previous.xy,
+                                                candidate_position=verified.xy,
+                                                jump=round(math.dist(verified.xy, self.previous.xy), 2))
+                    return self._reject('position_jump')
+                self._candidate_transform = verified.transform
+                self.last_diagnostic.update(status='matched', reason='matched', method='terrain',
+                                            position=verified.xy, inliers=proposal['inliers'],
+                                            confidence=round(proposal['confidence'], 3))
+                return MapPosition(verified.xy[0], verified.xy[1], proposal['confidence'],
+                                   proposal['inliers'], source='terrain')
         return result
 
     def _match(self, keypoints, descriptors, candidates, center, size):
@@ -158,7 +223,7 @@ class MapLocalizer:
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         self.last_diagnostic = {'mode': 'map_projection', 'attempts': []}
         left, top, right, bottom = screen_region
-        keypoints, descriptors = self._region_features(gray, screen_region)
+        keypoints, descriptors = self._region_features(gray, screen_region, source_image=frame)
         if descriptors is None:
             return self._reject('too_few_map_features')
         matched = self._transform(keypoints, descriptors, np.arange(len(self.locations)),
@@ -173,6 +238,46 @@ class MapLocalizer:
             return self._reject('projected_beacon_outside_view')
         self.last_diagnostic.update(status='matched', reason='matched')
         return MapPosition(float(x), float(y), confidence, inliers)
+
+    def locate_map_player(self, frame, player_xy, screen_region):
+        """Map a detected player marker from the open map view to recorded coords."""
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
+        self.last_diagnostic = {'mode': 'map_player_localization', 'attempts': []}
+        try:
+            screen_region = tuple(screen_region)
+            left, top, right, bottom = screen_region
+            player_x, player_y = map(float, player_xy)
+        except (TypeError, ValueError):
+            return self._reject('invalid_player_or_screen_region')
+        height, width = gray.shape
+        if (any(not isinstance(value, (int, np.integer)) or isinstance(value, (bool, np.bool_))
+                for value in screen_region)
+                or not (0 <= left < right <= width and 0 <= top < bottom <= height)):
+            return self._reject('invalid_screen_region')
+        if not (math.isfinite(player_x) and math.isfinite(player_y)
+                and left <= player_x < right and top <= player_y < bottom):
+            return self._reject('player_marker_outside_screen_region')
+        keypoints, descriptors = self._region_features(gray, screen_region, source_image=frame)
+        self.last_diagnostic.update(screen_region=list(screen_region), map_features=len(self.locations),
+                                    screen_features=len(keypoints))
+        if descriptors is None:
+            return self._reject('too_few_map_features')
+        matched = self._transform(keypoints, descriptors, np.arange(len(self.locations)),
+                                  min(right - left, bottom - top))
+        if matched is None:
+            return None
+        transform, confidence, inliers = matched
+        if inliers < 12 or confidence < 0.6:
+            return self._reject('weak_map_projection')
+        x, y = transform @ np.array([player_x, player_y, 1.0])
+        x1, y1, x2, y2 = self.region
+        if not (x1 <= x < x2 and y1 <= y < y2):
+            self.last_diagnostic['candidate_position'] = [float(x), float(y)]
+            return self._reject('player_outside_recorded_map')
+        self.last_diagnostic.update(status='matched', reason='matched', method='map',
+                                    position=[float(x), float(y)], inliers=inliers,
+                                    confidence=round(confidence, 3))
+        return MapPosition(float(x), float(y), confidence, inliers, source='map')
 
     def _transform(self, keypoints, descriptors, candidates, size):
         diagnostic = {'candidate_features': len(candidates)}
@@ -203,8 +308,6 @@ class MapLocalizer:
         # Reject icons or a tiny patch being mistaken for the whole minimap.
         spread = np.ptp(source[accepted], axis=0)
         diagnostic['spread'] = [round(float(value), 2) for value in spread]
-        if min(spread) < size * 0.22:
-            return self._reject('features_too_concentrated')
         scale = math.hypot(transform[0, 0], transform[1, 0])
         rotation = math.degrees(math.atan2(transform[1, 0], transform[0, 0]))
         diagnostic.update(scale=round(scale, 3), rotation=round(rotation, 2))
@@ -212,5 +315,16 @@ class MapLocalizer:
             return self._reject('scale_out_of_range')
         if abs(rotation) > 12:
             return self._reject('minimap_not_north_up')
+        if min(spread) < size * 0.22:
+            # Keep the original SIFT threshold. A separate full-terrain verifier
+            # may corroborate this proposal, but weak SIFT alone remains rejected.
+            proposal = {'transform': transform.copy(), 'confidence': confidence,
+                        'inliers': inliers, 'spread': spread.copy()}
+            if (self._terrain_proposal is None
+                    or (inliers, confidence, float(np.prod(spread)))
+                    > (self._terrain_proposal['inliers'], self._terrain_proposal['confidence'],
+                       float(np.prod(self._terrain_proposal['spread'])))):
+                self._terrain_proposal = proposal
+            return self._reject('features_too_concentrated')
         diagnostic['reason'] = 'matched'
         return transform, confidence, inliers

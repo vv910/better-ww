@@ -1622,3 +1622,36 @@ msgstr "行走時重新校正鏡頭，轉向後使用前進移動。"
 
 msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
 msgstr "出發前選擇控物。離地後自動開翼一次；路線執行期間請勿手動按跳躍鍵。"
+
+msgid "Mark a route with stars. Use the nearest visible beacon as its starting point."
+msgstr "以星標記錄路線，並以最近的可見信標作為起點。"
+
+msgid "Select Levitator Automatically"
+msgstr "自動選擇控物工具"
+
+msgid "Local JSON route saved by Record 3C Route. Routes with a beacon entry teleport before departure."
+msgstr "「從地圖記錄 3C 路線」儲存的本機 JSON 路線。具有信標入口的路線會在出發前傳送。"
+
+msgid "Use the selected Levitator to detect airborne motion. Open the glider once per fall; do not press Jump manually."
+msgstr "使用目前選取的控物工具偵測離地；每次墜落只嘗試開翼一次。請勿手動按跳躍鍵。"
+
+msgid "Optional tool-wheel preparation. Disabled by default; unavailable Levitator disables fall protection without stopping the route."
+msgstr "可選的工具輪盤準備，預設關閉。控物工具不可用時會停用防墜保護，但路線會繼續執行。"
+
+msgid "Start Method"
+msgstr "起點方式"
+
+msgid "Nearest Beacon"
+msgstr "最近信標"
+
+msgid "Diamond"
+msgstr "菱形標記"
+
+msgid "Capture Teleport Overview"
+msgstr "擷取傳送概覽"
+
+msgid "Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview."
+msgstr "最近信標模式不需要菱形。將目標星標組放在地圖中央，並在預覽中檢查所選信標與點序。"
+
+msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
+msgstr "讀取星標後逐步縮小地圖，儲存通過配準的視圖以自動搜尋信標。主路線座標保持不變。"

@@ -1429,3 +1429,36 @@ msgstr "Vuelve a centrar la cámara al caminar y avanza después de girar."
 
 msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
 msgstr "Selecciona el levitador antes de salir. Abre el planeador una vez al estar en el aire; no pulses Saltar manualmente durante la ruta."
+
+msgid "Mark a route with stars. Use the nearest visible beacon as its starting point."
+msgstr "Marca una ruta con estrellas. Usa la baliza visible más cercana como punto de inicio."
+
+msgid "Select Levitator Automatically"
+msgstr "Seleccionar el levitador automáticamente"
+
+msgid "Local JSON route saved by Record 3C Route. Routes with a beacon entry teleport before departure."
+msgstr "Ruta JSON local guardada por Grabar ruta 3C. Las rutas con un punto de entrada se teletransportan antes de comenzar."
+
+msgid "Use the selected Levitator to detect airborne motion. Open the glider once per fall; do not press Jump manually."
+msgstr "Usa el Levitador seleccionado para detectar si estás en el aire. Abre el planeador una vez por caída; no pulses Saltar manualmente."
+
+msgid "Optional tool-wheel preparation. Disabled by default; unavailable Levitator disables fall protection without stopping the route."
+msgstr "Preparación opcional con la rueda de herramientas. Desactivada por defecto; si el Levitador no está disponible, la ruta continúa sin protección contra caídas."
+
+msgid "Start Method"
+msgstr "Método de inicio"
+
+msgid "Nearest Beacon"
+msgstr "Baliza más cercana"
+
+msgid "Diamond"
+msgstr "Diamante"
+
+msgid "Capture Teleport Overview"
+msgstr "Capturar vista general del teletransporte"
+
+msgid "Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview."
+msgstr "Baliza más cercana no necesita diamante. Centra el grupo de estrellas deseado en el mapa; comprueba la baliza y el orden de los puntos en la vista previa."
+
+msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
+msgstr "Tras leer las estrellas, aleja el mapa y guarda vistas verificadas para buscar balizas automáticamente. Las coordenadas originales de la ruta no cambian."

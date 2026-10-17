@@ -218,9 +218,12 @@ class CombatCheck(BaseWWTask):
                 self.log_info('can not open wheel')
                 return False
             levitator = self.wait_feature('wheel_levitator', threshold=0.65,
-                                          box=self.box_of_screen(0.27, 0.16, 0.68, 0.76))
+                                         box=self.box_of_screen(0.27, 0.16, 0.68, 0.76),
+                                         time_out=2 if force else 10, raise_if_not_found=not force)
             self.sleep(0.1)
             if not levitator:
+                if force:
+                    return False
                 raise Exception('no levitator tool in the tab wheel!')
             old = win32api.GetCursorPos()
             self.move(levitator.x, levitator.y)

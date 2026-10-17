@@ -1492,3 +1492,36 @@ msgstr "歩行中にカメラを中央に戻し、旋回後は前進します。
 
 msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
 msgstr "出発前に「レヴィテーター」を選択してください。空中に出たら一度だけ滑空を開始します。ルート実行中に手動でジャンプを押さないでください。"
+
+msgid "Mark a route with stars. Use the nearest visible beacon as its starting point."
+msgstr "星印でルートを記録します。最も近くに見えるビーコンを開始地点として使用します。"
+
+msgid "Select Levitator Automatically"
+msgstr "レヴィテーターを自動選択"
+
+msgid "Local JSON route saved by Record 3C Route. Routes with a beacon entry teleport before departure."
+msgstr "「3Cルートを記録」で保存したローカルJSONルートです。ビーコン入口のあるルートは出発前にテレポートします。"
+
+msgid "Use the selected Levitator to detect airborne motion. Open the glider once per fall; do not press Jump manually."
+msgstr "選択中のレヴィテーターで空中状態を検出します。落下ごとに一度だけ滑空を開始します。手動でジャンプを押さないでください。"
+
+msgid "Optional tool-wheel preparation. Disabled by default; unavailable Levitator disables fall protection without stopping the route."
+msgstr "ツールホイールの準備は任意です。既定では無効です。レヴィテーターが使えない場合もルートは停止せず、落下保護を無効にします。"
+
+msgid "Start Method"
+msgstr "開始方法"
+
+msgid "Nearest Beacon"
+msgstr "最寄りのビーコン"
+
+msgid "Diamond"
+msgstr "ひし形"
+
+msgid "Capture Teleport Overview"
+msgstr "テレポート用マップ概観を保存"
+
+msgid "Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview."
+msgstr "最寄りのビーコン方式ではひし形は不要です。対象の星印グループを地図中央に置き、プレビューで選択されたビーコンと点の順序を確認してください。"
+
+msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
+msgstr "星印の読み取り後に地図を段階的に縮小し、ビーコン検索用に照合済みの地図ビューを保存します。ルート座標は変わりません。"

@@ -1,4 +1,5 @@
 import tempfile
+import math
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -6,10 +7,12 @@ from unittest.mock import patch
 import cv2
 import numpy as np
 from ok.test.TaskTestCase import TaskTestCase
+from ok import Box
 
 from config import config
 from src.pathing.EchoRoute import EchoRoute
 from src.pathing.MapLocalizer import MapLocalizer
+from src.pathing.RouteMarkers import MarkerMatch
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
 from src.task.WWOneTimeTask import WWOneTimeTask
 
@@ -162,7 +165,7 @@ class Test3CRouteImages(TaskTestCase):
         recorder.after_init(executor=self.task.executor, scene=self.task.scene)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'recorded.json'
-            recorder.config = {'Route File': str(path), 'Route Name': 'marker test'}
+            recorder.config = {'Route File': str(path), 'Route Name': 'marker test', 'Start Method': 'Diamond'}
             with patch.object(WWOneTimeTask, 'run'):
                 recorder.run()
             route = EchoRoute.load(path)
@@ -191,7 +194,8 @@ class Test3CRouteImages(TaskTestCase):
             recorder.feature_set = self.task.feature_set
             recorder.after_init(executor=self.task.executor, scene=self.task.scene)
             path = Path(directory) / 'user-route.json'
-            recorder.config = {'Route File': str(path), 'Route Name': 'overlap regression'}
+            recorder.config = {'Route File': str(path), 'Route Name': 'overlap regression',
+                               'Start Method': 'Diamond'}
             with patch.object(WWOneTimeTask, 'run'), patch.object(recorder, 'click_relative') as click:
                 recorder.run()
             click.assert_not_called()  # Preserve the user's zoom and selected map view.
@@ -202,6 +206,69 @@ class Test3CRouteImages(TaskTestCase):
             self.assertAlmostEqual(908, route.start.y, delta=3)
             self.assertTrue(path.with_suffix('.preview.png').exists())
             self.assertAlmostEqual(1477, route.waypoints[0].x, delta=3)
+
+    def test_default_nearest_beacon_connects_the_central_group_to_its_entry(self):
+        frame = np.zeros((1440, 2560, 3), np.uint8)
+        frame[400:1120, 600:2250] = cv2.imread('tests/images/3c-map-overlap.png')
+        reference = cv2.imread('assets/images/0.png')[1022:1078, 764:824]
+        star = cv2.resize(reference, (40, 37))
+        white = star.min(axis=2) >= 170
+        for x, y in ((1940, 930), (2090, 600)):
+            region = frame[y:y + 37, x:x + 40]
+            region[white] = star[white]
+        with tempfile.TemporaryDirectory() as directory:
+            capture_path = str(Path(directory) / 'nearest-default.png')
+            cv2.imwrite(capture_path, frame)
+            self.set_image(capture_path)
+            recorder = Record3CEchoRouteTask(self.task.executor, None)
+            recorder.feature_set = self.task.feature_set
+            recorder.after_init(executor=self.task.executor, scene=self.task.scene)
+            recorder.config = {'Route File': str(Path(directory) / 'nearest-default.json')}
+            # No Start Method is configured: this exercises the public default mode.
+            recorder.load_stars(wait_world=False)
+            self.assertGreaterEqual(len(recorder.stars), 3)
+            self.assertIsNotNone(recorder._entry_beacon)
+
+    def test_nearest_beacon_records_real_beacon_and_ignores_multiple_diamonds(self):
+        frame = np.zeros((1440, 2560, 3), np.uint8)
+        crop = cv2.imread('tests/images/3c-map-overlap.png')
+        frame[400:1120, 600:2250] = crop
+        with tempfile.TemporaryDirectory() as directory:
+            capture_path = str(Path(directory) / 'map.png')
+            cv2.imwrite(capture_path, frame)
+            self.set_image(capture_path)
+            recorder = Record3CEchoRouteTask(self.task.executor, None)
+            recorder.feature_set = self.task.feature_set
+            recorder.after_init(executor=self.task.executor, scene=self.task.scene)
+            region = recorder.recording_region(frame)
+            left, top, right, bottom = region
+            beacons = recorder.find_feature(['map_way_point', 'map_way_point_big'], frame=frame,
+                                            box=Box(left, top, right - left, bottom - top), threshold=.65)
+            self.assertTrue(beacons, 'real blue waypoint beacon should match a map template')
+            beacon = min(beacons, key=lambda item: math.dist(item.center(), (1431, 908)))
+            bx, by = beacon.center()
+            stars = [MarkerMatch(bx - 45, by - 35, 30, 30, .95),
+                     MarkerMatch(bx - 15, by - 10, 30, 30, .95),
+                     MarkerMatch(bx + 15, by + 15, 30, 30, .95)]
+            diamonds = [MarkerMatch(700, 500, 30, 30, .95), MarkerMatch(800, 650, 30, 30, .95)]
+            path = Path(directory) / 'nearest-route.json'
+            recorder.config = {'Route File': str(path), 'Route Name': 'nearest beacon',
+                               'Capture Teleport Overview': True}
+
+            def fake_overviews(task, map_frame, point, map_region):
+                return [(map_frame.copy(), point, map_region)]
+
+            with patch.object(WWOneTimeTask, 'run'), \
+                    patch('src.task.Farm3CEchoTask.RouteMarkerDetector') as detector, \
+                    patch('src.task.Farm3CEchoTask.capture_map_views', side_effect=fake_overviews) as capture:
+                detector.return_value.detect.return_value = (diamonds, stars)
+                recorder.run()
+
+            route = EchoRoute.load(path)
+            self.assertEqual((bx, by), (route.start.x, route.start.y))
+            self.assertEqual(2, len(route.teleport.views))
+            self.assertEqual(1, capture.call_count)
+            self.assertTrue(path.with_suffix('.view-1.png').exists())
 
 
 if __name__ == '__main__':

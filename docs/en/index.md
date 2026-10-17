@@ -53,7 +53,7 @@ Please note, according to Kuro Games' official Fair Play Declaration for Wutheri
 
 ## 3C Echo Route Farming
 
-Record a route from the world map with a diamond start marker and stars along a traversable path. The route JSON must stay with its matching `.map.png`; this fork does not include prebuilt routes. During ground travel, camera recentering keeps the view behind the player, and airborne protection attempts to deploy the glider. These features cannot guarantee recovery from every fall.
+Mark a traversable route with stars on the world map. The default recorder selects a nearby visible beacon; no diamond is required. Keep the route JSON, `.map.png` and generated `.view-N.png` files together. This fork includes no prebuilt routes. Camera recentering keeps the view behind the player during ground travel. Select Levitator before starting to enable airborne glide protection; automatic tool selection is off by default, and fall recovery is not guaranteed.
 
 See the [echo farming guide](../development/echo-farming.md), [portable release guide](../development/releases.md), and [developer testing guide](../development/testing-on-another-pc.md).
 

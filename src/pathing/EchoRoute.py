@@ -46,6 +46,13 @@ class RoutePoint:
 
 
 @dataclass(frozen=True)
+class RouteMapView:
+    image: Path
+    point: RoutePoint
+    region: tuple[int, int, int, int]
+
+
+@dataclass(frozen=True)
 class EchoRoute:
     name: str
     map_image: Path
@@ -53,6 +60,7 @@ class EchoRoute:
     waypoints: tuple[RoutePoint, ...]
     map_region: tuple[int, int, int, int]
     teleport: 'RouteTeleport | None' = None
+    map_layer: str = ''
 
     @classmethod
     def load(cls, path):
@@ -86,24 +94,68 @@ class EchoRoute:
         for point in (start, *waypoints):
             if not (x1 <= point.x < x2 and y1 <= point.y < y2):
                 raise ValueError('Route point is outside map_region')
+        map_layer = data.get('map_layer', '')
+        if not isinstance(map_layer, str) or len(map_layer) > 80 or '\n' in map_layer or '\r' in map_layer:
+            raise ValueError('Route map_layer must be a single-line string of at most 80 characters')
         teleport = None
         if 'teleport' in data:
             spec = data['teleport']
-            if not isinstance(spec, dict) or not isinstance(spec.get('anchor'), str) or not spec['anchor'].strip():
-                raise ValueError('teleport.anchor must be a nearby fixed Boss name in the game language')
-            waypoint = RoutePoint.from_dict(spec, 'teleport')
-            if not (x1 <= waypoint.x < x2 and y1 <= waypoint.y < y2):
-                raise ValueError('Teleport waypoint is outside map_region')
-            if start.distance_to((waypoint.x, waypoint.y)) > start.tolerance:
-                raise ValueError('Route start must be within its tolerance of the teleport waypoint')
-            teleport = RouteTeleport(spec['anchor'].strip(), waypoint)
-        return cls(name, image_path, start, waypoints, tuple(region), teleport)
+            if not isinstance(spec, dict):
+                raise ValueError('Route teleport must be an object')
+            anchor_value = spec.get('anchor', '')
+            if not isinstance(anchor_value, str):
+                raise ValueError('teleport.anchor must be a string')
+            anchor = anchor_value.strip()
+
+            raw_views = spec.get('views', [])
+            if not isinstance(raw_views, list) or len(raw_views) > 8:
+                raise ValueError('teleport.views must be a list of at most 8 map views')
+            views = tuple(_load_route_map_view(path.parent, view, index)
+                          for index, view in enumerate(raw_views))
+            if not anchor and not views:
+                raise ValueError('teleport requires a non-empty anchor or at least one map view')
+
+            waypoint = None
+            if 'x' in spec or 'y' in spec:
+                waypoint = RoutePoint.from_dict(spec, 'teleport')
+                if not (x1 <= waypoint.x < x2 and y1 <= waypoint.y < y2):
+                    raise ValueError('Teleport waypoint is outside map_region')
+                if start.distance_to((waypoint.x, waypoint.y)) > start.tolerance:
+                    raise ValueError('Route start must be within its tolerance of the teleport waypoint')
+            elif not views:
+                raise ValueError('teleport waypoint is required when no map views are supplied')
+            teleport = RouteTeleport(anchor, waypoint, views)
+        return cls(name, image_path, start, waypoints, tuple(region), teleport, map_layer)
+
+
+def _load_route_map_view(route_directory, data, index):
+    field = f'teleport.views[{index}]'
+    if not isinstance(data, dict):
+        raise ValueError(f'{field} must be an object')
+    image_name = data.get('map_image')
+    if not isinstance(image_name, str) or not image_name.strip():
+        raise ValueError(f'{field}.map_image must be a local image path')
+    image_path = (route_directory / image_name).resolve()
+    image = read_map_image(image_path)
+    height, width = image.shape[:2]
+    region = data.get('map_region', [0, 0, width, height])
+    if (not isinstance(region, list) or len(region) != 4
+            or any(type(value) is not int for value in region)):
+        raise ValueError(f'{field}.map_region must contain four integer pixel coordinates')
+    x1, y1, x2, y2 = region
+    if not (0 <= x1 < x2 <= width and 0 <= y1 < y2 <= height):
+        raise ValueError(f'{field}.map_region is outside the map image')
+    point = RoutePoint.from_dict(data, field)
+    if not (x1 <= point.x < x2 and y1 <= point.y < y2):
+        raise ValueError(f'{field} point is outside map_region')
+    return RouteMapView(image_path, point, tuple(region))
 
 
 @dataclass(frozen=True)
 class RouteTeleport:
-    anchor: str
-    waypoint: RoutePoint
+    anchor: str = ''
+    waypoint: RoutePoint | None = None
+    views: tuple[RouteMapView, ...] = ()
 
 
 def route_files(single, queue):

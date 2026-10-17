@@ -20,7 +20,8 @@ from src.task.WWOneTimeTask import WWOneTimeTask
 
 def make_task():
     task = Farm3CEchoTask.__new__(Farm3CEchoTask)
-    task.config = {'Route File': 'route.json', 'Combat Timeout': 10, 'Pickup Timeout': 10}
+    task.config = {'Route File': 'route.json', 'Combat Timeout': 10, 'Pickup Timeout': 10,
+                   'Auto Glide when Airborne': False}
     task.info = {}
     task._combat_deadline = None
     task._in_combat = False
@@ -29,6 +30,8 @@ def make_task():
     task._camera_recenter_at = 0
     task._fall_protection_ready = False
     task._fall_guard = FallGuard()
+    task._airborne_stage = False
+    task._active_route = None
     task._route_keys = ()
     task.navigation_interval = 0.2
     task.localizer = Mock()
@@ -36,10 +39,12 @@ def make_task():
     for name in ('wait_in_team_and_world', 'center_camera', 'next_frame', 'locate', 'in_combat',
                  'send_key', 'send_key_down', 'send_key_up', 'mouse_up', 'click', 'sleep', 'log_info', 'log_error', 'info_set',
                  'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'read_route_heading',
-                 'log_debug', 'save_heading_diagnostic', 'save_localization_diagnostic',
+                 'log_debug', 'log_warning', 'find_one', 'save_heading_diagnostic', 'save_localization_diagnostic',
+                 'save_navigation_diagnostic',
                  'prepare_route_runtime', 'route_enemy_visible', 'observe_route_airborne'):
         setattr(task, name, Mock())
     task.in_combat.return_value = False
+    task.find_one.return_value = False
     task.route_enemy_visible.return_value = False
     task.observe_route_airborne.return_value = False
     task.pick_echo.return_value = False
@@ -100,18 +105,46 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.center_camera.assert_not_called()
         self.task.route_enemy_visible.assert_not_called()
 
-    def test_preflight_requires_a_confirmed_ground_tool_before_enabling_protection(self):
-        self.task.ensure_levitator = Mock(return_value=True)
+    def test_preflight_uses_only_the_already_selected_ground_tool(self):
+        self.task.config['Auto Glide when Airborne'] = True
         self.task.in_team = Mock(return_value=(True, None))
         self.task.get_box_by_name = Mock()
         self.task.calculate_color_percentage = Mock(return_value=0.4)
+        self.task.find_one.return_value = True
+        self.task.ensure_levitator = Mock()
         self.task.prepare_fall_protection()
         self.assertTrue(self.task._fall_protection_ready)
-        self.task.ensure_levitator.assert_called_once_with(force=True)
+        self.task.ensure_levitator.assert_not_called()
         self.task.calculate_color_percentage.return_value = 0.01
-        with self.assertRaisesRegex(RuntimeError, 'ground'):
-            self.task.prepare_fall_protection()
+        self.task.prepare_fall_protection()
         self.assertFalse(self.task._fall_protection_ready)
+
+    def test_preflight_does_not_open_wheel_when_no_tool_is_selected_by_default(self):
+        self.task.config['Auto Glide when Airborne'] = True
+        self.task.ensure_levitator = Mock()
+        self.task.prepare_fall_protection()
+        self.task.ensure_levitator.assert_not_called()
+        self.assertFalse(self.task._fall_protection_ready)
+
+    def test_optional_tool_selection_failure_does_not_interrupt_route(self):
+        self.task.config.update({'Auto Glide when Airborne': True, 'Select Levitator Automatically': True})
+        self.task.stop_route_movement = Mock()
+        self.task.ensure_levitator = Mock(return_value=False)
+        route = EchoRoute('test', Path('tests/images/path.png'), RoutePoint(10, 10),
+                          (RoutePoint(30, 30),), (0, 0, 1920, 1080))
+        self.task.execute_route = Mock()
+        with patch.object(EchoRoute, 'load', return_value=route), patch.object(WWOneTimeTask, 'run'), \
+                patch('src.task.Farm3CEchoTask.MapLocalizer'):
+            self.task.run()
+        self.task.ensure_levitator.assert_called_once_with(force=True)
+        self.task.log_warning.assert_called()
+        self.task.execute_route.assert_called_once_with(route)
+
+    def test_preflight_cancellation_during_optional_tool_selection_propagates(self):
+        self.task.config.update({'Auto Glide when Airborne': True, 'Select Levitator Automatically': True})
+        self.task.ensure_levitator = Mock(side_effect=TaskDisabledException())
+        with self.assertRaises(TaskDisabledException):
+            self.task.prepare_fall_protection()
 
     def test_cancelled_tool_selection_releases_wheel_key(self):
         self.task.key_config = {'Wheel Key': 'tab'}
@@ -168,6 +201,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
         route = EchoRoute('test', Path('tests/images/path.png'), RoutePoint(900, 500),
                           (RoutePoint(930, 500),), (0, 0, 1920, 1080))
         self.task.follow_point = Mock()
+        self.task.recover_route_position = Mock(return_value=None)
         with patch.object(EchoRoute, 'load', return_value=route), patch.object(WWOneTimeTask, 'run'), \
                 self.assertRaisesRegex(RuntimeError, 'route start'):
             self.task.run()
@@ -311,14 +345,17 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.config['Route Queue'] = 'first.json\nsecond.json'
         self.task.execute_route = Mock()
         self.task.teleport_to_route = Mock()
+        self.task.prepare_fall_protection = Mock()
         events = Mock()
         events.attach_mock(self.task.execute_route, 'execute')
         events.attach_mock(self.task.teleport_to_route, 'teleport')
+        events.attach_mock(self.task.prepare_fall_protection, 'preflight')
         with patch.object(EchoRoute, 'load', side_effect=[first, second]), \
                 patch.object(WWOneTimeTask, 'run'), \
                 patch('src.task.Farm3CEchoTask.MapLocalizer') as localizer:
             self.task.run()
-        self.assertEqual([call.execute(first), call.teleport(second), call.execute(second)], events.mock_calls)
+        self.assertEqual([call.preflight(), call.execute(first), call.teleport(second), call.preflight(),
+                          call.execute(second)], events.mock_calls)
         self.assertEqual(2, localizer.call_count)
         self.assertEqual(2, localizer.return_value.reset.call_count)
 
@@ -397,6 +434,54 @@ class TestFarm3CEchoTask(unittest.TestCase):
             self.task.follow_point(RoutePoint(100, 10, tolerance=2))
         self.assertEqual([call(0), call(1)], self.task.recover_stuck.call_args_list)
 
+    def test_physical_movement_away_from_goal_is_not_a_stationary_trap(self):
+        self.task.next_frame.side_effect = self.tick
+        self.task.locate.side_effect = lambda: MapPosition(-self.clock * 5, 0, 1, 20)
+        self.task.recover_stuck = Mock()
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                self.assertRaisesRegex(RuntimeError, 'waypoint timed out'):
+            self.task.follow_point(RoutePoint(100, 0, timeout=12))
+        self.task.recover_stuck.assert_not_called()
+
+    def test_moving_without_approaching_realigns_once_then_reports_a_different_failure(self):
+        self.task.next_frame.side_effect = self.tick
+        self.task.locate.side_effect = lambda: MapPosition(-self.clock * 5, 0, 1, 20)
+        self.task.recover_stuck = Mock()
+        self.task.recover_route_position = Mock(return_value=None)
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                self.assertRaisesRegex(RuntimeError, 'Moving without approaching'):
+            self.task.follow_point(RoutePoint(100, 0, timeout=70))
+        self.task.recover_route_position.assert_called_once()
+        self.task.recover_stuck.assert_not_called()
+        self.assertEqual('not-approaching', self.task.save_navigation_diagnostic.call_args.args[2])
+
+    def test_recovery_uses_jump_hotkey_and_stops_if_a_retreat_becomes_airborne(self):
+        self.task.key_config = {'Jump Key': 'j'}
+        self.task._fall_protection_ready = True
+        self.task.in_team = Mock(return_value=(True, None))
+        self.task.get_box_by_name = Mock()
+        self.task.calculate_color_percentage = Mock(return_value=.3)
+        self.task.recover_stuck(0)
+        self.task.send_key.assert_has_calls([call('s', down_time=.3, after_sleep=.1),
+                                             call('a', down_time=.4, after_sleep=.1),
+                                             call('j', down_time=.05, after_sleep=.3)])
+        self.task.send_key.reset_mock()
+        self.task.observe_route_airborne.return_value = True
+        self.task.recover_stuck(1)
+        self.task.send_key.assert_called_once_with('s', down_time=.3, after_sleep=.1)
+
+    def test_recovery_does_not_jump_when_ground_signal_is_unavailable(self):
+        for ready, in_team, brightness in ((False, True, .3), (True, False, .3), (True, True, .01)):
+            with self.subTest(ready=ready, in_team=in_team, brightness=brightness):
+                self.task._fall_protection_ready = ready
+                self.task.in_team = Mock(return_value=(in_team, None))
+                self.task.get_box_by_name = Mock()
+                self.task.calculate_color_percentage = Mock(return_value=brightness)
+                self.task.send_key.reset_mock()
+                self.task.recover_stuck(0)
+                self.assertEqual([call('s', down_time=.3, after_sleep=.1),
+                                  call('a', down_time=.4, after_sleep=.1)], self.task.send_key.call_args_list)
+
     def test_waypoint_timeout_and_cancellation_release_keys(self):
         self.task.next_frame.side_effect = self.tick
         with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
@@ -458,7 +543,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             route_path = Path(directory) / '声骸路线' / 'route.json'
             task = Record3CEchoRouteTask.__new__(Record3CEchoRouteTask)
-            task.config = {'Route File': str(route_path), 'Route Name': '3C test'}
+            task.config = {'Route File': str(route_path), 'Route Name': '3C test', 'Start Method': 'Diamond'}
             task.big_map_frame = cv2.imread('tests/images/path.png')
             task.diamond = Box(1190, 460, 20, 20)
             task.stars = [task.diamond, Box(1100, 540, 20, 20), Box(1030, 600, 20, 20)]
@@ -477,7 +562,8 @@ class TestFarm3CEchoTask(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'route.json'
             task = Record3CEchoRouteTask.__new__(Record3CEchoRouteTask)
-            task.config = {'Route File': str(path), 'Route Name': 'TP', 'Teleport Anchor': '无冠者'}
+            task.config = {'Route File': str(path), 'Route Name': 'TP', 'Teleport Anchor': '无冠者',
+                           'Start Method': 'Diamond'}
             task.big_map_frame = cv2.imread('tests/images/path.png')
             task.diamond = Box(1190, 460, 20, 20)
             task.stars = [task.diamond, Box(1100, 540, 20, 20), Box(1030, 600, 20, 20)]
