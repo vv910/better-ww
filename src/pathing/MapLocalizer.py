@@ -1,8 +1,11 @@
 import math
+import time
 from dataclasses import dataclass
 
 import cv2
 import numpy as np
+
+from src.pathing.MinimapTracker import MinimapTracker
 
 
 @dataclass(frozen=True)
@@ -11,6 +14,7 @@ class MapPosition:
     y: float
     confidence: float
     inliers: int
+    source: str = 'sift'
 
     @property
     def xy(self):
@@ -35,12 +39,15 @@ class MapLocalizer:
         self.matcher = cv2.BFMatcher(cv2.NORM_L2)
         self.min_inliers = min_inliers
         self.max_jump = max_jump
-        self.previous = None
-        self.last_diagnostic = {}
+        self.tracker = MinimapTracker()
+        self.reset()
 
     def reset(self):
         self.previous = None
         self.last_diagnostic = {}
+        self.tracker.reset()
+        self._last_sift_at = -math.inf
+        self._candidate_transform = None
 
     def _reject(self, reason):
         self.last_diagnostic.update(status='rejected', reason=reason)
@@ -61,6 +68,48 @@ class MapLocalizer:
         radius = int(min(width, height) * 0.46)
         cv2.circle(mask, center, radius, 255, -1)
         cv2.circle(mask, center, int(radius * 0.23), 0, -1)  # player arrow/camera cone
+        now = time.monotonic()
+        tracked = self.tracker.track(gray, mask, now)
+        self.last_diagnostic['tracking'] = dict(self.tracker.last_diagnostic)
+        if tracked is not None:
+            x1, y1, x2, y2 = self.region
+            if not (x1 <= tracked.xy[0] < x2 and y1 <= tracked.xy[1] < y2):
+                self.last_diagnostic['tracking']['reason'] = 'position_outside_recorded_map'
+                tracked = None
+        if tracked is not None and now - self._last_sift_at < 0.5:
+            return self._accept_tracking(gray, mask, tracked, now)
+        self._last_sift_at = now
+        self._candidate_transform = None
+        result = self._locate_absolute(gray, mask, center)
+        if result is not None and tracked is not None and math.dist(result.xy, tracked.xy) > 12:
+            # Conflicting visual evidence is not a temporary lack of landmarks.
+            self.tracker.reset()
+            return self._reject('absolute_disagrees_with_tracking')
+        if result is not None:
+            self.previous = result
+            self.tracker.anchor(gray, mask, self._candidate_transform, result.xy, now)
+            self.last_diagnostic.update(status='matched', reason='matched', method='sift', position=result.xy,
+                                        inliers=result.inliers, confidence=round(result.confidence, 3))
+            return result
+        if tracked is not None:
+            if self.last_diagnostic.get('reason') in ('position_jump', 'minimap_not_north_up',
+                                                      'scale_out_of_range', 'position_outside_recorded_map'):
+                self.tracker.reset()
+                return None
+            self.last_diagnostic['absolute_reason'] = self.last_diagnostic.get('reason')
+            return self._accept_tracking(gray, mask, tracked, now)
+        return None
+
+    def _accept_tracking(self, gray, mask, tracked, now):
+        result = MapPosition(*tracked.xy, tracked.confidence, tracked.inliers, source='flow')
+        self.tracker.commit(gray, mask, tracked, now)
+        self.previous = result
+        self.last_diagnostic.update(status='matched', reason='tracked', method='flow', position=result.xy,
+                                    inliers=result.inliers, confidence=round(result.confidence, 3))
+        return result
+
+    def _locate_absolute(self, gray, mask, center):
+        height, width = gray.shape
         keypoints, descriptors = self.sift.detectAndCompute(gray, mask)
         self.last_diagnostic['minimap_features'] = len(keypoints)
         if descriptors is None or len(keypoints) < self.min_inliers:
@@ -79,10 +128,6 @@ class MapLocalizer:
                 self.last_diagnostic.update(previous_position=self.previous.xy, candidate_position=result.xy,
                                             jump=round(math.dist(result.xy, self.previous.xy), 2))
                 return self._reject('position_jump')
-        if result is not None:
-            self.previous = result
-            self.last_diagnostic.update(status='matched', reason='matched', position=result.xy,
-                                        inliers=result.inliers, confidence=round(result.confidence, 3))
         return result
 
     def _match(self, keypoints, descriptors, candidates, center, size):
@@ -95,6 +140,7 @@ class MapLocalizer:
         if not (x1 <= x < x2 and y1 <= y < y2):
             self.last_diagnostic['candidate_position'] = [float(x), float(y)]
             return self._reject('position_outside_recorded_map')
+        self._candidate_transform = transform
         return MapPosition(float(x), float(y), confidence, inliers)
 
     def project_map_point(self, frame, point, screen_region):

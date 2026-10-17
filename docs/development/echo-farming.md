@@ -20,9 +20,11 @@
 
 执行链路为：校验路线和起点 → 小地图定位 → 按文件中的点序移动 → 遇敌暂停并战斗 → 搜索并吸收多个声骸 → 重新定位并继续。途经点、战斗点和专门拾取点可分别设置。
 
-定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。朝向使用小地图中心的金色箭头轮廓，统一尺寸后搜索角度与大小；同时检查匹配分数和其他方向的分数差，避免把圆形图标当作箭头。定位失败时停下，连续 5 秒无法定位则退出；朝向不可信时取新帧重试，连续 3 帧失败则保存小地图截图并退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
+定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。首次和战后必须通过 SIFT；移动中用 LK 光流跟踪地形，并约每 0.5 秒重新尝试 SIFT 校正。光流最多衔接最后一次绝对定位后的 3 秒、60 个录制地图像素，要求双向一致、至少 12 个内点且分布覆盖小地图；不会用按键时长推算位置。匹配冲突、图像突变或超出预算时停止接管。朝向使用小地图中心的金色箭头轮廓，统一尺寸后搜索角度与大小；同时检查匹配分数和其他方向的分数差，避免把圆形图标当作箭头。两种位置识别都失败时松键，连续 5 秒无法定位则退出；朝向不可信时取新帧重试，连续 3 帧失败则保存小地图截图并退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
 
-移动使用持续按键：默认每 0.2 秒更新位置和方向，只有方向变化才切换按键，保留相邻方向的共同按键。普通 `walk` 点之间保持移动；抵达 `combat`/`pickup` 点、定位丢失、朝向不可靠或遇敌时松键。相机在出发、战斗后或重新定位后校准一次，不再每走 0.3 秒都重置并等待。8 方向选择带迟滞，并在按键稳定后用角色箭头估算相机朝向，适应缓慢的自动回正；游戏中快速自动转镜、角色受击转身仍需实测。
+移动使用持续按键：默认每 0.2 秒更新位置和方向，只有方向变化才切换按键，保留相邻方向的共同按键。普通 `walk` 点之间保持移动；抵达 `combat`/`pickup` 点、定位丢失、朝向不可靠或遇敌时松键。相机在出发、战斗后或较长暂停恢复时校准一次；1 秒以内的定位暂停保留已校准的相机方向，恢复时不再重复等待约 1.2 秒。8 方向选择带迟滞，并在按键稳定后用角色箭头估算相机朝向，适应缓慢的自动回正；游戏中快速自动转镜、角色受击转身仍需实测。
+
+任务信息中的 `3C Stage` 显示当前处于移动、战斗或搜索声骸。战后或空战斗点仍搜索四个方向，但每次相机转向只等待 0.4 秒再识别，避免空场扫描中的四次长等待；找到声骸后的接近和吸收仍沿用原有逻辑及剩余时间预算。搜索结束会清空旧定位，继续移动前重新匹配地图。
 
 启动会先显示识别准备日志，预加载模板、识别队伍并编译/预热声骸模型，再开始移动。3C 执行期间 OpenCV 最多使用两个工作线程，任务退出后恢复原值；OpenVINO CPU 推理最多使用四个线程，减少与游戏争抢 CPU。`Navigation Interval`（导航刷新间隔）支持 0.1–0.5 秒，默认 0.2；降低间隔会增加 CPU 占用。模型首次编译仍需要时间，准备阶段请等待“3C识别准备完成”。
 
@@ -119,10 +121,12 @@ routes/3c/route-c.json
 
 定位失败诊断会记录小地图特征数、有效匹配数、几何内点、缩放、旋转和位置跳变。失败原因区分 `too_few_minimap_features`、`too_few_matches`、`minimap_not_north_up`、`scale_out_of_range`、`position_jump` 和 `position_outside_recorded_map` 等；局部与全图两次搜索各保留一次诊断。起点检查或连续 5 秒失配时自动保存当前画面、小地图和最后一次成功匹配的小地图，文件以 `3c-location-start-` 或 `3c-location-lost-` 开头。这些诊断不改变原来的匹配门槛和停止规则，不能仅凭“位置丢失”日志判断具体原因。
 
+最新测试日志确认第一点已完成并进入第二点，随后因只有 3 个几何内点而退出；短暂失配还会使旧逻辑重复重置相机。对此加入保留相机校准的暂停恢复、有预算的地形光流和较短的四向搜索等待，共通过 67 项定位/导航/任务逻辑测试和 10 项截图测试。覆盖相对跟踪的累计时间/距离限制、冲突时停止、战后重定位、短暂停顿不重置视角，以及真实小地图素材在三种尺寸下的平移跟踪。这不能替代测试电脑的完整路线验收；该路线的持续 SIFT 失配仍需配套地图原图和失配截图进一步复现。
+
 运行路线、恢复和 4C 逻辑测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：

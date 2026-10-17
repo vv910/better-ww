@@ -71,7 +71,7 @@ git submodule update --init --recursive
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install pytest polib
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestEcho
 ```
@@ -113,3 +113,5 @@ git submodule update --init --recursive
 如果提示 `Cannot confirm minimap player heading after 3 frames`，日志会包含画面尺寸、匹配分数和方向分数差；请同时保留“截图目录”中名称包含 `3c-heading-minimap` 的图片。程序重启可能清理旧截图，先保存诊断图片再重启。现有路线可以继续使用，不需要因朝向识别失败重新录制。
 
 如果提示 `Minimap position lost for 5 seconds` 或 `Cannot confirm route start`，表示当前位置没有通过地图匹配或起点距离检查。请提供这条路线的 JSON、配套 `.map.png` 原图、最新日志以及截图目录中的 `3c-location-` 图片。`lost-minimap` 是失配时的小地图，`lost-last-good` 是最后一次成功定位的小地图；`start-` 表示在起点检查阶段失败。先保存这些图片再重启程序，不需要仅为了诊断重新录制路线。
+
+`3C Stage` 可区分移动、战斗和搜索声骸。所有标记都录成 `combat` 时，每一点都会停下检查战斗并搜索声骸；纯转弯位置应改为 `walk`。移动中的短暂 SIFT 失配会由最多 3 秒、60 个地图像素的视觉跟踪衔接，超过预算或跟踪质量不足仍会松键；不能仅凭一次恢复运行就判断配套地图的持续匹配已解决。

@@ -22,11 +22,13 @@ def make_task():
     task._combat_deadline = None
     task._in_combat = False
     task._steering = None
+    task._camera_aligned = False
     task._route_keys = ()
     task.navigation_interval = 0.2
+    task.localizer = Mock()
     task.combat_timeout = task.pickup_timeout = 10
     for name in ('wait_in_team_and_world', 'center_camera', 'next_frame', 'locate', 'in_combat',
-                 'send_key', 'send_key_down', 'send_key_up', 'mouse_up', 'sleep', 'log_info', 'log_error', 'info_set',
+                 'send_key', 'send_key_down', 'send_key_up', 'mouse_up', 'click', 'sleep', 'log_info', 'log_error', 'info_set',
                  'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'read_route_heading',
                  'log_debug', 'save_heading_diagnostic', 'save_localization_diagnostic',
                  'prepare_route_runtime', 'route_enemy_visible'):
@@ -165,6 +167,49 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.send_key_up.assert_any_call('w')
         self.task.send_key_down.assert_not_called()
 
+    def test_short_localization_gap_releases_input_without_recentering_camera(self):
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None,
+                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+        events = Mock()
+        events.attach_mock(self.task.send_key_down, 'down')
+        events.attach_mock(self.task.send_key_up, 'up')
+        self.task.follow_point(RoutePoint(30, 0, tolerance=2))
+        self.task.center_camera.assert_called_once()
+        moves = [event for event in events.mock_calls if event in (call.down('w'), call.up('w'))]
+        self.assertEqual([call.down('w'), call.up('w'), call.down('w'), call.up('w')], moves)
+
+    def test_long_localization_pause_recalibrates_camera_before_moving_again(self):
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None, None,
+                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+        self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + 0.6)
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock):
+            self.task.follow_point(RoutePoint(30, 0, tolerance=2))
+        self.assertEqual(2, self.task.center_camera.call_count)
+
+    def test_short_pause_keeps_camera_heading_when_player_faces_diagonally(self):
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None,
+                                       MapPosition(10, 10, 1, 20), MapPosition(60, 60, 1, 20)]
+        self.task.read_route_heading.side_effect = [HeadingEstimate(0, 0.9, 0.2),
+                                                   HeadingEstimate(45, 0.9, 0.2)]
+        self.task.follow_point(RoutePoint(60, 60, tolerance=2))
+        self.assertEqual([call('w'), call('d'), call('w'), call('d')], self.task.send_key_down.call_args_list)
+        self.task.center_camera.assert_called_once()
+
+    def test_empty_pickup_sweep_checks_four_views_with_short_camera_waits(self):
+        self.task.pickup_echoes()
+        self.assertEqual(4, self.task.yolo_find_echo.call_count)
+        self.assertEqual([call('a', down_time=0.05)] * 3, self.task.send_key.call_args_list)
+        self.assertEqual([call(0.4)] * 4, self.task.sleep.call_args_list)
+        self.task.center_camera.assert_not_called()
+        self.task.localizer.reset.assert_called_once()
+
+    def test_pickup_cancellation_resets_tracker_and_releases_inputs(self):
+        self.task.yolo_find_echo.side_effect = TaskDisabledException()
+        with self.assertRaises(TaskDisabledException):
+            self.task.pickup_echoes()
+        self.task.send_key_up.assert_any_call('w')
+        self.task.localizer.reset.assert_called_once()
+
     def test_queue_teleports_switches_maps_and_runs_in_order(self):
         first = EchoRoute('first', Path('tests/images/path.png'), RoutePoint(10, 10),
                           (RoutePoint(30, 30),), (0, 0, 1920, 1080))
@@ -272,10 +317,11 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.send_key_up.assert_any_call('d')
 
     def test_multiple_echoes_are_collected_until_search_finds_no_more(self):
-        self.task.pick_echo.side_effect = [True, True, False]
+        self.task.pick_echo.side_effect = [True, True, False, False, False, False]
         self.task.pickup_echoes()
         self.assertEqual([call(True), call(True)], self.task.incr_drop.call_args_list)
-        self.task.yolo_find_echo.assert_called_once()
+        self.assertEqual(4, self.task.yolo_find_echo.call_count)
+        self.assertTrue(all(not call.kwargs['turn'] for call in self.task.yolo_find_echo.call_args_list))
         self.task.send_key_up.assert_any_call('w')
 
     def test_combat_timeout_is_enforced_outside_base_exception_handler(self):

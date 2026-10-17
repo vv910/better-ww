@@ -26,6 +26,28 @@ class Test3CRouteImages(TaskTestCase):
         self.assertAlmostEqual(1207, result.x, delta=5)
         self.assertAlmostEqual(469, result.y, delta=5)
 
+    def test_real_minimap_visual_motion_bridges_a_temporary_absolute_failure(self):
+        self.set_image('tests/images/mini_map.png')
+        original = self.task.get_box_by_name('box_minimap').crop_frame(self.task.frame)
+        for scale in (1, 4 / 3, 2):
+            with self.subTest(scale=scale), patch('src.pathing.MapLocalizer.time.monotonic') as clock:
+                clock.return_value = 0
+                minimap = cv2.resize(original, None, fx=scale, fy=scale)
+                localizer = MapLocalizer(cv2.imread('tests/images/path.png'), (538, 130, 1670, 972))
+                start = localizer.locate(minimap)
+                self.assertIsNotNone(start)
+                transform = localizer.tracker.transform.copy()
+                height, width = minimap.shape[:2]
+                moved = cv2.warpAffine(minimap, np.float32([[1, 0, -4], [0, 1, 2]]), (width, height))
+                expected = transform @ np.array([width // 2 + 4, height // 2 - 2, 1])
+                clock.return_value = 0.6
+                with patch.object(localizer, '_locate_absolute', return_value=None):
+                    result = localizer.locate(moved)
+                self.assertIsNotNone(result, localizer.last_diagnostic)
+                self.assertEqual('flow', result.source)
+                np.testing.assert_allclose(result.xy, expected[:2], atol=1)
+                self.assertEqual(0, localizer.tracker.anchor_at)
+
     def test_route_template_warmup_uses_existing_features_before_moving(self):
         self.set_image('tests/images/mini_map.png')
         with patch.object(self.task, 'load_chars'), \

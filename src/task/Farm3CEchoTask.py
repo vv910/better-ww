@@ -46,6 +46,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._combat_deadline = None
         self._heading_detector = None
         self._steering = None
+        self._camera_aligned = False
         self._route_keys = ()
         self._last_good_minimap = None
         self._last_route_position = None
@@ -213,9 +214,19 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
     def stop_route_movement(self):
         self._route_keys = ()
         self._steering = None
+        self._camera_aligned = False
         for key in ('w', 'a', 's', 'd', 'space'):
             self.send_key_up(key)
         self.mouse_up(key='right')
+
+    def pause_route_movement(self):
+        # A brief visual pause releases input without forgetting the calibrated camera.
+        steering = self._steering
+        aligned = self._camera_aligned
+        self.stop_route_movement()
+        self._camera_aligned = aligned
+        if steering is not None:
+            self._steering = RouteSteering(steering.camera_heading)
 
     def set_route_keys(self, keys):
         previous = self._route_keys
@@ -233,6 +244,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         return self._in_combat or self.has_health_bar()
 
     def follow_point(self, point, keep_moving=False):
+        self.info_set('3C Stage', 'Moving / 移动')
         deadline = time.monotonic() + point.timeout
         lost_since = None
         progress_at = time.monotonic()
@@ -258,18 +270,29 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     progress_at = time.monotonic()
                     best_distance = math.inf
                     lost_since = None
+                    self.info_set('3C Stage', 'Moving / 移动')
                     continue
                 if cycle_start >= enemy_check_at:
                     enemy_check_at = cycle_start + 0.4
+                if not self._camera_aligned:
+                    self.center_camera()
+                    self.next_frame()
+                    self._camera_aligned = True
+                    if self.route_enemy_visible():
+                        continue
                 position = self.locate()
                 if position is None:
-                    self.stop_route_movement()
+                    self.pause_route_movement()
                     if lost_since is None:
                         lost_since = time.monotonic()
                     if time.monotonic() - lost_since >= 5:
                         self.save_localization_diagnostic('lost')
                         raise RuntimeError('Minimap position lost for 5 seconds; route stopped')
                     self.sleep(0.1)
+                    continue
+                if lost_since is not None and time.monotonic() - lost_since > 1:
+                    self.stop_route_movement()  # A long pause can let automatic camera recentering finish.
+                    lost_since = None
                     continue
                 lost_since = None
                 distance = point.distance_to(position.xy)
@@ -288,11 +311,6 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     progress_at = time.monotonic()
                     best_distance = math.inf
                     continue
-                if self._steering is None:
-                    self.center_camera()
-                    self.next_frame()
-                    if self.route_enemy_visible():
-                        continue
                 heading = self.confirm_route_heading()
                 if heading is None:  # Combat started while waiting for a clear arrow frame.
                     continue
@@ -323,10 +341,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             result = self.read_route_heading()
             if result is not None and result.reliable:
                 return result.angle
-            steering = self._steering
-            self.stop_route_movement()
-            if steering is not None:
-                self._steering = RouteSteering(steering.camera_heading)
+            self.pause_route_movement()
             self.log_debug(f'3C heading retry {attempt + 1}/3: {result}')
             if attempt < 2:
                 self.sleep(0.2)
@@ -364,6 +379,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         return True
 
     def fight_and_pickup(self):
+        self.info_set('3C Stage', 'Combat / 战斗')
         self.stop_route_movement()
         self._combat_deadline = time.monotonic() + self.combat_timeout
         try:
@@ -377,25 +393,52 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
 
     def pickup_echoes(self):
         deadline = time.monotonic() + self.pickup_timeout
-        # Several enemies can leave several Echoes. Search again after every pickup.
+        empty_views = 0
+        needs_alignment = True
+        self.info_set('3C Stage', 'Searching Echoes / 搜索声骸')
+        self.stop_route_movement()
         try:
             while time.monotonic() < deadline:
+                self.next_frame()
                 if self.pick_echo():
                     self.incr_drop(True)
+                    empty_views = 0
+                    needs_alignment = True
                     self.sleep(0.5)
                     continue
-                if self.in_combat():
+                if self.route_enemy_visible():
                     return
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     return
-                dropped, _ = self.yolo_find_echo(turn=True, use_color=False, time_out=min(5, remaining))
-                if not dropped:
+                if needs_alignment:
+                    if remaining < 0.5:
+                        return
+                    self.click(0.5, 0.5, key='middle', down_time=0.02)
+                    self.sleep(0.4)
+                    self.next_frame()
+                    needs_alignment = False
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
                     return
+                self.info_set('Echo Search View', empty_views + 1)
+                # The shared turn=True helper waits >1s on every view. Sweep explicitly here.
+                dropped, _ = self.yolo_find_echo(turn=False, use_color=False, time_out=min(5, remaining))
+                if not dropped:
+                    empty_views += 1
+                    if empty_views >= 4 or deadline - time.monotonic() < 0.6:
+                        return
+                    self.send_key('a', down_time=0.05)
+                    needs_alignment = True
+                    continue
                 self.incr_drop(True)
+                empty_views = 0
+                needs_alignment = True
                 self.sleep(0.5)
         finally:
             self.stop_route_movement()
+            # Combat/pickup can move the player and rotate the camera. Re-anchor before resuming.
+            self.localizer.reset()
 
 
 class Record3CEchoRouteTask(BigMap):
