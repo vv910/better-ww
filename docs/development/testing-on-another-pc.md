@@ -71,7 +71,7 @@ git submodule update --init --recursive
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install pytest polib
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestMapFeatureRegions tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestEcho
 ```

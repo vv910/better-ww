@@ -22,6 +22,8 @@
 
 定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。首次和战后必须通过 SIFT；移动中用 LK 光流跟踪地形，并约每 0.5 秒重新尝试 SIFT 校正。光流最多衔接最后一次绝对定位后的 3 秒、60 个录制地图像素，要求双向一致、至少 12 个内点且分布覆盖小地图；不会用按键时长推算位置。匹配冲突、图像突变或超出预算时停止接管。朝向使用小地图中心的金色箭头轮廓，统一尺寸后搜索角度与大小；同时检查匹配分数和其他方向的分数差，避免把圆形图标当作箭头。两种位置识别都失败时松键，连续 5 秒无法定位则退出；朝向不可信时取新帧重试，连续 3 帧失败则保存小地图截图并退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
 
+参考特征先从 `map_region` 裁图提取，再把关键点偏移回截图坐标；传送的大地图投影也使用同样处理。SIFT 的特征数限额在遮罩过滤之前生效，仅传入整图遮罩会让区域外 UI 和高纹理内容挤占地图特征额度。先裁图保证 8000 个参考特征的预算只用于有效地图，不调整几何内点、比例、空间跨度、缩放、旋转和跳变门槛。有效区域外的界面变化不会改变参考特征，路线 JSON 坐标及配套图片格式保持兼容。
+
 移动使用持续按键：默认每 0.2 秒更新位置和方向，只有方向变化才切换按键，保留相邻方向的共同按键。普通 `walk` 点之间保持移动；抵达 `combat`/`pickup` 点、定位丢失、朝向不可靠或遇敌时松键。相机在出发、战斗后或较长暂停恢复时校准一次；1 秒以内的定位暂停保留已校准的相机方向，恢复时不再重复等待约 1.2 秒。8 方向选择带迟滞，并在按键稳定后用角色箭头估算相机朝向，适应缓慢的自动回正；游戏中快速自动转镜、角色受击转身仍需实测。
 
 任务信息中的 `3C Stage` 显示当前处于移动、战斗或搜索声骸。战后或空战斗点仍搜索四个方向，但每次相机转向只等待 0.4 秒再识别，避免空场扫描中的四次长等待；找到声骸后的接近和吸收仍沿用原有逻辑及剩余时间预算。搜索结束会清空旧定位，继续移动前重新匹配地图。
@@ -121,12 +123,14 @@ routes/3c/route-c.json
 
 定位失败诊断会记录小地图特征数、有效匹配数、几何内点、缩放、旋转和位置跳变。失败原因区分 `too_few_minimap_features`、`too_few_matches`、`minimap_not_north_up`、`scale_out_of_range`、`position_jump` 和 `position_outside_recorded_map` 等；局部与全图两次搜索各保留一次诊断。起点检查或连续 5 秒失配时自动保存当前画面、小地图和最后一次成功匹配的小地图，文件以 `3c-location-start-` 或 `3c-location-lost-` 开头。这些诊断不改变原来的匹配门槛和停止规则，不能仅凭“位置丢失”日志判断具体原因。
 
-最新测试日志确认第一点已完成并进入第二点，随后因只有 3 个几何内点而退出；短暂失配还会使旧逻辑重复重置相机。对此加入保留相机校准的暂停恢复、有预算的地形光流和较短的四向搜索等待，共通过 67 项定位/导航/任务逻辑测试和 10 项截图测试。覆盖相对跟踪的累计时间/距离限制、冲突时停止、战后重定位、短暂停顿不重置视角，以及真实小地图素材在三种尺寸下的平移跟踪。这不能替代测试电脑的完整路线验收；该路线的持续 SIFT 失配仍需配套地图原图和失配截图进一步复现。
+连续移动修复通过 67 项定位/导航/任务逻辑测试和 10 项截图测试。覆盖相对跟踪的累计时间/距离限制、冲突时停止、战后重定位、短暂停顿不重置视角，以及真实小地图素材在三种尺寸下的平移跟踪。
+
+收到配套地图后，复现了有效区域特征被整图限额挤占的问题：原始图的有效区域在整图遮罩方式下只保留 2687 个特征；先裁有效区域可使用完整的 8000 个预算，同一张失败小地图由 4 个几何内点提高到 26 个，内点比例约 0.81。原图中账号 UI 已移除后纳入回归素材；去除该 UI 后旧实现仍只有 4 个内点。新增测试包含区域外强纹理干扰、不依赖区域外像素的特征提取、非零坐标偏移、无效区域拒绝，另用已有海岛地图三个位置和三种缩放作独立检验，并验证用户图的缩放、对比度、JPEG 压缩与错误地图交叉拒绝。最终共通过 74 项逻辑测试、13 项截图测试；这提供跨样例的回归证据，不代表所有游戏区域和动态遮挡条件都已实机验收。
 
 运行路线、恢复和 4C 逻辑测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestMapFeatureRegions tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：
@@ -147,5 +151,7 @@ routes/3c/route-c.json
 借鉴 [BetterGI 路径执行器](https://github.com/babalae/better-genshin-impact/tree/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoPathing) 的有序路径点、视觉闭环、有限脱困和动作分派思路；没有复制原神路线或素材。[脚本仓库](https://github.com/babalae/bettergi-scripts-list/tree/81bc0f00b41add3beb3e9ede9f88aac1714d0e5a) 只作为格式参考。
 
 持续移动参考 `PathExecutor.MoveTo()` 的按住移动键、限频定位/纠偏和退出释放；队列传送参考 `HandleTeleportWaypoint()` 与 [TpTask](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs) 的传送入口和传送后重定位。鸣潮实现使用自己的图鉴界面与录制地图，不兼容 BetterGI 的世界坐标和传送点数据库。
+
+定位修复另复核 BetterGI 的 [SIFT 地图实现](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/Common/Map/Maps/Base/SceneBaseMap.cs)、[模板地图实现](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/Common/Map/Maps/Base/SceneBaseMapByTemplateMatch.cs) 与 [NavigationInstance](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/AutoPathing/NavigationInstance.cs)。其现有模板模式采用多尺度、遮罩、局部搜索和置信度检查；并非仅有 SIFT 可选。本次提交修复鸣潮现有 SIFT 的有效区域提取，不引入原神模板/世界地图或另一套未经实机验证的匹配模式。特征限额先于遮罩的执行顺序可见 [OpenCV 官方 SIFT 源码](https://github.com/opencv/opencv/blob/4.x/modules/features2d/src/sift.dispatch.cpp)：`retainBest` 在 `runByPixelsMask` 之前。
 
 [REA](https://github.com/morluto/rea/tree/500e32399a3bc827e17fb4adaa97db3bc0df29b5) 是可选的源码研究工具，运行 3C 任务不依赖它。开发机已配置 `rea-agents` 6.4.0 MCP 和配套 skill；这些电脑级配置不会随 Git 同步。本次检查使用源码和本地离线测试，未通过 REA 执行游戏目标操作，也未安装 Hopper/Ghidra/IDA 等分析引擎。

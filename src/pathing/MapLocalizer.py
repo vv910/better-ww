@@ -28,11 +28,8 @@ class MapLocalizer:
         self.gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
         self.height, self.width = self.gray.shape
         self.region = region or (0, 0, self.width, self.height)
-        mask = np.zeros_like(self.gray)
-        x1, y1, x2, y2 = self.region
-        mask[y1:y2, x1:x2] = 255
         self.sift = cv2.SIFT_create(nfeatures=8000, contrastThreshold=0.02)
-        self.keypoints, self.descriptors = self.sift.detectAndCompute(self.gray, mask)
+        self.keypoints, self.descriptors = self._region_features(self.gray, self.region)
         if self.descriptors is None or len(self.keypoints) < min_inliers:
             raise ValueError('Route map has too few visible terrain features')
         self.locations = np.float32([keypoint.pt for keypoint in self.keypoints])
@@ -41,6 +38,19 @@ class MapLocalizer:
         self.max_jump = max_jump
         self.tracker = MinimapTracker()
         self.reset()
+
+    def _region_features(self, gray, region):
+        # SIFT applies its feature quota BEFORE its mask. Detect on the ROI itself so
+        # bright UI/out-of-route terrain cannot consume the budget, then restore coordinates.
+        left, top, right, bottom = region
+        height, width = gray.shape
+        if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+            raise ValueError('Map feature region must be a non-empty rectangle inside the image')
+        keypoints, descriptors = self.sift.detectAndCompute(gray[top:bottom, left:right], None)
+        for keypoint in keypoints:
+            x, y = keypoint.pt
+            keypoint.pt = x + left, y + top
+        return keypoints, descriptors
 
     def reset(self):
         self.previous = None
@@ -147,10 +157,8 @@ class MapLocalizer:
         """Project a recorded beacon into the currently opened map, without a world atlas."""
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         self.last_diagnostic = {'mode': 'map_projection', 'attempts': []}
-        mask = np.zeros_like(gray)
         left, top, right, bottom = screen_region
-        mask[top:bottom, left:right] = 255
-        keypoints, descriptors = self.sift.detectAndCompute(gray, mask)
+        keypoints, descriptors = self._region_features(gray, screen_region)
         if descriptors is None:
             return self._reject('too_few_map_features')
         matched = self._transform(keypoints, descriptors, np.arange(len(self.locations)),

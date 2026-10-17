@@ -26,6 +26,43 @@ class Test3CRouteImages(TaskTestCase):
         self.assertAlmostEqual(1207, result.x, delta=5)
         self.assertAlmostEqual(469, result.y, delta=5)
 
+    def test_low_contrast_user_minimap_reacquires_with_unchanged_geometry_thresholds(self):
+        # Full-size reference preserves the original feature-budget failure; account UI is removed.
+        image = cv2.imread('tests/images/3c-terrain-map.png')
+        original = cv2.imread('tests/images/3c-terrain-minimap.png')
+        localizer = MapLocalizer(image, (717, 173, 2227, 1296))
+        for scale in (0.75, 1, 1.5):
+            with self.subTest(scale=scale):
+                localizer.reset()
+                minimap = cv2.resize(original, None, fx=scale, fy=scale)
+                result = localizer.locate(minimap)
+                self.assertIsNotNone(result, localizer.last_diagnostic)
+                self.assertEqual('sift', result.source)
+                self.assertGreaterEqual(result.inliers, 6)
+                # Approximate manual alignment from the beacon/star and nearby terrain.
+                np.testing.assert_allclose(result.xy, (1321, 692), atol=8)
+
+    def test_user_minimap_handles_contrast_and_jpeg_variation(self):
+        original = cv2.imread('tests/images/3c-terrain-minimap.png')
+        changed = np.clip(original.astype(np.float32) * 0.8 + 20, 0, 255).astype(np.uint8)
+        encoded = cv2.imencode('.jpg', original, [cv2.IMWRITE_JPEG_QUALITY, 65])[1]
+        compressed = cv2.imdecode(encoded, cv2.IMREAD_COLOR)
+        localizer = MapLocalizer(cv2.imread('tests/images/3c-terrain-map.png'), (717, 173, 2227, 1296))
+        for minimap in (changed, compressed):
+            with self.subTest():
+                localizer.reset()
+                result = localizer.locate(minimap)
+                self.assertIsNotNone(result, localizer.last_diagnostic)
+                np.testing.assert_allclose(result.xy, (1321, 692), atol=8)
+
+    def test_user_and_existing_map_pairs_reject_each_others_minimaps(self):
+        new_map = cv2.imread('tests/images/3c-terrain-map.png')
+        new_mini = cv2.imread('tests/images/3c-terrain-minimap.png')
+        old_mini = cv2.imread('tests/images/mini_map.png')[30:211, 35:218]
+        self.assertIsNone(MapLocalizer(new_map, (717, 173, 2227, 1296)).locate(old_mini))
+        self.assertIsNone(MapLocalizer(cv2.imread('tests/images/path.png'),
+                                       (538, 130, 1670, 972)).locate(new_mini))
+
     def test_real_minimap_visual_motion_bridges_a_temporary_absolute_failure(self):
         self.set_image('tests/images/mini_map.png')
         original = self.task.get_box_by_name('box_minimap').crop_frame(self.task.frame)
