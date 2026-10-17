@@ -87,7 +87,7 @@ class Test3CRouteImages(TaskTestCase):
 
     def test_route_template_warmup_uses_existing_features_before_moving(self):
         self.set_image('tests/images/mini_map.png')
-        with patch.object(self.task, 'load_chars'), \
+        with patch.object(self.task, 'load_chars'), patch.object(self.task, 'prepare_fall_protection'), \
                 patch('src.task.Farm3CEchoTask.og.my_app.yolo_detect') as detect:
             self.task.prepare_route_runtime()
         detect.assert_called_once()

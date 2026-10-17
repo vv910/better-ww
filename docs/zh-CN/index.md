@@ -17,8 +17,8 @@
 <!-- Badges -->
 <div class="badge-row">
   <img src="https://img.shields.io/badge/platform-Windows-blue" alt="平台" />
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/v/release/ok-oldking/ok-wuthering-waves" alt="GitHub release" /></a>
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/downloads/ok-oldking/ok-wuthering-waves/total" alt="总下载量" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/v/release/vv910/better-ww" alt="GitHub release" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/downloads/vv910/better-ww/total" alt="总下载量" /></a>
   <a href="https://discord.gg/vVyCatEBgA"><img src="https://img.shields.io/discord/296598043787132928?color=5865f2&amp;label=%20Discord" alt="Discord" /></a>
 </div>
 
@@ -45,16 +45,20 @@
 
 ## 🚀 快速开始
 
-1.  **下载安装包**：从下方的“下载渠道”中选择一个，下载最新的 `ok-ww-win32-China-setup.exe` 安装文件。
-2.  **安装程序**：双击 `ok-ww-win32-China-setup.exe` 文件，并按照安装向导的提示完成安装。
-3.  **运行程序**：安装完成后，从桌面快捷方式或开始菜单启动 `ok-ww` 即可。
+1.  **下载**：从[本 fork 的 Releases](https://github.com/vv910/better-ww/releases)下载最新的 `BetterWW-v版本号-windows-x64.zip`。
+2.  **解压**：将 ZIP 完整解压到可写入的文件夹。
+3.  **运行**：启动 `BetterWW.exe`。便携版已包含运行环境，无需单独安装 Python。
 
 ## 📥 下载渠道
 
-*   **[GitHub](https://github.com/ok-oldking/ok-wuthering-waves/releases)**: 官方发布页，全球访问速度快。（**请下载 `setup.exe` 安装包，而不是 `Source Code` 源码压缩包**）
-*   **[Mirror酱](https://mirrorchyan.com/zh/projects?rid=okww&source=ok-ww-readme)**: 国内镜像，下载可能需要购买其平台的 CD-KEY。
-*   **[百度网盘](https://pan.baidu.com/s/102Mh1djq2B1T-cIJhct9Gg?pwd=okww)**: 免费下载
-*   **[夸克网盘](https://pan.quark.cn/s/24433f3febc1)**: 免费下载
+*   **[vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)**：下载 `BetterWW-v版本号-windows-x64.zip` 并完整解压。GitHub 的 `Source code` 源码压缩包不是可运行的便携版。
+*   **上游项目的其他下载渠道**（提供的是上游版本）：[Mirror酱](https://mirrorchyan.com/zh/projects?rid=okww&source=ok-ww-readme)（下载可能需要购买其平台的 CD-KEY）、[百度网盘](https://pan.baidu.com/s/102Mh1djq2B1T-cIJhct9Gg?pwd=okww)、[夸克网盘](https://pan.quark.cn/s/24433f3febc1)。
+
+## 3C 声骸路线刷取
+
+在世界地图上用菱形标记起点、用星标记可通行路线。路线 JSON 必须与对应的 `.map.png` 放在一起；本 fork 不附带预制路线。地面移动时会将视角转回角色身后，离地时会尝试开启滑翔翼，但无法保证避免所有坠落。
+
+请参阅[声骸刷取指南](../development/echo-farming.md)、[便携版说明](../development/releases.md)和[开发／跨电脑测试指南](../development/testing-on-another-pc.md)。
 
 ## ✨ 主要功能
 <img width="1774" height="1182" alt="QQ_1762960844719" src="https://github.com/user-attachments/assets/c5eb0145-0d45-44f9-85b3-184de0ef20bf" />

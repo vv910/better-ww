@@ -1417,3 +1417,15 @@ msgid ""
 msgstr ""
 "Solo incluye estrellas dentro de este radio desde el inicio, en píxeles a "
 "1080p. Revise la vista previa guardada antes de farmear."
+
+msgid "Keep Camera Behind Player"
+msgstr "Mantener la cámara detrás del personaje"
+
+msgid "Auto Glide when Airborne"
+msgstr "Planear automáticamente al estar en el aire"
+
+msgid "Recenter the camera while walking and use forward movement after turns."
+msgstr "Vuelve a centrar la cámara al caminar y avanza después de girar."
+
+msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
+msgstr "Selecciona el levitador antes de salir. Abre el planeador una vez al estar en el aire; no pulses Saltar manualmente durante la ruta."

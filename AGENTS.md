@@ -13,3 +13,4 @@
 - Use `run_test.py` for image-based task tests so OCR warmup is controlled.
 - Run each module inheriting `TaskTestCase` in a separate process; its global capture backend is not reusable after teardown.
 - Route formats and runtime limits are documented in `docs/development/echo-farming.md`; setup on another Windows PC is in `docs/development/testing-on-another-pc.md`.
+- Portable packaging and release checks are in `docs/development/releases.md`. The builder stages Git-tracked files only; stage new runtime modules before building.

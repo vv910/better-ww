@@ -25,6 +25,7 @@ env:
 jobs:
   validate:
     name: 1 · Validate
+    if: github.repository == 'ok-oldking/ok-wuthering-waves'
     runs-on: windows-latest
 
     steps:

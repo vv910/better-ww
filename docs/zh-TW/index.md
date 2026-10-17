@@ -15,8 +15,8 @@
 <!-- Badges -->
 <div class="badge-row">
   <img src="https://img.shields.io/badge/platform-Windows-blue" alt="平台" />
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/v/release/ok-oldking/ok-wuthering-waves" alt="GitHub release" /></a>
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/downloads/ok-oldking/ok-wuthering-waves/total" alt="總下載量" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/v/release/vv910/better-ww" alt="GitHub release" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/downloads/vv910/better-ww/total" alt="總下載量" /></a>
   <a href="https://discord.gg/vVyCatEBgA"><img src="https://img.shields.io/discord/296598043787132928?color=5865f2&amp;label=%20Discord" alt="Discord" /></a>
 </div>
 
@@ -43,13 +43,19 @@
 
 ## 🚀 快速開始
 
-1.  **下載安裝檔**：從下方的「下載管道」下載最新的 `ok-ww-win32-Global-setup.exe` 安裝檔。
-2.  **安裝程式**：雙擊 `ok-ww-win32-Global-setup.exe` 檔案，並依照安裝精靈的指示完成安裝。
-3.  **執行程式**：安裝完成後，從桌面捷徑或開始功能表啟動 `ok-ww` 即可。
+1.  **下載**：從[本 fork 的 Releases](https://github.com/vv910/better-ww/releases)下載最新的 `BetterWW-v版本號-windows-x64.zip`。
+2.  **解壓縮**：將 ZIP 完整解壓縮至可寫入的資料夾。
+3.  **執行**：啟動 `BetterWW.exe`。便攜版已包含執行環境，不需另外安裝 Python。
 
 ## 📥 下載管道
 
-*   **[GitHub](https://github.com/ok-oldking/ok-wuthering-waves/releases)**: 官方發布頁，全球存取速度快。（**請下載 `setup.exe` 安裝檔，而不是 `Source Code` 原始碼壓縮檔**）
+*   **[vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)**：下載 `BetterWW-v版本號-windows-x64.zip` 並完整解壓縮。GitHub 的 `Source code` 壓縮檔不是可執行的便攜版。
+
+## 3C 聲骸路線刷取
+
+在世界地圖上以菱形標記起點、以星形標記可通行路線。路線 JSON 必須與對應的 `.map.png` 放在一起；本 fork 不附預製路線。地面移動時會將視角轉回角色身後，離地時會嘗試開啟滑翔翼，但無法保證避免所有墜落。
+
+請參閱[聲骸刷取指南](../development/echo-farming.md)、[便攜版指南](../development/releases.md)及[開發／跨電腦測試指南](../development/testing-on-another-pc.md)。
 
 ## ✨ 主要功能
 <img width="1774" height="1182" alt="QQ_1762960844719" src="https://github.com/user-attachments/assets/c5eb0145-0d45-44f9-85b3-184de0ef20bf" />

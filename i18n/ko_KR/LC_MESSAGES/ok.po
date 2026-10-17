@@ -1482,3 +1482,15 @@ msgid ""
 "Only include stars within this radius of the start, in 1080p pixels. Check "
 "the saved preview before farming."
 msgstr "시작점에서 이 반경 이내의 별 표식만 포함합니다(1080p 환산 픽셀). 파밍 전에 저장된 미리보기를 확인하세요."
+
+msgid "Keep Camera Behind Player"
+msgstr "카메라를 플레이어 뒤에 유지"
+
+msgid "Auto Glide when Airborne"
+msgstr "공중에서 자동 활공"
+
+msgid "Recenter the camera while walking and use forward movement after turns."
+msgstr "이동 중 카메라를 중앙으로 맞추고 회전 후에는 전진합니다."
+
+msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
+msgstr "출발 전에 레비테이터를 선택하세요. 공중에 뜨면 활공을 한 번 시작하며, 경로 실행 중에는 점프를 직접 누르지 마세요."

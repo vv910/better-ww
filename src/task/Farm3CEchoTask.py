@@ -6,7 +6,9 @@ from pathlib import Path
 import cv2
 from ok import Box, get_path_relative_to_exe, og
 
+from src import text_white_color
 from src.pathing.EchoRoute import EchoRoute, number, read_map_image, route_files, target_angle
+from src.pathing.FallGuard import FallGuard
 from src.pathing.MapLocalizer import MapLocalizer
 from src.pathing.MinimapHeading import MinimapHeading
 from src.pathing.RouteMarkers import RouteMarkerDetector
@@ -20,6 +22,10 @@ ROUTE_DESCRIPTION = 'Follow an ordered local route, fight enemies and absorb Ech
 RECORD_DESCRIPTION = 'Start on the map with a diamond at the start and stars along the route.'
 
 
+class _AirborneDuringPickup(Exception):
+    pass
+
+
 class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
     owns_switch_healer_config = True
 
@@ -31,6 +37,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             'Route File': 'routes/3c/local-route.json',
             'Route Queue': '',
             'Navigation Interval': 0.2,
+            'Keep Camera Behind Player': True,
+            'Auto Glide when Airborne': True,
             'Use Liberation': True,
             'Switch to Healer before and after Combat': True,
             'Combat Timeout': 180,
@@ -40,6 +48,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             'Route File': 'Local JSON route saved by Record 3C Route. Start near its diamond marker.',
             'Route Queue': 'Optional: one route JSON per line, executed in order. Later routes require teleport metadata.',
             'Navigation Interval': 'Seconds between navigation updates. Lower values use more CPU. Range: 0.1 to 0.5.',
+            'Keep Camera Behind Player': 'Recenter the camera while walking and use forward movement after turns.',
+            'Auto Glide when Airborne': 'Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running.',
             'Combat Timeout': 'Maximum seconds for one battle before stopping the route.',
             'Pickup Timeout': 'Maximum seconds to search for Echoes after each battle.',
         })
@@ -47,6 +57,9 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._heading_detector = None
         self._steering = None
         self._camera_aligned = False
+        self._camera_recenter_at = 0
+        self._fall_protection_ready = False
+        self._fall_guard = FallGuard()
         self._route_keys = ()
         self._last_good_minimap = None
         self._last_route_position = None
@@ -94,6 +107,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 if route.teleport is not None:
                     self.teleport_to_route(route)
                 self.localizer.reset()
+                self._fall_guard.reset()
                 position = self.wait_until(self.locate, time_out=5, raise_if_not_found=False)
                 if position is None or route.start.distance_to(position.xy) > route.start.tolerance:
                     self.save_localization_diagnostic('start', expected=route.start)
@@ -112,14 +126,51 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.log_info('Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候')
         for name in ('arrow', 'box_minimap', 'char_1_text', 'char_2_text', 'char_3_text',
                      *self.get_target_names(), 'pick_up_f_hcenter_vcenter',
-                     'map_way_point', 'map_way_point_big', 'gray_teleport'):
+                     'map_way_point', 'map_way_point_big', 'gray_teleport',
+                     'edge_levitator', 'wheel_levitator'):
             self.get_feature_by_name(name)
             self.sleep(0.01)  # Yield to cancellation while templates load, before movement starts.
         self._heading_detector = MinimapHeading(self.get_feature_by_name('arrow').mat)
         self.load_chars()
+        self.prepare_fall_protection()
         # Compile and run the first inference while stationary, not during the first pickup.
         og.my_app.yolo_detect(self.frame, threshold=0.6, label=0)
         self.log_info('3C vision ready / 3C识别准备完成')
+
+    def prepare_fall_protection(self):
+        self._fall_protection_ready = False
+        self._fall_guard.reset()
+        if not self.config.get('Auto Glide when Airborne', True):
+            return
+        self.log_info('Preparing Levitator for fall protection / 正在准备控物工具用于离地保护')
+        if not self.ensure_levitator(force=True):
+            raise RuntimeError('Cannot select Levitator for fall protection / 无法选择控物，请检查工具轮盘')
+        self.next_frame()
+        brightness = self.calculate_color_percentage(text_white_color, self.get_box_by_name('edge_levitator'))
+        if not self.in_team()[0] or brightness < 0.1:
+            raise RuntimeError('Start fall protection while standing on the ground / 请站在地面上启动离地保护')
+        self._fall_protection_ready = True
+
+    def observe_route_airborne(self):
+        if not self._fall_protection_ready:
+            return False
+        airborne = None
+        if self.in_team()[0]:
+            # Same established airborne cue as BaseChar.flying(): Levitator is disabled in air.
+            brightness = self.calculate_color_percentage(text_white_color, self.get_box_by_name('edge_levitator'))
+            airborne = bool(brightness < 0.1)
+        if self._fall_guard.observe(airborne, time.monotonic()):
+            self.log_info('Airborne: deploy glider once / 已确认离地，打开滑翔翼')
+            self.send_key(self.key_config.get('Jump Key', 'space'), down_time=0.05)
+            self.info_incr('Glider Deployments')
+        active = self._fall_guard.active
+        if active:
+            self.info_set('3C Stage', 'Airborne Protection / 离地保护')
+        return active
+
+    def check_pickup_airborne(self):
+        if self.observe_route_airborne():
+            raise _AirborneDuringPickup()
 
     def execute_route(self, route):
         self.info_set('Route Points', len(route.waypoints))
@@ -259,7 +310,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             while time.monotonic() < deadline:
                 cycle_start = time.monotonic()
                 self.next_frame()
-                if cycle_start >= enemy_check_at and self.route_enemy_visible():
+                airborne = self.observe_route_airborne()
+                if not airborne and cycle_start >= enemy_check_at and self.route_enemy_visible():
                     self.stop_route_movement()
                     battles += 1
                     if battles > 5:
@@ -274,12 +326,17 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     continue
                 if cycle_start >= enemy_check_at:
                     enemy_check_at = cycle_start + 0.4
-                if not self._camera_aligned:
+                if not airborne and not self._camera_aligned:
                     self.center_camera()
                     self.next_frame()
                     self._camera_aligned = True
+                    self._camera_recenter_at = time.monotonic() + 1.5
                     if self.route_enemy_visible():
                         continue
+                if airborne and not self._camera_aligned:
+                    self.pause_route_movement()
+                    self.sleep(0.1)
+                    continue
                 position = self.locate()
                 if position is None:
                     self.pause_route_movement()
@@ -298,12 +355,16 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 distance = point.distance_to(position.xy)
                 self.info_set('Distance to Route Point', round(distance, 1))
                 if distance <= point.tolerance:
-                    reached = True
-                    return
+                    if not airborne:
+                        reached = True
+                        return
+                    self.pause_route_movement()
+                    self.sleep(0.1)
+                    continue
                 if distance < best_distance - 2:
                     best_distance = distance
                     progress_at = time.monotonic()
-                elif time.monotonic() - progress_at >= 8:
+                elif not airborne and time.monotonic() - progress_at >= 8:
                     if recoveries >= 2:
                         raise RuntimeError('Route blocked after two recovery attempts')
                     self.recover_stuck(recoveries)
@@ -314,6 +375,9 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 heading = self.confirm_route_heading()
                 if heading is None:  # Combat started while waiting for a clear arrow frame.
                     continue
+                heading = self.maintain_route_camera(heading, time.monotonic()) if not airborne else heading
+                if heading is None:
+                    continue
                 if self._steering is None:
                     self._steering = RouteSteering(heading)
                 keys = self._steering.update(target_angle(position.xy, point), heading, time.monotonic())
@@ -321,13 +385,38 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 elapsed = time.monotonic() - cycle_start
                 samples += 1
                 vision_seconds += elapsed
-                self.sleep(max(0.01, self.navigation_interval - elapsed))
+                interval = min(self.navigation_interval, 0.1) if airborne else self.navigation_interval
+                self.sleep(max(0.01, interval - elapsed))
             raise RuntimeError('Route waypoint timed out')
         finally:
             if not (reached and keep_moving):
                 self.stop_route_movement()
             if samples:
                 self.log_debug(f'3C navigation: cycles={samples}, average_cycle_ms={vision_seconds / samples * 1000:.1f}')
+
+    def maintain_route_camera(self, heading, now):
+        if (not self.config.get('Keep Camera Behind Player', True) or not self._route_keys
+                or now < self._camera_recenter_at):
+            return heading
+        turning = self._route_keys != ('w',)
+        if turning:
+            # Sideways input must be released before camera coordinates change.
+            self.set_route_keys(())
+        self.click(0.5, 0.5, key='middle', down_time=0.02)
+        self._camera_recenter_at = now + 1.5
+        if turning:
+            self.sleep(0.15)
+            self.next_frame()
+            if self.observe_route_airborne():
+                return None
+            if self.route_enemy_visible():
+                return None
+            heading = self.confirm_route_heading()
+            if heading is None:
+                return None
+        # Middle click puts the view behind the player. Rebase steering in the new camera frame.
+        self._steering = RouteSteering(heading)
+        return heading
 
     def read_route_heading(self):
         if self._heading_detector is None:
@@ -346,6 +435,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             if attempt < 2:
                 self.sleep(0.2)
                 self.next_frame()
+                if self.observe_route_airborne():
+                    return None
                 if self.route_enemy_visible():
                     return None
         self.save_heading_diagnostic(result)
@@ -400,6 +491,10 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         try:
             while time.monotonic() < deadline:
                 self.next_frame()
+                if self.observe_route_airborne():
+                    self.pause_route_movement()
+                    self.sleep(0.1)
+                    continue
                 if self.pick_echo():
                     self.incr_drop(True)
                     empty_views = 0
@@ -423,7 +518,13 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     return
                 self.info_set('Echo Search View', empty_views + 1)
                 # The shared turn=True helper waits >1s on every view. Sweep explicitly here.
-                dropped, _ = self.yolo_find_echo(turn=False, use_color=False, time_out=min(5, remaining))
+                try:
+                    dropped, _ = self.yolo_find_echo(turn=False, use_color=False, time_out=min(5, remaining),
+                                                      update_function=self.check_pickup_airborne)
+                except _AirborneDuringPickup:
+                    self.stop_route_movement()
+                    needs_alignment = True
+                    continue
                 if not dropped:
                     empty_views += 1
                     if empty_views >= 4 or deadline - time.monotonic() < 0.6:

@@ -1532,3 +1532,15 @@ msgid ""
 "Only include stars within this radius of the start, in 1080p pixels. Check "
 "the saved preview before farming."
 msgstr "只纳入起点周围此半径内的星标，按1080p像素折算。开始刷取前请检查保存的预览。"
+
+msgid "Keep Camera Behind Player"
+msgstr "镜头保持在角色后方"
+
+msgid "Auto Glide when Airborne"
+msgstr "离地后自动开翼"
+
+msgid "Recenter the camera while walking and use forward movement after turns."
+msgstr "行走时重新校正镜头，转向后使用前进移动。"
+
+msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
+msgstr "出发前选择控物。离地后自动开翼一次；路线运行期间请勿手动按跳跃键。"

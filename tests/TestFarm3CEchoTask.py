@@ -10,7 +10,10 @@ from ok import Box, TaskDisabledException
 from src.pathing.EchoRoute import EchoRoute, RoutePoint, RouteTeleport
 from src.pathing.MapLocalizer import MapPosition
 from src.pathing.MinimapHeading import HeadingEstimate
+from src.pathing.FallGuard import FallGuard
+from src.pathing.RouteSteering import RouteSteering
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
+from src.combat.CombatCheck import CombatCheck
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
 from src.task.WWOneTimeTask import WWOneTimeTask
 
@@ -23,6 +26,9 @@ def make_task():
     task._in_combat = False
     task._steering = None
     task._camera_aligned = False
+    task._camera_recenter_at = 0
+    task._fall_protection_ready = False
+    task._fall_guard = FallGuard()
     task._route_keys = ()
     task.navigation_interval = 0.2
     task.localizer = Mock()
@@ -31,10 +37,11 @@ def make_task():
                  'send_key', 'send_key_down', 'send_key_up', 'mouse_up', 'click', 'sleep', 'log_info', 'log_error', 'info_set',
                  'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'read_route_heading',
                  'log_debug', 'save_heading_diagnostic', 'save_localization_diagnostic',
-                 'prepare_route_runtime', 'route_enemy_visible'):
+                 'prepare_route_runtime', 'route_enemy_visible', 'observe_route_airborne'):
         setattr(task, name, Mock())
     task.in_combat.return_value = False
     task.route_enemy_visible.return_value = False
+    task.observe_route_airborne.return_value = False
     task.pick_echo.return_value = False
     task.yolo_find_echo.return_value = (False, False)
     task.locate.return_value = MapPosition(10, 10, 1, 20)
@@ -50,6 +57,91 @@ class TestFarm3CEchoTask(unittest.TestCase):
 
     def tick(self):
         self.clock += 1
+
+    def test_camera_recenter_on_a_straight_path_keeps_forward_key_held(self):
+        self.task._route_keys = ('w',)
+        self.task._steering = RouteSteering(0)
+        self.assertEqual(20, self.task.maintain_route_camera(20, 2))
+        self.task.click.assert_called_once_with(0.5, 0.5, key='middle', down_time=0.02)
+        self.task.send_key_up.assert_not_called()
+        self.task.sleep.assert_not_called()
+        self.assertEqual(20, self.task._steering.camera_heading)
+        self.task.maintain_route_camera(20, 2.2)
+        self.task.click.assert_called_once()
+
+    def test_camera_turn_releases_sideways_keys_and_rebases_heading(self):
+        self.task._route_keys = ('w', 'd')
+        self.task.read_route_heading.return_value = HeadingEstimate(45, 0.9, 0.2)
+        self.assertEqual(45, self.task.maintain_route_camera(0, 2))
+        self.task.send_key_up.assert_any_call('w')
+        self.task.send_key_up.assert_any_call('d')
+        self.assertEqual((), self.task._route_keys)
+        self.assertEqual(('w',), self.task._steering.update(45, 45, 3))
+        self.task.center_camera.assert_not_called()
+
+    def test_airborne_glide_uses_configured_jump_key_once_until_stable_landing(self):
+        self.task._fall_protection_ready = True
+        self.task.key_config = {'Jump Key': 'j'}
+        self.task.in_team = Mock(return_value=(True, None))
+        self.task.get_box_by_name = Mock()
+        self.task.calculate_color_percentage = Mock(side_effect=[0.01, 0.01, 0.01, 0.3, 0.3, 0.01, 0.01])
+        for now in (0, 0.15, 0.3, 0.4, 0.65, 0.8, 0.95):
+            with patch('src.task.Farm3CEchoTask.time.monotonic', return_value=now):
+                Farm3CEchoTask.observe_route_airborne(self.task)
+        self.assertEqual([call('j', down_time=0.05)] * 2, self.task.send_key.call_args_list)
+
+    def test_airborne_at_route_start_does_not_turn_camera_or_move_blindly(self):
+        self.task.observe_route_airborne.return_value = True
+        self.task.next_frame.side_effect = self.tick
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                self.assertRaisesRegex(RuntimeError, 'timed out'):
+            self.task.follow_point(RoutePoint(100, 100, timeout=5))
+        self.task.send_key_down.assert_not_called()
+        self.task.center_camera.assert_not_called()
+        self.task.route_enemy_visible.assert_not_called()
+
+    def test_preflight_requires_a_confirmed_ground_tool_before_enabling_protection(self):
+        self.task.ensure_levitator = Mock(return_value=True)
+        self.task.in_team = Mock(return_value=(True, None))
+        self.task.get_box_by_name = Mock()
+        self.task.calculate_color_percentage = Mock(return_value=0.4)
+        self.task.prepare_fall_protection()
+        self.assertTrue(self.task._fall_protection_ready)
+        self.task.ensure_levitator.assert_called_once_with(force=True)
+        self.task.calculate_color_percentage.return_value = 0.01
+        with self.assertRaisesRegex(RuntimeError, 'ground'):
+            self.task.prepare_fall_protection()
+        self.assertFalse(self.task._fall_protection_ready)
+
+    def test_cancelled_tool_selection_releases_wheel_key(self):
+        self.task.key_config = {'Wheel Key': 'tab'}
+        self.task.find_one = Mock(return_value=None)
+        self.task.in_team = Mock(return_value=(True, None))
+
+        def cancel_in_wheel(seconds):
+            if seconds == 0.4:
+                raise TaskDisabledException()
+
+        self.task.sleep.side_effect = cancel_in_wheel
+        with self.assertRaises(TaskDisabledException):
+            CombatCheck.ensure_levitator(self.task, force=True)
+        self.task.send_key_down.assert_called_once_with('tab')
+        self.task.send_key_up.assert_any_call('tab')
+
+    def test_camera_option_can_preserve_the_existing_view(self):
+        self.task.config['Keep Camera Behind Player'] = False
+        self.task._route_keys = ('w',)
+        self.assertEqual(10, self.task.maintain_route_camera(10, 4))
+        self.task.click.assert_not_called()
+
+    def test_airborne_at_target_waits_for_ground_before_dispatching_combat(self):
+        self.task._camera_aligned = True
+        self.task.observe_route_airborne.side_effect = [True, True, False]
+        self.task.locate.return_value = MapPosition(30, 0, 1, 20)
+        self.task.follow_point(RoutePoint(30, 0, tolerance=2))
+        self.assertEqual(3, self.task.locate.call_count)
+        self.task.center_camera.assert_not_called()
+        self.task.send_key_down.assert_not_called()
 
     def test_route_execution_preserves_point_order_and_dispatches_actions(self):
         points = (RoutePoint(70, 20), RoutePoint(30, 20, 'combat'), RoutePoint(60, 20, 'pickup'))

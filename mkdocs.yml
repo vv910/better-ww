@@ -1,8 +1,8 @@
 site_name: ok-ww
 site_description: Documentation for the ok-ww Wuthering Waves automation tool
-site_url: https://ok-script.com/ok-ww/
-repo_url: https://github.com/ok-oldking/ok-wuthering-waves
-repo_name: ok-oldking/ok-wuthering-waves
+site_url: https://vv910.github.io/better-ww/
+repo_url: https://github.com/vv910/better-ww
+repo_name: vv910/better-ww
 edit_uri: edit/master/docs/
 
 theme:
@@ -42,6 +42,7 @@ nav:
   - Development:
       - Contributing: development/contributing.md
       - Echo farming / 声骸刷取: development/echo-farming.md
+      - Releases: development/releases.md
       - Testing on another PC / 跨电脑测试: development/testing-on-another-pc.md
 
 markdown_extensions:

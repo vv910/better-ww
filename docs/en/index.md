@@ -15,8 +15,8 @@
 <!-- Badges -->
 <div class="badge-row">
   <img src="https://img.shields.io/badge/platform-Windows-blue" alt="Platform" />
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/v/release/ok-oldking/ok-wuthering-waves" alt="GitHub release" /></a>
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/downloads/ok-oldking/ok-wuthering-waves/total" alt="Total Downloads" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/v/release/vv910/better-ww" alt="GitHub release" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/downloads/vv910/better-ww/total" alt="Total Downloads" /></a>
   <a href="https://discord.gg/vVyCatEBgA"><img src="https://img.shields.io/discord/296598043787132928?color=5865f2&amp;label=%20Discord" alt="Discord" /></a>
 </div>
 
@@ -43,13 +43,19 @@ Please note, according to Kuro Games' official Fair Play Declaration for Wutheri
 
 ## 🚀 Quick Start
 
-1.  **Download the Installer**: From the "Downloads" section below, download the latest `ok-ww-win32-Global-setup.exe` installer file.
-2.  **Install the Program**: Double-click the `ok-ww-win32-Global-setup.exe` file and follow the on-screen instructions to complete the installation.
-3.  **Run the Program**: After installation, launch `ok-ww` from the desktop shortcut or the Start Menu.
+1.  **Download**: Get the latest `BetterWW-v版本号-windows-x64.zip` from [this fork's Releases](https://github.com/vv910/better-ww/releases).
+2.  **Extract**: Extract the entire ZIP to a writable folder.
+3.  **Run**: Launch `BetterWW.exe`. The portable package includes its runtime; Python does not need to be installed separately.
 
 ## 📥 Downloads
 
-*   **[GitHub](https://github.com/ok-oldking/ok-wuthering-waves/releases)**: Official release page, fast access worldwide. (**Please download the `setup.exe` installer, not the `Source Code` archive**).
+*   **[vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)**: Download `BetterWW-v版本号-windows-x64.zip` and extract the complete archive. GitHub's `Source code` archives are not the portable application.
+
+## 3C Echo Route Farming
+
+Record a route from the world map with a diamond start marker and stars along a traversable path. The route JSON must stay with its matching `.map.png`; this fork does not include prebuilt routes. During ground travel, camera recentering keeps the view behind the player, and airborne protection attempts to deploy the glider. These features cannot guarantee recovery from every fall.
+
+See the [echo farming guide](../development/echo-farming.md), [portable release guide](../development/releases.md), and [developer testing guide](../development/testing-on-another-pc.md).
 
 ## ✨ Main Features
 <img width="1778" height="1186" alt="QQ_1762961412161" src="https://github.com/user-attachments/assets/0109c68e-d714-4c34-b016-b4b45f9861fd" />

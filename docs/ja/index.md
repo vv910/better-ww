@@ -15,8 +15,8 @@
 <!-- Badges -->
 <div class="badge-row">
   <img src="https://img.shields.io/badge/platform-Windows-blue" alt="Platform" />
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/v/release/ok-oldking/ok-wuthering-waves" alt="GitHub release" /></a>
-  <a href="https://github.com/ok-oldking/ok-wuthering-waves/releases"><img src="https://img.shields.io/github/downloads/ok-oldking/ok-wuthering-waves/total" alt="Total Downloads" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/v/release/vv910/better-ww" alt="GitHub release" /></a>
+  <a href="https://github.com/vv910/better-ww/releases"><img src="https://img.shields.io/github/downloads/vv910/better-ww/total" alt="Total Downloads" /></a>
   <a href="https://discord.gg/vVyCatEBgA"><img src="https://img.shields.io/discord/296598043787132928?color=5865f2&amp;label=%20Discord" alt="Discord" /></a>
 </div>
 
@@ -43,13 +43,19 @@
 
 ## 🚀 クイックスタート
 
-1.  **インストーラーのダウンロード**: 下記の「ダウンロード」セクションから、最新の `ok-ww-win32-Global-setup.exe` インストーラーファイルをダウンロードします。
-2.  **プログラムのインストール**: `ok-ww-win32-Global-setup.exe` ファイルをダブルクリックし、画面の指示に従ってインストールを完了します。
-3.  **プログラムの実行**: インストール後、デスクトップのショートカットまたはスタートメニューから `ok-ww` を起動します。
+1.  **ダウンロード**: [この fork の Releases](https://github.com/vv910/better-ww/releases) から最新の `BetterWW-vバージョン-windows-x64.zip` を取得します。
+2.  **展開**: ZIP 全体を、書き込み可能なフォルダーに展開します。
+3.  **起動**: `BetterWW.exe` を実行します。ランタイム同梱のため、Python の別途インストールは不要です。
 
 ## 📥 ダウンロード
 
-*   **[GitHub](https://github.com/ok-oldking/ok-wuthering-waves/releases)**: 公式リリースページ。世界中から高速にアクセスできます。（**`Source Code` のアーカイブではなく、`setup.exe` インストーラーをダウンロードしてください**）。
+*   **[vv910/better-ww Releases](https://github.com/vv910/better-ww/releases)**: `BetterWW-vバージョン-windows-x64.zip` をダウンロードし、ZIP 全体を展開してください。GitHub の `Source code` アーカイブは実行用パッケージではありません。
+
+## 3C 音骸ルート周回
+
+ワールドマップで菱形を開始地点、星を通行可能なルート上の目印として記録します。ルート JSON と対応する `.map.png` は同じ場所に保管してください。この fork に完成済みルートは含まれません。地上移動中はカメラをプレイヤーの背後に戻し、空中では滑空開始を試みますが、すべての落下を防げるわけではありません。
+
+[音骸周回ガイド](../development/echo-farming.md)、[ポータブル版ガイド](../development/releases.md)、[開発・別 PC テストガイド](../development/testing-on-another-pc.md)をご覧ください。
 
 ## ✨ 主な機能
 <img width="1778" height="1186" alt="QQ_1762961412161" src="https://github.com/user-attachments/assets/0109c68e-d714-4c34-b016-b4b45f9861fd" />

@@ -1480,3 +1480,15 @@ msgid ""
 "Only include stars within this radius of the start, in 1080p pixels. Check "
 "the saved preview before farming."
 msgstr "開始地点からこの半径内の星マーカーのみ記録します（1080p換算のピクセル）。周回前に保存したプレビューを確認してください。"
+
+msgid "Keep Camera Behind Player"
+msgstr "カメラをプレイヤーの後方に維持"
+
+msgid "Auto Glide when Airborne"
+msgstr "空中で自動滑空"
+
+msgid "Recenter the camera while walking and use forward movement after turns."
+msgstr "歩行中にカメラを中央に戻し、旋回後は前進します。"
+
+msgid "Select Levitator before departure. Open the glider once when airborne; do not press Jump manually while the route is running."
+msgstr "出発前に「レヴィテーター」を選択してください。空中に出たら一度だけ滑空を開始します。ルート実行中に手動でジャンプを押さないでください。"
