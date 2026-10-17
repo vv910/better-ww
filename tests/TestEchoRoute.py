@@ -131,17 +131,22 @@ class TestMapLocalizer(unittest.TestCase):
     def test_rejects_blank_unrelated_and_rotating_minimap(self):
         localizer = MapLocalizer(self.map)
         self.assertIsNone(localizer.locate(np.zeros((180, 180, 3), np.uint8)))
+        self.assertEqual('too_few_minimap_features', localizer.last_diagnostic['reason'])
         unrelated = np.random.default_rng(1).integers(0, 256, (180, 180, 3), dtype=np.uint8)
         self.assertIsNone(localizer.locate(unrelated))
         crop = self.map[280:480, 380:580]
         rotated = cv2.warpAffine(crop, cv2.getRotationMatrix2D((100, 100), 45, 1), (200, 200))
         self.assertIsNone(localizer.locate(rotated))
+        self.assertEqual('minimap_not_north_up', localizer.last_diagnostic['reason'])
+        self.assertAlmostEqual(45, abs(localizer.last_diagnostic['attempts'][-1]['rotation']), delta=2)
 
     def test_rejects_position_jumps_without_poisoning_previous_position(self):
         localizer = MapLocalizer(self.map, max_jump=30)
         first = localizer.locate(self.map[280:480, 380:580])
         self.assertIsNotNone(first)
         self.assertIsNone(localizer.locate(self.map[80:280, 80:280]))
+        self.assertEqual('position_jump', localizer.last_diagnostic['reason'])
+        self.assertGreater(localizer.last_diagnostic['jump'], 30)
         self.assertEqual(first, localizer.previous)
         self.assertIsNotNone(localizer.locate(self.map[285:485, 385:585]))
 

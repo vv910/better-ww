@@ -47,6 +47,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._heading_detector = None
         self._steering = None
         self._route_keys = ()
+        self._last_good_minimap = None
+        self._last_route_position = None
         self.config_type['Route Queue'] = {'type': 'text_edit'}
 
     def validate_config(self, key, value):
@@ -86,11 +88,14 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.info_set('Route', route.name)
                 self.log_info(f'3C route {index + 1}/{len(routes)}: {paths[index]}')
                 self.localizer = MapLocalizer(read_map_image(route.map_image), route.map_region)
+                self._last_good_minimap = None
+                self._last_route_position = None
                 if route.teleport is not None:
                     self.teleport_to_route(route)
                 self.localizer.reset()
                 position = self.wait_until(self.locate, time_out=5, raise_if_not_found=False)
                 if position is None or route.start.distance_to(position.xy) > route.start.tolerance:
+                    self.save_localization_diagnostic('start', expected=route.start)
                     raise RuntimeError('Cannot confirm route start. Stand near the recorded diamond and use a north-up minimap.')
                 self.execute_route(route)
                 self.info_incr('Completed Routes')
@@ -188,7 +193,22 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
 
     def locate(self):
         minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
-        return self.localizer.locate(minimap)
+        position = self.localizer.locate(minimap)
+        if position is not None:
+            self._last_good_minimap = minimap.copy()
+            self._last_route_position = position
+        return position
+
+    def save_localization_diagnostic(self, stage, expected=None):
+        minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
+        expected_start = None if expected is None else (expected.x, expected.y, expected.tolerance)
+        self.log_warning(f'3C localization failed: stage={stage}, capture={self.frame.shape[1]}x{self.frame.shape[0]}, '
+                         f'expected_start={expected_start}, last_position={self._last_route_position}, '
+                         f'diagnostic={self.localizer.last_diagnostic}')
+        self.screenshot(f'3c-location-{stage}-full')
+        self.screenshot(f'3c-location-{stage}-minimap', frame=minimap)
+        if self._last_good_minimap is not None:
+            self.screenshot(f'3c-location-{stage}-last-good', frame=self._last_good_minimap)
 
     def stop_route_movement(self):
         self._route_keys = ()
@@ -247,6 +267,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     if lost_since is None:
                         lost_since = time.monotonic()
                     if time.monotonic() - lost_since >= 5:
+                        self.save_localization_diagnostic('lost')
                         raise RuntimeError('Minimap position lost for 5 seconds; route stopped')
                     self.sleep(0.1)
                     continue

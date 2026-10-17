@@ -28,7 +28,8 @@ def make_task():
     for name in ('wait_in_team_and_world', 'center_camera', 'next_frame', 'locate', 'in_combat',
                  'send_key', 'send_key_down', 'send_key_up', 'mouse_up', 'sleep', 'log_info', 'log_error', 'info_set',
                  'info_incr', 'pick_echo', 'yolo_find_echo', 'incr_drop', 'read_route_heading',
-                 'log_debug', 'save_heading_diagnostic', 'prepare_route_runtime', 'route_enemy_visible'):
+                 'log_debug', 'save_heading_diagnostic', 'save_localization_diagnostic',
+                 'prepare_route_runtime', 'route_enemy_visible'):
         setattr(task, name, Mock())
     task.in_combat.return_value = False
     task.route_enemy_visible.return_value = False
@@ -98,6 +99,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
             self.task.follow_point(RoutePoint(100, 100))
         self.task.send_key.assert_not_called()
         self.task.send_key_up.assert_any_call('w')
+        self.task.save_localization_diagnostic.assert_called_once_with('lost')
 
     def test_transient_heading_failure_retries_fresh_frames_before_moving(self):
         self.task.read_route_heading.side_effect = [HeadingEstimate(0, 0.55, 0.2), None,

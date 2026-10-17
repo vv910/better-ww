@@ -111,3 +111,5 @@ git submodule update --init --recursive
 反馈测试问题时，附上 `git rev-parse --short HEAD`、游戏分辨率、队伍角色、路线文件、停在哪一步，以及 `logs/ok-ww.log` 和 `logs/ok-ww_error.log` 中对应时间的内容，便于复现同一个版本的问题。
 
 如果提示 `Cannot confirm minimap player heading after 3 frames`，日志会包含画面尺寸、匹配分数和方向分数差；请同时保留“截图目录”中名称包含 `3c-heading-minimap` 的图片。程序重启可能清理旧截图，先保存诊断图片再重启。现有路线可以继续使用，不需要因朝向识别失败重新录制。
+
+如果提示 `Minimap position lost for 5 seconds` 或 `Cannot confirm route start`，表示当前位置没有通过地图匹配或起点距离检查。请提供这条路线的 JSON、配套 `.map.png` 原图、最新日志以及截图目录中的 `3c-location-` 图片。`lost-minimap` 是失配时的小地图，`lost-last-good` 是最后一次成功定位的小地图；`start-` 表示在起点检查阶段失败。先保存这些图片再重启程序，不需要仅为了诊断重新录制路线。

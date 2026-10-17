@@ -77,6 +77,25 @@ class Test3CRouteImages(TaskTestCase):
         self.assertIn('capture=1920x1080', warning.call_args.args[0])
         self.assertIn('confidence=', warning.call_args.args[0])
 
+    def test_location_failure_preserves_last_good_minimap_and_logs_rejection_reason(self):
+        self.set_image('tests/images/mini_map.png')
+        self.task.localizer = MapLocalizer(cv2.imread('tests/images/path.png'), (538, 130, 1670, 972))
+        self.assertIsNotNone(self.task.locate())
+        last_good = self.task._last_good_minimap.copy()
+        with tempfile.TemporaryDirectory() as directory:
+            path = str(Path(directory) / 'blank.png')
+            cv2.imwrite(path, np.zeros((1080, 1920, 3), np.uint8))
+            self.set_image(path)
+            self.assertIsNone(self.task.locate())
+            with patch.object(self.task, 'screenshot') as screenshot, \
+                    patch.object(self.task, 'log_warning') as warning:
+                self.task.save_localization_diagnostic('lost')
+        names = [call.args[0] for call in screenshot.call_args_list]
+        self.assertEqual(['3c-location-lost-full', '3c-location-lost-minimap',
+                          '3c-location-lost-last-good'], names)
+        self.assertIn('too_few_minimap_features', warning.call_args.args[0])
+        np.testing.assert_array_equal(last_good, screenshot.call_args_list[-1].kwargs['frame'])
+
     def test_record_real_map_markers_to_loadable_route(self):
         self.set_image('tests/images/path.png')
         recorder = Record3CEchoRouteTask(self.task.executor, None)
