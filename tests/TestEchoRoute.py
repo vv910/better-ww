@@ -6,7 +6,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-from src.pathing.EchoRoute import EchoRoute, RoutePoint, movement_direction, target_angle
+from src.pathing.EchoRoute import EchoRoute, RoutePoint, movement_direction, route_files, target_angle
 from src.pathing.MapLocalizer import MapLocalizer, MapPosition
 
 
@@ -70,6 +70,23 @@ class TestEchoRoute(unittest.TestCase):
         self.assertEqual('w', movement_direction(350, 10))
         self.assertEqual('w', movement_direction(10, 350))
 
+    def test_multiline_queue_preserves_order_and_single_route_compatibility(self):
+        self.assertEqual(['a.json', 'b.json', 'a.json'], route_files('old.json', 'a.json\n b.json\n\n a.json'))
+        self.assertEqual(['old.json'], route_files('old.json', ' \n'))
+        for single, queue in [('', ''), ('a', []), ('a', '\n'.join(['a'] * 101))]:
+            with self.assertRaises(ValueError):
+                route_files(single, queue)
+
+    def test_teleport_metadata_requires_a_beacon_near_start(self):
+        self.data['teleport'] = {'anchor': '无冠者', 'x': 55, 'y': 50}
+        route = self.load()
+        self.assertEqual('无冠者', route.teleport.anchor)
+        self.assertEqual(55, route.teleport.waypoint.x)
+        for change in ({'anchor': ''}, {'x': 110}, {'x': float('nan')}, {'y': True}):
+            self.data['teleport'] = {'anchor': '无冠者', 'x': 55, 'y': 50} | change
+            with self.assertRaises(ValueError):
+                self.load()
+
 
 class TestMapLocalizer(unittest.TestCase):
     @classmethod
@@ -86,6 +103,21 @@ class TestMapLocalizer(unittest.TestCase):
                 self.assertIsNotNone(result)
                 self.assertAlmostEqual(480, result.x, delta=2)
                 self.assertAlmostEqual(380, result.y, delta=2)
+
+    def test_projects_recorded_beacon_onto_translated_and_scaled_map(self):
+        localizer = MapLocalizer(self.map)
+        transform = np.float32([[1.15, 0, 45], [0, 1.15, 25]])
+        frame = cv2.warpAffine(self.map, transform, (1100, 850))
+        result = localizer.project_map_point(frame, (480, 380), (0, 0, 1100, 850))
+        self.assertIsNotNone(result)
+        self.assertAlmostEqual(597, result.x, delta=2)
+        self.assertAlmostEqual(462, result.y, delta=2)
+        self.assertIsNone(localizer.project_map_point(np.zeros_like(frame), (480, 380), (0, 0, 1100, 850)))
+
+    def test_projection_rejects_beacon_outside_current_map_view(self):
+        localizer = MapLocalizer(self.map)
+        crop = self.map[100:500, 300:800].copy()
+        self.assertIsNone(localizer.project_map_point(crop, (50, 300), (0, 0, 500, 400)))
 
     def test_real_mingchao_minimap_matches_supplied_map_snapshot(self):
         image = cv2.imread('tests/images/path.png')

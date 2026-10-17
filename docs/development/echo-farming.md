@@ -16,11 +16,15 @@
 
 ## 3C 首版能力
 
-任务列表新增“按路线刷取 3C 声骸”和“从地图记录 3C 路线”。默认路线执行一次。
+任务列表新增“按路线刷取 3C 声骸”和“从地图记录 3C 路线”。支持单条路线，也支持多条路线按队列传送并依次执行，各执行一次。
 
 执行链路为：校验路线和起点 → 小地图定位 → 按文件中的点序移动 → 遇敌暂停并战斗 → 搜索并吸收多个声骸 → 重新定位并继续。途经点、战斗点和专门拾取点可分别设置。
 
 定位使用局部地图截图的 SIFT 特征及几何一致性验证，支持小地图与地图截图的缩放差异。朝向使用小地图中心的金色箭头轮廓，统一尺寸后搜索角度与大小；同时检查匹配分数和其他方向的分数差，避免把圆形图标当作箭头。定位失败时停下，连续 5 秒无法定位则退出；朝向不可信时取新帧重试，连续 3 帧失败则保存小地图截图并退出；无进展时最多尝试两次脱困。每个路径点有超时，战斗和拾取也有时间预算。取消、异常或死亡时释放方向键和鼠标按键；死亡后停止，重新从起点启动。
+
+移动使用持续按键：默认每 0.2 秒更新位置和方向，只有方向变化才切换按键，保留相邻方向的共同按键。普通 `walk` 点之间保持移动；抵达 `combat`/`pickup` 点、定位丢失、朝向不可靠或遇敌时松键。相机在出发、战斗后或重新定位后校准一次，不再每走 0.3 秒都重置并等待。8 方向选择带迟滞，并在按键稳定后用角色箭头估算相机朝向，适应缓慢的自动回正；游戏中快速自动转镜、角色受击转身仍需实测。
+
+启动会先显示识别准备日志，预加载模板、识别队伍并编译/预热声骸模型，再开始移动。3C 执行期间 OpenCV 最多使用两个工作线程，任务退出后恢复原值；OpenVINO CPU 推理最多使用四个线程，减少与游戏争抢 CPU。`Navigation Interval`（导航刷新间隔）支持 0.1–0.5 秒，默认 0.2；降低间隔会增加 CPU 占用。模型首次编译仍需要时间，准备阶段请等待“3C识别准备完成”。
 
 “3C”由路线中的怪物点位决定。现有检测模型只识别掉落声骸，并不识别怪物种类或声骸 COST；途中遭遇的其他敌人也会被处理。
 
@@ -42,6 +46,26 @@
 
 路线使用截图像素坐标；图片和 JSON 配套。不能直接导入 BetterGI 的原神地图坐标，也不能用另一张缩放或裁剪不同的地图图片替换原图。
 
+## 多条路线与自动传送 {#route-queue}
+
+在“路线队列 / Route Queue”中每行填写一个路线 JSON，按行序执行。留空时仍使用原来的“Route File”，旧文件不需要为了连续移动重新录制。例如：
+
+```text
+routes/3c/route-a.json
+routes/3c/route-b.json
+routes/3c/route-c.json
+```
+
+分散路线需要各自的地图截图和传送信息。录制时在“传送定位Boss / Teleport Anchor”中填写附近**固定位置的 Boss 图鉴名称**，使用游戏当前语言。起点菱形应靠近已解锁信标（50 个录制地图像素以内），避免覆盖信标图标。记录器会保存最近信标在截图中的坐标；找不到近邻信标则拒绝保存。
+
+选 Boss 的依据是：通过它的图鉴“探测”打开地图后，路线入口信标和录制区域应在同一可见地图区域内。大地图视图匹配支持一定的缩放和平移，尚不支持自动平移到视口外的信标、跨地图层切换，或跨区域寻找远离这个 Boss 的信标。优先测试短路线，再增加区域。
+
+执行每条带传送信息的路线时，任务先通过 F2 全部怪物图鉴搜索 Boss、探测打开地图，将当前大地图与该路线截图做特征匹配，再确认投影位置附近存在信标图标才点击传送。回到大世界后清空上一位置并验证路线起点。地图匹配、信标选择或起点验证失败时停止队列；错误图像以 `3c-teleport-` 开头保存。
+
+队列的第二条及后续路线必须包含 `teleport`，程序会在输入游戏前检查。第一条可以没有，此时需要手动站到起点；带有 `teleport` 的第一条也会自动传送。队列不自动续跑或重复，取消/失败后重新启动会从第一条开始。
+
+旧路线也可以补充下面的 `teleport` 字段：`x/y` 必须是**配套地图截图**中的信标坐标，并在 `start.tolerance` 范围内；不能使用另一张地图的坐标。无法确认坐标时，建议以新文件名录制一条带传送信息的路线。
+
 ## 路线格式
 
 下面仅说明字段，不是已标定的刷怪路线。坐标需要来自你自己的地图截图。
@@ -54,6 +78,7 @@
   "map_image": "local-route.map.png",
   "map_region": [538, 130, 1670, 972],
   "start": {"x": 1200, "y": 470, "tolerance": 30},
+  "teleport": {"anchor": "无冠者", "x": 1206, "y": 466},
   "waypoints": [
     {"x": 1140, "y": 540, "action": "walk", "tolerance": 12, "timeout": 120},
     {"x": 1090, "y": 590, "action": "combat", "tolerance": 10, "timeout": 120},
@@ -66,8 +91,8 @@
 
 ## 当前边界与后续扩展
 
-- 已实现局部地图、有序点位、地面寻路、自动战斗、多声骸搜索、有限脱困和异常退出。路线需要人工标定通行路径，程序不会自动规划绕开山体或建筑。
-- 暂未实现完整世界地图拼接、跨区域自动传送、地图分层、攀爬/飞行/游泳动作、逐帧路线录制、死亡后的路线续跑，以及真实 3C 怪物/COST 分类。
+- 已实现局部地图、有序点位、持续按键移动、路线队列、Boss 图鉴定位后的信标传送、自动战斗、多声骸搜索、有限脱困和异常退出。路线需要人工标定通行路径，程序不会自动规划绕开山体或建筑。
+- 暂未实现完整世界地图拼接、任意世界坐标传送、视口外地图平移搜索、地图分层、攀爬/飞行/游泳动作、逐帧路线录制、死亡后的路线续跑，以及真实 3C 怪物/COST 分类。
 - 声骸文本过滤支持简体中文、繁体中文和英文游戏界面；其他游戏语言需增加对应的吸收文字与验证素材。
 - 战斗结束和声骸吸收确认复用原仓库的视觉判定；统计代表识别到的拾取操作，不是背包数量核对。
 - 时间预算在视觉识别/角色动作的边界检查，正在执行的一次识别或技能可能使退出略晚于预算。
@@ -80,10 +105,12 @@
 
 本次朝向修复另通过 21 项逻辑测试和 4 项截图测试，包含暂时失败后的重试、持续失败停止、战斗打断、取消释放按键，以及真实小地图截图在 1080p、缩放至 1440p 和 2160p 下的识别。缩放截图测试不等于这些分辨率下的实机运行验收。
 
+随后测试日志确认可以移动，但每轮约 1.9 秒中只走 0.3 秒。持续移动与传送队列改动共通过 65 项针对性离线测试，覆盖按键保持、8 方向/相机漂移模拟、队列顺序、传送失败、录制信标、真实地图缩放平移、被动遇敌检测以及实际声骸模型；游戏中的连续移动和跨区域传送仍需复测。开发机用 1080p 真实截图测试，限制两个 OpenCV 线程后单次位置与方向计算均值约 73 ms；这不包含截图采集与战斗检查，也不代表测试电脑的实际帧率。
+
 运行路线、恢复和 4C 逻辑测试：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：
@@ -102,5 +129,7 @@
 ## 参考与 REA
 
 借鉴 [BetterGI 路径执行器](https://github.com/babalae/better-genshin-impact/tree/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoPathing) 的有序路径点、视觉闭环、有限脱困和动作分派思路；没有复制原神路线或素材。[脚本仓库](https://github.com/babalae/bettergi-scripts-list/tree/81bc0f00b41add3beb3e9ede9f88aac1714d0e5a) 只作为格式参考。
+
+持续移动参考 `PathExecutor.MoveTo()` 的按住移动键、限频定位/纠偏和退出释放；队列传送参考 `HandleTeleportWaypoint()` 与 [TpTask](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs) 的传送入口和传送后重定位。鸣潮实现使用自己的图鉴界面与录制地图，不兼容 BetterGI 的世界坐标和传送点数据库。
 
 [REA](https://github.com/morluto/rea/tree/500e32399a3bc827e17fb4adaa97db3bc0df29b5) 是可选的源码研究工具，运行 3C 任务不依赖它。开发机已配置 `rea-agents` 6.4.0 MCP 和配套 skill；这些电脑级配置不会随 Git 同步。本次检查使用源码和本地离线测试，未通过 REA 执行游戏目标操作，也未安装 Hopper/Ghidra/IDA 等分析引擎。

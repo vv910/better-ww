@@ -52,6 +52,7 @@ class EchoRoute:
     start: RoutePoint
     waypoints: tuple[RoutePoint, ...]
     map_region: tuple[int, int, int, int]
+    teleport: 'RouteTeleport | None' = None
 
     @classmethod
     def load(cls, path):
@@ -85,7 +86,36 @@ class EchoRoute:
         for point in (start, *waypoints):
             if not (x1 <= point.x < x2 and y1 <= point.y < y2):
                 raise ValueError('Route point is outside map_region')
-        return cls(name, image_path, start, waypoints, tuple(region))
+        teleport = None
+        if 'teleport' in data:
+            spec = data['teleport']
+            if not isinstance(spec, dict) or not isinstance(spec.get('anchor'), str) or not spec['anchor'].strip():
+                raise ValueError('teleport.anchor must be a nearby fixed Boss name in the game language')
+            waypoint = RoutePoint.from_dict(spec, 'teleport')
+            if not (x1 <= waypoint.x < x2 and y1 <= waypoint.y < y2):
+                raise ValueError('Teleport waypoint is outside map_region')
+            if start.distance_to((waypoint.x, waypoint.y)) > start.tolerance:
+                raise ValueError('Route start must be within its tolerance of the teleport waypoint')
+            teleport = RouteTeleport(spec['anchor'].strip(), waypoint)
+        return cls(name, image_path, start, waypoints, tuple(region), teleport)
+
+
+@dataclass(frozen=True)
+class RouteTeleport:
+    anchor: str
+    waypoint: RoutePoint
+
+
+def route_files(single, queue):
+    """A multiline queue overrides the original single-file setting, preserving order."""
+    if not isinstance(queue, str) or not isinstance(single, str):
+        raise ValueError('Route File and Route Queue must be text')
+    paths = [line.strip() for line in queue.splitlines() if line.strip()]
+    if not paths:
+        paths = [single.strip()]
+    if not 1 <= len(paths) <= 100 or any(not path for path in paths):
+        raise ValueError('Select 1 to 100 route files')
+    return paths
 
 
 def target_angle(position, point):

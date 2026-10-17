@@ -1,3 +1,4 @@
+import os
 from typing import Tuple
 
 from openvino import Core
@@ -42,7 +43,8 @@ class OpenVinoYolo8Detect:
                 self.compiled_model = self.core.compile_model(
                     model=model,
                     device_name="CPU",
-                    config={"PERFORMANCE_HINT": "LATENCY"}
+                    config={"PERFORMANCE_HINT": "LATENCY",
+                            "INFERENCE_NUM_THREADS": max(1, min(4, (os.cpu_count() or 2) // 2))}
                 )
 
             self.input_layer = self.compiled_model.input(0)

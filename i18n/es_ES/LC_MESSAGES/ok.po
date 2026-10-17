@@ -1367,3 +1367,33 @@ msgstr "Guarda una nueva ruta JSON y una imagen del mapa. No se sobrescriben arc
 
 msgid "Name of this local route."
 msgstr "Nombre de esta ruta local."
+
+msgid "Route Queue"
+msgstr "Cola de rutas"
+
+msgid "Navigation Interval"
+msgstr "Intervalo de navegación"
+
+msgid "Teleport Anchor"
+msgstr "Jefe de referencia para teletransporte"
+
+msgid ""
+"Optional: one route JSON per line, executed in order. Later routes require "
+"teleport metadata."
+msgstr ""
+"Opcional: un JSON de ruta por línea, ejecutados en orden. Las rutas "
+"posteriores a la primera requieren datos de teletransporte."
+
+msgid ""
+"Seconds between navigation updates. Lower values use more CPU. Range: 0.1 to"
+" 0.5."
+msgstr ""
+"Segundos entre actualizaciones de navegación. Los valores más bajos usan más"
+" CPU. Rango: 0,1 a 0,5."
+
+msgid ""
+"Optional: nearby fixed Boss name in your game language. Keep the start "
+"within 50 map pixels of an unlocked beacon."
+msgstr ""
+"Opcional: nombre de un jefe fijo cercano en el idioma del juego. El inicio "
+"debe estar a menos de 50 píxeles del mapa de una baliza desbloqueada."

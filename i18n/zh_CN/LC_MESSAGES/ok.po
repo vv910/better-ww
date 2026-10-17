@@ -1492,3 +1492,27 @@ msgstr "保存新的JSON路线和地图图像，不会覆盖已有文件。"
 
 msgid "Name of this local route."
 msgstr "此本地路线的名称。"
+
+msgid "Route Queue"
+msgstr "路线队列"
+
+msgid "Navigation Interval"
+msgstr "导航刷新间隔"
+
+msgid "Teleport Anchor"
+msgstr "传送定位Boss"
+
+msgid ""
+"Optional: one route JSON per line, executed in order. Later routes require "
+"teleport metadata."
+msgstr "可选，每行填写一个路线JSON，按顺序执行。第二条起的路线必须包含传送信息。"
+
+msgid ""
+"Seconds between navigation updates. Lower values use more CPU. Range: 0.1 to"
+" 0.5."
+msgstr "导航更新的间隔秒数。越小越占用CPU，范围0.1至0.5秒。"
+
+msgid ""
+"Optional: nearby fixed Boss name in your game language. Keep the start "
+"within 50 map pixels of an unlocked beacon."
+msgstr "可选：附近固定Boss的名称，使用游戏当前语言。起点应在已解锁信标50个地图像素以内。"

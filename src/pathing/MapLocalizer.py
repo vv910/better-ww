@@ -70,6 +70,38 @@ class MapLocalizer:
         return result
 
     def _match(self, keypoints, descriptors, candidates, center, size):
+        matched = self._transform(keypoints, descriptors, candidates, size)
+        if matched is None:
+            return None
+        transform, confidence, inliers = matched
+        x, y = transform @ np.array([*center, 1])
+        x1, y1, x2, y2 = self.region
+        if not (x1 <= x < x2 and y1 <= y < y2):
+            return None
+        return MapPosition(float(x), float(y), confidence, inliers)
+
+    def project_map_point(self, frame, point, screen_region):
+        """Project a recorded beacon into the currently opened map, without a world atlas."""
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        mask = np.zeros_like(gray)
+        left, top, right, bottom = screen_region
+        mask[top:bottom, left:right] = 255
+        keypoints, descriptors = self.sift.detectAndCompute(gray, mask)
+        if descriptors is None:
+            return None
+        matched = self._transform(keypoints, descriptors, np.arange(len(self.locations)),
+                                  min(right - left, bottom - top))
+        if matched is None:
+            return None
+        transform, confidence, inliers = matched
+        if inliers < 12 or confidence < 0.6:
+            return None
+        x, y = cv2.invertAffineTransform(transform) @ np.array([*point, 1])
+        if not (left <= x < right and top <= y < bottom):
+            return None
+        return MapPosition(float(x), float(y), confidence, inliers)
+
+    def _transform(self, keypoints, descriptors, candidates, size):
         pairs = self.matcher.knnMatch(descriptors, self.descriptors[candidates], k=2)
         matches = [pair[0] for pair in pairs if len(pair) == 2 and pair[0].distance < 0.72 * pair[1].distance]
         # Multiple query descriptors matching one landmark are not independent evidence.
@@ -99,8 +131,4 @@ class MapLocalizer:
         rotation = math.degrees(math.atan2(transform[1, 0], transform[0, 0]))
         if not 0.2 <= scale <= 8 or abs(rotation) > 12:
             return None
-        x, y = transform @ np.array([*center, 1])
-        x1, y1, x2, y2 = self.region
-        if not (x1 <= x < x2 and y1 <= y < y2):
-            return None
-        return MapPosition(float(x), float(y), confidence, inliers)
+        return transform, confidence, inliers

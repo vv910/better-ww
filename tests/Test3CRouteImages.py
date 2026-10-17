@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import cv2
+import numpy as np
 from ok.test.TaskTestCase import TaskTestCase
 
 from config import config
@@ -24,6 +25,32 @@ class Test3CRouteImages(TaskTestCase):
         self.assertIsNotNone(result)
         self.assertAlmostEqual(1207, result.x, delta=5)
         self.assertAlmostEqual(469, result.y, delta=5)
+
+    def test_route_template_warmup_uses_existing_features_before_moving(self):
+        self.set_image('tests/images/mini_map.png')
+        with patch.object(self.task, 'load_chars'), \
+                patch('src.task.Farm3CEchoTask.og.my_app.yolo_detect') as detect:
+            self.task.prepare_route_runtime()
+        detect.assert_called_once()
+        self.assertTrue(self.task.read_route_heading().reliable)
+
+    def test_passive_route_enemy_detection_avoids_character_reload(self):
+        self.task._in_combat = False
+        with patch.object(self.task, 'load_chars') as load_chars:
+            self.set_image('tests/images/mini_map.png')
+            self.assertFalse(self.task.route_enemy_visible())
+            self.set_image('tests/images/in_combat.png')
+            self.assertTrue(self.task.route_enemy_visible())
+        load_chars.assert_not_called()
+
+    def test_reference_point_projects_on_real_map_after_zoom_and_pan(self):
+        image = cv2.imread('tests/images/path.png')
+        localizer = MapLocalizer(image, (538, 130, 1670, 972))
+        transformed = cv2.warpAffine(image, np.float32([[1.1, 0, -100], [0, 1.1, 10]]), (1920, 1080))
+        projected = localizer.project_map_point(transformed, (1207, 469), (538, 130, 1670, 972))
+        self.assertIsNotNone(projected)
+        self.assertAlmostEqual(1227.7, projected.x, delta=3)
+        self.assertAlmostEqual(525.9, projected.y, delta=3)
 
     def test_route_heading_on_real_minimap_at_1080p_1440p_and_2160p(self):
         original = cv2.imread('tests/images/mini_map.png')

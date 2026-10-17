@@ -71,7 +71,7 @@ git submodule update --init --recursive
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install pytest polib
-.\.venv\Scripts\python.exe -u run_test.py tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteSteering tests.TestMinimapHeading tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestEcho
 ```
@@ -83,6 +83,10 @@ git submodule update --init --recursive
 选择一条短、平坦、能覆盖少量目标 3C 怪物的路线。大地图上用菱形标起点，用至少两个星标标出通行路径，运行“从地图录制3C路线”。检查生成 JSON 的点序和 `walk`/`combat`/`pickup` 动作，再让角色站到菱形附近，关闭地图，启动“按路线刷取3C声骸”。
 
 首次重点观察三个结果：能否到达怪物点、能否完成战斗、能否吸收声骸并继续。当前还没有已标定的成品 3C 路线，首次运行需要创建路线。
+
+启动后会先准备模板和声骸模型，准备期间请等待。当前默认持续移动，导航间隔 0.2 秒；先使用默认值。若路线里的拐弯只是经过位置，将相应点的 `action` 改成 `walk`，避免每个点都停下来搜怪和拾取。
+
+多条分散路线需在录制时填写“传送定位Boss”，将菱形放在已解锁信标附近，然后在刷取任务的“路线队列”中每行填一个 JSON。详细条件与配置见[多条路线与自动传送](echo-farming.md#route-queue)。第一次测试建议只放两条短路线，先确认传送后能定位起点。
 
 如果要从另一台电脑复制已有路线，需要同时带上 JSON 和它引用的 `.map.png`，保持图片相对于 JSON 的位置。只复制 JSON 无法进行地图定位。记录器默认生成 `routes/3c/local-route.json` 和 `routes/3c/local-route.map.png`。
 

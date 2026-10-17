@@ -1440,3 +1440,27 @@ msgstr "新しいJSONルートとマップ画像を保存します。既存フ�
 
 msgid "Name of this local route."
 msgstr "このローカルルートの名前。"
+
+msgid "Route Queue"
+msgstr "ルートキュー"
+
+msgid "Navigation Interval"
+msgstr "ナビゲーション更新間隔"
+
+msgid "Teleport Anchor"
+msgstr "転送位置の基準ボス"
+
+msgid ""
+"Optional: one route JSON per line, executed in order. Later routes require "
+"teleport metadata."
+msgstr "任意。1行に1つのルートJSONを入力し、順番に実行します。2つ目以降のルートには転送情報が必要です。"
+
+msgid ""
+"Seconds between navigation updates. Lower values use more CPU. Range: 0.1 to"
+" 0.5."
+msgstr "ナビゲーション更新の間隔（秒）。短いほどCPU負荷が増えます。範囲：0.1〜0.5秒。"
+
+msgid ""
+"Optional: nearby fixed Boss name in your game language. Keep the start "
+"within 50 map pixels of an unlocked beacon."
+msgstr "任意。付近の固定出現ボス名をゲームの言語で入力します。開始地点は解放済みのビーコンからマップ上50ピクセル以内に置いてください。"
