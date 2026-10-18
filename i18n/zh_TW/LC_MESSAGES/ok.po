@@ -1655,3 +1655,21 @@ msgstr "最近信標模式不需要菱形。將目標星標組放在地圖中央
 
 msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
 msgstr "讀取星標後逐步縮小地圖，儲存通過配準的視圖以自動搜尋信標。主路線座標保持不變。"
+
+msgid "Star Selection"
+msgstr "星標選擇"
+
+msgid "Connected Group"
+msgstr "連通分組"
+
+msgid "All Visible Stars"
+msgstr "所有可見星標"
+
+msgid "Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area."
+msgstr "連通分組會使用距離篩選。所有可見星標會納入中央錄製區域內偵測到的全部星標，並忽略距離篩選；請將其他路線移出該區域。"
+
+msgid "Map Selection Path"
+msgstr "地圖選擇路徑"
+
+msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
+msgstr "選填：依父層到子層的順序，每行填寫一個地圖選單中的正確名稱。此路徑會與路線一併儲存，用於傳送前自動選擇地圖。"

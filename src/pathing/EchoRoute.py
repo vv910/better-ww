@@ -6,6 +6,8 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from src.pathing.RouteMapContext import RouteMapContext
+
 
 def read_map_image(path):
     image = cv2.imdecode(np.fromfile(path, dtype=np.uint8), cv2.IMREAD_COLOR)
@@ -61,6 +63,7 @@ class EchoRoute:
     map_region: tuple[int, int, int, int]
     teleport: 'RouteTeleport | None' = None
     map_layer: str = ''
+    map_context: 'RouteMapContext | None' = None
 
     @classmethod
     def load(cls, path):
@@ -125,7 +128,12 @@ class EchoRoute:
             elif not views:
                 raise ValueError('teleport waypoint is required when no map views are supplied')
             teleport = RouteTeleport(anchor, waypoint, views)
-        return cls(name, image_path, start, waypoints, tuple(region), teleport, map_layer)
+        context = None
+        if 'map_context' in data:
+            context = RouteMapContext.from_dict(data['map_context'])
+            if teleport is None:
+                raise ValueError('Route map_context requires teleport metadata')
+        return cls(name, image_path, start, waypoints, tuple(region), teleport, map_layer, context)
 
 
 def _load_route_map_view(route_directory, data, index):

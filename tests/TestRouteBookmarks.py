@@ -119,6 +119,28 @@ class TestRouteBookmarks(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.load()
 
+    def test_map_context_round_trips_with_teleport_and_preserves_legacy_defaults(self):
+        self.assertIsNone(self.load().map_context)
+        self.data['teleport'] = {'anchor': 'Boss Anchor', 'x': 50, 'y': 50}
+        self.data['map_context'] = {'selection_path': ['测试世界', '独立地图']}
+        route = self.load()
+        self.assertEqual(('测试世界', '独立地图'), route.map_context.selection_path)
+        self.assertEqual('Boss Anchor', route.teleport.anchor)
+
+    def test_map_context_without_entry_cannot_be_loaded(self):
+        self.data['map_context'] = {'selection_path': ['测试地图']}
+        with self.assertRaisesRegex(ValueError, 'requires teleport'):
+            self.load()
+
+    def test_invalid_map_context_fails_during_route_preflight(self):
+        self.data['teleport'] = {'anchor': 'Boss Anchor', 'x': 50, 'y': 50}
+        for value in (None, {}, [], {'selection_path': []}, {'selection_path': ['x\x00y']},
+                      {'selection_path': ['x'], 'guess': True}):
+            with self.subTest(value=value):
+                self.data['map_context'] = value
+                with self.assertRaises(ValueError):
+                    self.load()
+
 
 if __name__ == '__main__':
     unittest.main()

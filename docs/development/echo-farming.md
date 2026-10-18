@@ -16,7 +16,9 @@
 
 ## 3C 首版能力
 
-任务列表新增“按路线刷取 3C 声骸”和“从地图记录 3C 路线”。录制默认使用 `Nearest Beacon`，无需菱形起点：把目标星标组置于大地图中央附近，记录器选定该星标组并选择最近的可见信标作为路线入口。信标到首个星标只受录制半径限制，不受星标间最大距离限制，首段可能跨过障碍；应检查预览，并在需要时补途经星。`Nearest Beacon` 至少需要一个星标；`Diamond` 旧方式仍要求至少两个星标。录制默认捕获传送概览，逐步缩小地图并保存最多 6 张已配准视图，原路线地图及星标坐标不变。支持单条路线和多路线队列，各路线按顺序执行一次。
+任务列表新增“按路线刷取 3C 声骸”和“从地图记录 3C 路线”。录制默认使用 `Nearest Beacon`，无需菱形起点：把目标星标组置于大地图中央附近，记录器选定该星标组并选择最近的可见信标作为路线入口。`Star Selection = Connected Group` 为默认值，按相邻间距和录制半径筛选；`All Visible Stars` 是显式选项，只纳入中央录制区域内的全部已检星标，忽略间距和半径，使用前须把其他路线移出中央区域。最近一次未标注梦枢截图的三颗星均已检出，默认连通分组因相邻间距只保留一颗，另两颗被排除；这不是检测漏点。信标到首个星标只受录制半径限制，首段可能跨过障碍；应检查预览，并在需要时补途经星。`Nearest Beacon` 至少需要一个星标；`Diamond` 旧方式仍要求至少两个星标。录制默认捕获传送概览，逐步缩小地图并保存最多 6 张已配准视图，原路线地图及星标坐标不变。支持单条路线和多路线队列，各路线按顺序执行一次。
+
+录制时可选填写 `Map Selection Path`，每行一个精确地图菜单标签，按父级到子级排列；只需录制时填一次，保存到路线的 `map_context.selection_path`。录制器不点菜单，以免重置已录坐标。执行时任务先回到大世界，再通过 OCR 要求菜单按钮及每个标签唯一、置信度足够且位置稳定后逐级点击；菜单状态变化也须稳定确认。路径只负责选择菜单项，不证明所选地图身份；之后仍须完成概览地图强配准、附近信标与传送按钮验证、传送及落地后小地图起点确认。菜单选择不滚动列表，也不推断当前地图身份，不能声称支持任意地图任意地点的自动传送。尚无梦枢天罗实际展开菜单的素材，且本版不支持 `map_layer` 自动切层。
 
 带书签的路线可从当前世界地图视图搜索信标并传送，不要求角色先站到菱形附近，也不再要求配置 Boss 图鉴锚点。执行链路为：有界地图配准与信标/传送按钮双重验证 → 传送 → 小地图重新确认起点 → 按文件中的点序移动 → 遇敌暂停并战斗 → 搜索并吸收多个声骸 → 重新定位并继续。途经点、战斗点和专门拾取点可分别设置。
 
@@ -49,20 +51,20 @@
 ```
 
 1. 使用鸣潮北向固定的小地图；当前路线控制只覆盖地面行走。队伍需满足现有自动战斗的角色识别和主声骸配置要求。
-2. 打开大地图，把目标路线的星标组放在画面中央附近。`Nearest Beacon` 至少一个星标即可；若选择旧方式 `Diamond`，则至少需要两个星标。默认 `Start Method = Nearest Beacon`，无需菱形；程序以中央星标组筛选路线并自动选择附近可见信标作为入口。信标到首个星标只受录制半径限制，不受星标间最大距离限制，可能跨越障碍；检查预览并在障碍物、弯道附近补途经星。
-3. 运行“从地图记录 3C 路线”。默认 `Capture Teleport Overview = True`：读完星标后逐步缩小地图，最多保存 6 张通过相邻视图配准的地图概览；主地图截图及路线点像素坐标保持不变。默认保存 `routes/3c/local-route.json`、`local-route.map.png`、`local-route.preview.png` 和零到六张 `local-route.view-N.png`。任一同名输出文件已存在时会拒绝覆盖，请另选路线文件名。
-4. 检查预览和 JSON 点序。预览中的 `S` 是选定信标入口，绿色数字/连线是纳入路线的星标顺序，红叉是未纳入的星标。记录器以入口和最近邻关系生成初始顺序，不保证地形上可通行；梦枢预览反馈的一处假星标目前无法用现有叠加预览复现，尚未确认或修复，录制后请人工核对点序，并按实际道路调整 `waypoints`，普通途经点设为 `walk`，怪物点设为 `combat`，拾取点设为 `pickup`。如果能提供未叠加的 `map.png` 和对应 JSON，才能补充真实回归素材。
+2. 打开大地图，把目标路线的星标组放在中央附近，附近已解锁信标保持可见。默认 `Star Selection = Connected Group` 会按相邻间距和半径排除远路线；需要完整选中中央区域内分散的星标时显式选择 `All Visible Stars`，并先把其他路线移出中央区域。`Nearest Beacon` 至少一个星标即可；旧方式 `Diamond` 至少需要两个。默认 `Start Method = Nearest Beacon`，无需菱形；程序以当前筛选出的星标选择附近可见信标作为入口。信标到首个星标只受录制半径限制，不受星标间最大距离限制，可能跨越障碍；检查预览并在障碍物、弯道附近补途经星。
+3. 运行“从地图记录 3C 路线”。可选在 `Map Selection Path` 中每行填一个准确菜单标签，顺序从父级到子级；菜单项按游戏当前显示的语言填写。此字段只记录上下文，不会在录制时点击菜单。默认 `Capture Teleport Overview = True`：读完星标后逐步缩小地图，最多保存 6 张通过相邻视图配准的地图概览；主地图截图及路线点像素坐标保持不变。默认保存 `routes/3c/local-route.json`、`local-route.map.png`、`local-route.preview.png` 和零到六张 `local-route.view-N.png`。任一同名输出文件已存在时会拒绝覆盖，请另选路线文件名。
+4. 检查预览和 JSON 点序。预览中的 `S` 是选定信标入口，绿色数字/连线是纳入路线的星标顺序，红叉是未纳入的星标。最新梦枢未标注截图中的三颗星均已检出，默认连通模式因相邻距离将两颗分到组外；如目标是整组录制，使用 `All Visible Stars` 并先把其他路线移出中央区域。自动最近邻顺序不保证地形上可通行；仍需按实际道路调整 `waypoints`，普通途经点设为 `walk`，怪物点设为 `combat`，拾取点设为 `pickup`。
 5. 在“按路线刷取 3C 声骸”的 `Route File` 中选择 JSON 并启动。任务会从当前世界地图视图搜索并验证书签信标，传送后再用小地图确认路线起点；不需先把角色站在旧菱形旁。若配准或落点确认失败，会停止而不按猜测位置行走。
 
 路线使用截图像素坐标；图片和 JSON 配套。不能直接导入 BetterGI 的原神地图坐标，也不能用另一张缩放或裁剪不同的地图图片替换原图。
 
-录制会限制点位范围，避免把其他路线的远处星标串进来：
+默认 `Connected Group` 通过距离限制排除其他路线的远处星标：
 
 - “相邻星标最大距离 / Maximum Marker Gap”默认 200。仅限制后续星标到星标的连接：从当前星标选择距离不超过此值的最近星标，找不到下一点即结束。Nearest Beacon 的信标到首个星标不受此项限制。
 - “录制范围半径 / Recording Radius”默认 500。只考虑起点周围这个半径内的星标，防止沿一串星标不断延伸到另一条路线。
 - 两个数值均以 1080p 像素为基准，按截图高度换算；2560×1440 下默认约为 267 和 667 个截图像素。它们不是游戏米数，地图缩放变化后对应的地理范围也会变化。
 
-如果近邻的两条路线仍被连接，调小相邻距离或录制半径并检查预览。任务会报告候选星标与纳入/排除数量。Nearest Beacon 没有星标、Diamond 少于两个星标、找不到入口信标或无法识别标记时会保存诊断图，不会把骷髅、叶子、任务图标等自动转换成星标。
+选择 `All Visible Stars` 时，记录器纳入中央 `recording_region` 内的全部检测星标，不应用以上间距或半径筛选；其他路线必须移到该区域之外。此模式不会判断星标是否可通行或属于同一条路线，务必检查预览。两种模式都会报告纳入/排除数量。Nearest Beacon 没有星标、Diamond 少于两个星标、找不到入口信标或无法识别标记时会保存诊断图，不会把骷髅、叶子、任务图标等自动转换成星标。
 
 ## 多条路线与自动传送 {#route-queue}
 
@@ -107,6 +109,9 @@ routes/3c/route-c.json
        "map_region": [538, 130, 1670, 972]}
     ]
   },
+  "map_context": {
+    "selection_path": ["地图父级名称", "子级地图名称"]
+  },
   "waypoints": [
     {"x": 1140, "y": 540, "action": "walk", "tolerance": 12, "timeout": 120},
     {"x": 1090, "y": 590, "action": "combat", "tolerance": 10, "timeout": 120},
@@ -115,7 +120,7 @@ routes/3c/route-c.json
 }
 ```
 
-所有 JSON 中的图片路径相对于路线 JSON 所在目录解析，支持中文路径。主路线图、预览图和全部 `.view-N.png` 必须一起迁移。`map_region` 是图片中的可见地图矩形 `[左, 上, 右, 下]`，省略时使用全图；每个书签点都必须落在对应图片的区域内。`views` 最多 8 项；录制器默认最多生成 6 张概览图并保留主图视图。`anchor` 可以为空或省略，但旧格式没有 `views` 时仍须提供非空 Boss 锚点和主图中的信标 `x/y`。`tolerance` 为截图像素单位，默认 12；`timeout` 为该点移动时间预算，默认 120 秒，独立的战斗时间不计入移动预算，同一点最多处理中途遇敌五次。
+所有 JSON 中的图片路径相对于路线 JSON 所在目录解析，支持中文路径。主路线图、预览图和全部 `.view-N.png` 必须一起迁移。`map_region` 是图片中的可见地图矩形 `[左, 上, 右, 下]`，省略时使用全图；每个书签点都必须落在对应图片的区域内。`views` 最多 8 项；录制器默认最多生成 6 张概览图并保留主图视图。可选 `map_context.selection_path` 保存精确地图菜单标签列表，只能与 `teleport` 一起使用；上例的名称是占位文本，须替换为录制时实际地图菜单所显示的标签，不要硬编码为梦枢或用于所有路线。此字段不保存已验证的地图身份。`anchor` 可以为空或省略，但旧格式没有 `views` 时仍须提供非空 Boss 锚点和主图中的信标 `x/y`。`tolerance` 为截图像素单位，默认 12；`timeout` 为该点移动时间预算，默认 120 秒，独立的战斗时间不计入移动预算，同一点最多处理中途遇敌五次。
 
 ## 当前边界与后续扩展
 
@@ -128,6 +133,8 @@ routes/3c/route-c.json
 ## 离线验证
 
 v0.1.1-beta.1 的全套检查按 56 个模块分别启动进程，共通过 494 项测试；后续复核新增的防误跳、颜色遮罩和缩放面积回归也通过定向测试，文档通过严格构建。下面较早的测试数量为历次修复记录，不应相加。测试覆盖合成地形、多个真实地图样例、图标干扰拒绝、路线队列、恢复和取消；这些结果不等于测试电脑实机验收。
+
+本轮录制分组与地图上下文改动通过 113 项逻辑测试、`Test3CRouteImages` 单模块 16 项真实截图测试，以及 1 项地图切换按钮 OCR 测试。梦枢去敏图回归确认三个星标均检出：默认 `Connected Group` 录入一颗、排除两颗；`All Visible Stars` 录入三颗。以上是离线/截图验证，不代表完整实机传送、跨地图或跨层验收。
 
 最近加入的概览书签录制、限时地图搜索、信标/传送确认、地形遮罩和导航阻塞恢复只完成离线验证，尚未在测试电脑上完成完整游戏验收。不同地图缩放、遮挡、楼层界面和游戏版本都可能导致识别失败；本指南中的旧测试记录是开发阶段历史结果，不代表这些新流程已经实机通过，也不保证地图永不失配。
 
@@ -147,10 +154,10 @@ v0.1.1-beta.1 的全套检查按 56 个模块分别启动进程，共通过 494 
 
 收到配套地图后，复现了有效区域特征被整图限额挤占的问题：原始图的有效区域在整图遮罩方式下只保留 2687 个特征；先裁有效区域可使用完整的 8000 个预算，同一张失败小地图由 4 个几何内点提高到 26 个，内点比例约 0.81。原图中账号 UI 已移除后纳入回归素材；去除该 UI 后旧实现仍只有 4 个内点。新增测试包含区域外强纹理干扰、不依赖区域外像素的特征提取、非零坐标偏移、无效区域拒绝，另用已有海岛地图三个位置和三种缩放作独立检验，并验证用户图的缩放、对比度、JPEG 压缩与错误地图交叉拒绝。最终共通过 74 项逻辑测试、13 项截图测试；这提供跨样例的回归证据，不代表所有游戏区域和动态遮挡条件都已实机验收。
 
-运行路线、恢复和 4C 逻辑测试：
+运行路线、恢复和 4C 逻辑测试（含地图上下文选择）：
 
 ```powershell
-.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestMapFeatureRegions tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMarkers tests.TestRouteMarkerSelection tests.TestRouteMapContext tests.TestRouteSteering tests.TestMinimapHeading tests.TestMinimapTracker tests.TestMapFeatureRegions tests.TestEchoRoute tests.TestFarm3CEchoTask tests.TestEchoFarmingRecovery tests.TestFarmEchoPickup tests.TestFarmEchoTeleport tests.TestFarmEchoTaskEchoRate tests.TestDeathReentry tests.TestBaseCombatTask tests.TestDomainRecoveryLoop
 ```
 
 截图测试需按仓库惯例逐个模块启动进程，避免 `TaskTestCase` 的全局截图捕获器在前一个模块销毁后失效：
@@ -162,6 +169,7 @@ v0.1.1-beta.1 的全套检查按 56 个模块分别启动进程，共通过 494 
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMap
 .\.venv\Scripts\python.exe -u run_test.py tests.TestOCR
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
+.\.venv\Scripts\python.exe -u run_test.py tests.TestMapContextImages
 ```
 
 路线测试覆盖顺序、动作分派、中途战斗、起点校验、定位丢失、缩放匹配、位置跳变拒绝、重复拾取、超时、取消、死亡和路线导出。定位测试包含仓库真实的鸣潮地图/小地图截图，另有合成地形缩放与异常输入测试。
@@ -171,6 +179,8 @@ v0.1.1-beta.1 的全套检查按 56 个模块分别启动进程，共通过 494 
 借鉴 [BetterGI PathExecutor 的位置停滞检测](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoPathing/PathExecutor.cs#L860-L890) 和 [TrapEscaper 的有界撤退/侧移](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoPathing/TrapEscaper.cs)；鸣潮实现使用自己的位置窗口与受限动作，不复制原神路线或素材。[脚本仓库](https://github.com/babalae/bettergi-scripts-list/tree/81bc0f00b41add3beb3e9ede9f88aac1714d0e5a) 只作为格式参考。
 
 持续移动参考 `PathExecutor.MoveTo()` 的按住移动键、限频定位/纠偏和退出释放；队列传送参考 `HandleTeleportWaypoint()` 与 [TpTask](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs) 的传送入口和传送后重定位。鸣潮实现使用自己的图鉴界面与录制地图，不兼容 BetterGI 的世界坐标和传送点数据库。
+
+BetterGI 的 [TpTask.cs](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs) 与 [PathRecorder.cs](https://github.com/babalae/better-genshin-impact/blob/704d920d6d8fe09ae86628dab1e48464f0e4595e/BetterGenshinImpact/GameTask/AutoPathing/PathRecorder.cs) 固定参考于提交 `704d920d6d8fe09ae86628dab1e48464f0e4595e`。其路线记录保存地图与传送点目录中的实际坐标点，不是从自定义星标自动规划可通行路径；本项目仍需人工标注并核对路线。后续地图匹配研究中，官方 `mapId=912`（梦枢天罗，含 60 张瓦片）的一张瓦片与用户截图得到 448–567 个 RANSAC 几何内点；同一截图对 `mapId=8` 两个现有截图得到 945 和 612 个内点。`mapId=912` 的竞争假候选虽然内点数较高，空间覆盖却低于 0.4%；真实候选覆盖约 28.8%，说明还必须验证内点空间分布。此研究未加入产品，也未验证游戏坐标，不能视为现有地图身份识别或传送能力。
 
 定位修复另复核 BetterGI 的 [SIFT 地图实现](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/Common/Map/Maps/Base/SceneBaseMap.cs)、[模板地图实现](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/Common/Map/Maps/Base/SceneBaseMapByTemplateMatch.cs) 与 [NavigationInstance](https://github.com/babalae/better-genshin-impact/blob/b3f90e70494320639eeccc8c559612d02d2d9ef0/BetterGenshinImpact/GameTask/AutoPathing/NavigationInstance.cs)。其模板模式采用多尺度、遮罩、局部搜索和置信度检查；并非仅有 SIFT 可选。先前版本修复了鸣潮 SIFT 的有效区域提取；本轮进一步统一排除 UI 特征，并对满足 SIFT 基础几何条件但空间跨度不足的候选增加独立地形相关验证，仍须满足纹理分区、相关峰间隔和候选位置一致性，不引入原神素材或世界坐标。特征限额先于遮罩的执行顺序可见 [OpenCV 官方 SIFT 源码](https://github.com/opencv/opencv/blob/4.x/modules/features2d/src/sift.dispatch.cpp)：`retainBest` 在 `runByPixelsMask` 之前。
 

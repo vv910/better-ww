@@ -1,5 +1,6 @@
 import unittest
 import tempfile
+from dataclasses import replace
 from types import SimpleNamespace
 from pathlib import Path
 from unittest.mock import Mock, call, patch
@@ -12,6 +13,7 @@ from src.pathing.MapLocalizer import MapPosition
 from src.pathing.MinimapHeading import HeadingEstimate
 from src.pathing.FallGuard import FallGuard
 from src.pathing.RouteSteering import RouteSteering
+from src.pathing.RouteMapContext import RouteMapContext
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.combat.CombatCheck import CombatCheck
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
@@ -22,6 +24,7 @@ def make_task():
     task = Farm3CEchoTask.__new__(Farm3CEchoTask)
     task.config = {'Route File': 'route.json', 'Combat Timeout': 10, 'Pickup Timeout': 10,
                    'Auto Glide when Airborne': False}
+    task.key_config = {}
     task.info = {}
     task._combat_deadline = None
     task._in_combat = False
@@ -416,6 +419,38 @@ class TestFarm3CEchoTask(unittest.TestCase):
             self.task.teleport_to_route(route)
         self.task.click_box.assert_not_called()
         self.task.screenshot.assert_called_once_with('3c-teleport-map-mismatch')
+
+    def test_saved_map_context_is_selected_before_beacon_and_teleport(self):
+        route = replace(self.prepare_teleport_task(), map_context=RouteMapContext(('测试独立地图',)))
+        events = Mock()
+        events.attach_mock(self.task.click_box, 'teleport')
+        with patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector_type:
+            events.attach_mock(selector_type.return_value.select, 'select_map')
+            self.task.teleport_to_route(route)
+        self.assertEqual(call.select_map(route.map_context), events.mock_calls[0])
+        self.task.openF2Book.assert_not_called()
+        self.task.localizer.project_map_point.assert_called_once()
+        self.task.click_box.assert_called_once()
+        self.task.wait_in_team_and_world.assert_called_once_with(time_out=30)
+
+    def test_failed_context_selection_cannot_fall_back_to_clicking_a_beacon(self):
+        route = replace(self.prepare_teleport_task(), map_context=RouteMapContext(('测试独立地图',)))
+        with patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector_type:
+            selector_type.return_value.select.side_effect = RuntimeError('map label not found')
+            with self.assertRaisesRegex(RuntimeError, 'map label not found'):
+                self.task.teleport_to_route(route)
+        self.task.localizer.project_map_point.assert_not_called()
+        self.task.click_box.assert_not_called()
+        self.task.wait_in_team_and_world.assert_not_called()
+
+    def test_context_clicks_alone_are_not_proof_of_correct_map(self):
+        route = replace(self.prepare_teleport_task(), map_context=RouteMapContext(('测试独立地图',)))
+        self.task.localizer.project_map_point.return_value = None
+        with patch('src.task.Farm3CEchoTask.RouteMapSelector'), \
+                self.assertRaisesRegex(RuntimeError, 'align route anchor map'):
+            self.task.teleport_to_route(route)
+        self.task.click_box.assert_not_called()
+        self.task.wait_in_team_and_world.assert_not_called()
 
     def test_locked_beacon_stops_without_assuming_teleport_succeeded(self):
         route = self.prepare_teleport_task()

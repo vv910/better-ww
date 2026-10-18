@@ -1525,3 +1525,21 @@ msgstr "最寄りのビーコン方式ではひし形は不要です。対象の
 
 msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
 msgstr "星印の読み取り後に地図を段階的に縮小し、ビーコン検索用に照合済みの地図ビューを保存します。ルート座標は変わりません。"
+
+msgid "Star Selection"
+msgstr "星の選択"
+
+msgid "Connected Group"
+msgstr "連結グループ"
+
+msgid "All Visible Stars"
+msgstr "表示中のすべての星"
+
+msgid "Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area."
+msgstr "連結グループでは距離フィルターを使用します。表示中のすべての星では、中央の記録エリア内で検出された星をすべて含め、距離フィルターを無視します。他のルートはエリア外に移動してください。"
+
+msgid "Map Selection Path"
+msgstr "マップ選択パス"
+
+msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
+msgstr "任意：マップメニューの正確なラベルを、親から子の順に1行ずつ入力します。テレポート前のマップ自動選択用に、このルートと一緒に保存されます。"

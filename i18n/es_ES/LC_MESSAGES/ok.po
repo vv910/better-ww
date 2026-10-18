@@ -1462,3 +1462,21 @@ msgstr "Baliza más cercana no necesita diamante. Centra el grupo de estrellas d
 
 msgid "After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged."
 msgstr "Tras leer las estrellas, aleja el mapa y guarda vistas verificadas para buscar balizas automáticamente. Las coordenadas originales de la ruta no cambian."
+
+msgid "Star Selection"
+msgstr "Selección de estrellas"
+
+msgid "Connected Group"
+msgstr "Grupo conectado"
+
+msgid "All Visible Stars"
+msgstr "Todas las estrellas visibles"
+
+msgid "Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area."
+msgstr "Grupo conectado usa los filtros de distancia. Todas las estrellas visibles incluye todas las estrellas detectadas dentro del área central de grabación e ignora los filtros de distancia; mueve otras rutas fuera de esa área."
+
+msgid "Map Selection Path"
+msgstr "Ruta de selección del mapa"
+
+msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
+msgstr "Opcional: etiquetas exactas del menú del mapa, una por línea desde el nivel superior hasta el inferior. Se guarda con esta ruta para seleccionar el mapa automáticamente antes de teletransportarse."

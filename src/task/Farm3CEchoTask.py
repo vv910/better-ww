@@ -14,6 +14,7 @@ from src.pathing.MapPlayer import find_map_player
 from src.pathing.MinimapHeading import MinimapHeading
 from src.pathing.MovementWindow import MovementWindow
 from src.pathing.RouteMarkers import RouteMarkerDetector
+from src.pathing.RouteMapContext import RouteMapSelector, parse_selection_path
 from src.pathing.RouteSteering import RouteSteering
 from src.pathing.RouteMapNavigation import RouteMapNavigator, capture_map_views, map_region
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
@@ -98,7 +99,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.use_liberation = self.config.get('Use Liberation', True)
         self.start_time = time.time()
         WWOneTimeTask.run(self)
-        self.wait_in_team_and_world(time_out=10)
+        # Like the teleport executor, first return from map/menu UI to the world HUD.
+        self.wait_in_team_and_world(time_out=10, esc=True)
         previous_threads = cv2.getNumThreads()
         try:
             # OpenCV's default worker count can contend with the game on high-core CPUs.
@@ -227,12 +229,19 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.stop_route_movement()
         self.reset_to_false('3C route teleport')
         self.log_info(f'Teleport to 3C route / 传送到3C路线: {route.name}, anchor={route.teleport.anchor}')
-        if route.teleport.anchor:
+        if route.teleport.anchor and route.map_context is None:
             self.open_anchor_map(route.teleport.anchor)
         else:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.5)
             if not self.wait_feature('map_my_location', time_out=3, raise_if_not_found=False):
                 raise RuntimeError('Cannot open map for route entry / 无法打开路线传送地图')
+        if route.map_context is not None:
+            self.info_set('3C Stage', 'Selecting Route Map / 正在选择路线地图')
+            RouteMapSelector(self).select(route.map_context)
+            self.next_frame()
+            if not self.wait_feature('map_my_location', time_out=3, raise_if_not_found=False):
+                self.screenshot('3c-map-context-not-closed')
+                raise RuntimeError('Map selector did not return to map / 地图选择未完成，停止传送')
         if route.teleport.views:
             beacon = RouteMapNavigator(self, route).find(search=True)
             if beacon is None:
@@ -683,13 +692,20 @@ class Record3CEchoRouteTask(BigMap):
         self.description = RECORD_DESCRIPTION
         self.default_config.update({'Route File': 'routes/3c/local-route.json', 'Route Name': 'Local 3C Route',
                                     'Start Method': 'Nearest Beacon', 'Capture Teleport Overview': True,
+                                    'Star Selection': 'Connected Group',
+                                    'Map Selection Path': '',
                                     'Teleport Anchor': '',
                                     'Maximum Marker Gap': 200, 'Recording Radius': 500})
         self.config_type['Start Method'] = {'type': 'drop_down', 'options': ['Nearest Beacon', 'Diamond']}
+        self.config_type['Star Selection'] = {
+            'type': 'drop_down', 'options': ['Connected Group', 'All Visible Stars']}
+        self.config_type['Map Selection Path'] = {'type': 'text_edit'}
         self.config_description.update({
             'Route File': 'Save a new JSON route and map image. Existing files are never overwritten.',
             'Route Name': 'Name of this local route.',
             'Start Method': 'Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview.',
+            'Star Selection': 'Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area.',
+            'Map Selection Path': 'Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting.',
             'Capture Teleport Overview': 'After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged.',
             'Teleport Anchor': 'Optional: nearby fixed Boss name in your game language. Keep the start within 50 map pixels of an unlocked beacon.',
             'Maximum Marker Gap': 'Maximum distance between consecutive stars, in 1080p pixels. Distant groups are excluded. Reduce this to separate nearby routes.',
@@ -699,6 +715,15 @@ class Record3CEchoRouteTask(BigMap):
     def validate_config(self, key, value):
         if key == 'Start Method' and value not in ('Nearest Beacon', 'Diamond'):
             return 'Start Method must be Nearest Beacon or Diamond'
+        if key == 'Star Selection' and value not in ('Connected Group', 'All Visible Stars'):
+            return 'Star Selection must be Connected Group or All Visible Stars'
+        if key == 'Map Selection Path':
+            try:
+                if isinstance(value, str) and not value.strip():
+                    return None
+                parse_selection_path(value)
+            except (TypeError, ValueError) as error:
+                return str(error)
         if key in ('Maximum Marker Gap', 'Recording Radius'):
             try:
                 number(value, key, 10, 2000)
@@ -716,6 +741,9 @@ class Record3CEchoRouteTask(BigMap):
         method = self.config.get('Start Method', 'Nearest Beacon')
         if self.validate_config('Start Method', method):
             raise ValueError('Unknown Start Method')
+        selection = self.config.get('Star Selection', 'Connected Group')
+        if self.validate_config('Star Selection', selection):
+            raise ValueError('Unknown Star Selection')
         self.reset()
         self.excluded_stars = []
         self._entry_beacon = None
@@ -740,6 +768,11 @@ class Record3CEchoRouteTask(BigMap):
         if max_distance is not None:
             gap = number(max_distance, 'max_distance', 0)
         candidates = [convert(star) for star in stars]
+        all_visible = selection == 'All Visible Stars'
+        if all_visible:
+            left, top, right, bottom = region
+            candidates = [star for star in candidates
+                          if left <= star.center()[0] < right and top <= star.center()[1] < bottom]
         if method == 'Nearest Beacon':
             left, top, right, bottom = region
             beacons = self.find_feature(['map_way_point', 'map_way_point_big'], frame=self.big_map_frame,
@@ -748,19 +781,23 @@ class Record3CEchoRouteTask(BigMap):
                 self.screenshot('3c-record-beacon-missing', frame=self.big_map_frame)
                 raise ValueError('Need visible stars and an unlocked beacon / 地图中央需要有星标和已解锁信标，无需放置菱形')
             center = ((left + right) / 2, (top + bottom) / 2)
-            seed = min(candidates, key=lambda star: math.dist(star.center(), center))
-            # Select a connected group around the central star before choosing its entry.
-            group, pending = [seed], [seed]
-            while pending:
-                current = pending.pop()
-                for star in candidates:
-                    if (star not in group and star.center_distance(seed) <= radius
-                            and (gap == 0 or star.center_distance(current) <= gap)):
-                        group.append(star)
-                        pending.append(star)
+            if all_visible:
+                group = candidates
+            else:
+                seed = min(candidates, key=lambda star: math.dist(star.center(), center))
+                # Select a connected group around the central star before choosing its entry.
+                group, pending = [seed], [seed]
+                while pending:
+                    current = pending.pop()
+                    for star in candidates:
+                        if (star not in group and star.center_distance(seed) <= radius
+                                and (gap == 0 or star.center_distance(current) <= gap)):
+                            group.append(star)
+                            pending.append(star)
             self._entry_beacon = min(beacons, key=lambda beacon: min(beacon.center_distance(star) for star in group))
             self.diamond = self._entry_beacon  # Legacy preview/start field; it now represents the real beacon.
-            nearby = [star for star in group if star.center_distance(self.diamond) <= radius]
+            nearby = group if all_visible else [star for star in group
+                                                if star.center_distance(self.diamond) <= radius]
         else:
             if len(diamonds) != 1:
                 self.screenshot('3c-record-marker-failed', frame=self.big_map_frame)
@@ -768,8 +805,12 @@ class Record3CEchoRouteTask(BigMap):
                     raise ValueError('Multiple start diamonds found / 发现多个起点菱形，请调整地图视野，只保留当前路线的一个菱形')
                 raise ValueError('Start diamond not found / 未识别到起点菱形，请移开遮挡并将菱形放在中央地图区域')
             self.diamond = convert(diamonds[0])
-            nearby = [star for star in candidates if star.center_distance(self.diamond) <= radius]
-        if method == 'Nearest Beacon' and nearby:
+            nearby = candidates if all_visible else [star for star in candidates
+                                                     if star.center_distance(self.diamond) <= radius]
+        if all_visible and nearby:
+            first = min(nearby, key=lambda star: star.center_distance(self.diamond))
+            selected = [first, *sort_stars([star for star in nearby if star is not first], first, 0)]
+        elif method == 'Nearest Beacon' and nearby:
             # The entry leg is bounded by Recording Radius. Marker Gap only separates
             # star groups; a real beacon need not sit within one star-to-star step.
             first = min(nearby, key=lambda star: star.center_distance(self.diamond))
@@ -815,6 +856,7 @@ class Record3CEchoRouteTask(BigMap):
         return preview
 
     def run(self):
+        selection_path = parse_selection_path(self.config.get('Map Selection Path', ''))
         path = Path(get_path_relative_to_exe(self.config.get('Route File'))).resolve()
         image_path = path.with_suffix('.map.png')
         preview_path = path.with_suffix('.preview.png')
@@ -867,6 +909,10 @@ class Record3CEchoRouteTask(BigMap):
             if math.dist(beacon.center(), (x, y)) > data['start']['tolerance']:
                 raise ValueError('Place the diamond within 50 map pixels of an unlocked beacon / 起点菱形应在已解锁信标50地图像素以内')
             data['teleport'] = {'anchor': anchor, 'x': beacon.center()[0], 'y': beacon.center()[1]}
+        if selection_path and 'teleport' not in data:
+            raise ValueError('Map Selection Path requires teleport metadata / 地图选择路径需要传送信息')
+        if selection_path and 'teleport' in data:
+            data['map_context'] = {'selection_path': list(selection_path)}
         MapLocalizer(self.big_map_frame, region)  # reject unusable snapshots before saving
         path.parent.mkdir(parents=True, exist_ok=True)
         encoded, image = cv2.imencode('.png', self.big_map_frame)

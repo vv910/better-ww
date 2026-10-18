@@ -229,6 +229,23 @@ class Test3CRouteImages(TaskTestCase):
             self.assertGreaterEqual(len(recorder.stars), 3)
             self.assertIsNotNone(recorder._entry_beacon)
 
+    def test_all_visible_stars_records_every_real_star_in_the_central_area(self):
+        with tempfile.TemporaryDirectory() as directory:
+            self.set_image('tests/images/3c-map-dream-stars.png')
+            results = {}
+            for selection, expected in (('All Visible Stars', (3, 0)), ('Connected Group', (1, 2))):
+                with self.subTest(selection=selection):
+                    recorder = Record3CEchoRouteTask(self.task.executor, None)
+                    recorder.feature_set = self.task.feature_set
+                    recorder.after_init(executor=self.task.executor, scene=self.task.scene)
+                    recorder.config = {'Route File': str(Path(directory) / f'{selection}.json'),
+                                       'Star Selection': selection}
+                    recorder.load_stars(wait_world=False)
+                    results[selection] = (len(recorder.stars) - 1, len(recorder.excluded_stars))
+                    self.assertEqual(expected, results[selection])
+                    self.assertIsNotNone(recorder._entry_beacon)
+            self.assertEqual({'All Visible Stars': (3, 0), 'Connected Group': (1, 2)}, results)
+
     def test_nearest_beacon_records_real_beacon_and_ignores_multiple_diamonds(self):
         frame = np.zeros((1440, 2560, 3), np.uint8)
         crop = cv2.imread('tests/images/3c-map-overlap.png')
@@ -253,7 +270,8 @@ class Test3CRouteImages(TaskTestCase):
             diamonds = [MarkerMatch(700, 500, 30, 30, .95), MarkerMatch(800, 650, 30, 30, .95)]
             path = Path(directory) / 'nearest-route.json'
             recorder.config = {'Route File': str(path), 'Route Name': 'nearest beacon',
-                               'Capture Teleport Overview': True}
+                               'Capture Teleport Overview': True,
+                               'Map Selection Path': '区域\n梦境'}
 
             def fake_overviews(task, map_frame, point, map_region):
                 return [(map_frame.copy(), point, map_region)]
@@ -265,6 +283,8 @@ class Test3CRouteImages(TaskTestCase):
                 recorder.run()
 
             route = EchoRoute.load(path)
+            import json
+            self.assertEqual({'selection_path': ['区域', '梦境']}, json.loads(path.read_text(encoding='utf-8'))['map_context'])
             self.assertEqual((bx, by), (route.start.x, route.start.y))
             self.assertEqual(2, len(route.teleport.views))
             self.assertEqual(1, capture.call_count)
