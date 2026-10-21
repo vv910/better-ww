@@ -8,12 +8,18 @@ from dataclasses import dataclass
 import math
 import time
 
+import cv2
+import numpy as np
 from ok import TaskDisabledException
 
 
 _OPEN_LABELS = ("切换地图", "切換地圖", "Switch Map", "Change Map")
 _OPEN_REGION = (.68, .84, .99, .99)
-_MENU_REGION = (.08, .08, .96, .94)
+# The opening button and the opened picker's heading are different controls.
+# Exclude the heading's icon: it can be recognized as a Chinese character.
+_TITLE_REGION = (.572, .035, .705, .095)
+_MAP_LIST_REGION = (.555, .12, .71, .85)
+_AREA_LIST_REGION = (.76, .12, .96, .84)
 _MAX_LEVELS = 4
 _MAX_LABEL_LENGTH = 80
 _POLL_SECONDS = 3.0
@@ -55,6 +61,46 @@ def parse_selection_path(text: str) -> tuple[str, ...]:
     if not labels:
         return ()
     return RouteMapContext(labels).selection_path
+
+
+def menu_choice_selected(frame, box, pane):
+    """Positive evidence from the picker row, never from background map text.
+
+    Map rows use a white selection card; grey world cards are not selected.
+    Area rows instead use a filled radio dot before the text. Unknown styles
+    return False and must not be treated as permission to skip an ancestor.
+    """
+    if not isinstance(frame, np.ndarray) or frame.ndim != 3 or frame.shape[2] != 3:
+        return False
+    height, width = frame.shape[:2]
+    _, cy = box.center()
+    text_height = max(1, float(box.height))
+    if pane == 'map':
+        x0, x1 = int(width * .557), int(width * .705)
+        y0, y1 = int(cy - text_height * .8), int(cy + text_height * .8)
+    elif pane == 'area':
+        x0, x1 = int(box.x - text_height * 2), int(box.x - text_height * .15)
+        y0, y1 = int(cy - text_height * .6), int(cy + text_height * .6)
+    else:
+        raise ValueError('unknown map picker pane')
+    crop = frame[max(0, y0):min(height, y1), max(0, x0):min(width, x1)]
+    if crop.size == 0:
+        return False
+    neutral_white = ((crop.min(axis=2) >= 210) & (np.ptp(crop, axis=2) <= 45))
+    if pane == 'map':
+        return bool(neutral_white.mean() >= .65)
+
+    # A card's thin white outline is not a selected radio dot. Require a
+    # compact filled component with its centre aligned to the text baseline.
+    count, _, stats, centers = cv2.connectedComponentsWithStats(neutral_white.astype(np.uint8))
+    for index in range(1, count):
+        _, _, w, h, area = stats[index]
+        if not text_height * .12 <= w <= text_height * .8:
+            continue
+        if .6 <= w / max(1, h) <= 1.6 and area / max(1, w * h) >= .55:
+            if abs(centers[index][1] + max(0, y0) - cy) <= text_height * .35:
+                return True
+    return False
 
 
 class RouteMapSelector:
@@ -117,68 +163,110 @@ class RouteMapSelector:
             self.task.sleep(_POLL_INTERVAL)
         return None
 
-    def _failure(self, reason):
+    def _failure(self, reason, label=None):
         self.task.screenshot(f"3c-map-context-{reason}")
-        raise RuntimeError(f"Map context selection failed / 地图选择失败，请核对菜单文字与截图: {reason}")
+        detail = '' if label is None else f', label={label!r}'
+        raise RuntimeError(f"Map context selection failed / 地图选择失败，请核对菜单文字与截图: {reason}{detail}")
 
-    def _ui_signature(self, boxes):
-        tolerance = self._position_tolerance()
-        return frozenset((box.name.strip(), round(box.center()[0] / tolerance),
-                          round(box.center()[1] / tolerance))
-                         for box in boxes
-                         if isinstance(getattr(box, "name", None), str)
-                         and self._confidence(box) >= _MIN_OCR_CONFIDENCE)
+    def _has_switch_label(self, region):
+        return any(self._exact(box, label) for box in self._ocr(region) for label in _OPEN_LABELS)
 
-    def _wait_for_stable_ui_change(self, before, region, timeout=_POLL_SECONDS):
-        """Wait up to three seconds for two consecutive OCR-stable changed states."""
-        old_signature = self._ui_signature(before)
+    def _menu_open(self):
+        return self._has_switch_label(_TITLE_REGION)
+
+    def _wait_state(self, predicate, timeout=_POLL_SECONDS):
+        """Require two fresh observations; tolerate brief transitions/OCR misses."""
         deadline = time.monotonic() + timeout
-        previous = None
+        previous = False
         while time.monotonic() <= deadline:
-            boxes = self._ocr(region)
-            current = self._ui_signature(boxes)
-            if current and current != old_signature and current == previous:
-                return boxes
-            previous = current if current and current != old_signature else None
+            current = bool(predicate())
+            if current and previous:
+                return True
+            previous = current
             self.task.next_frame()
             self.task.sleep(_POLL_INTERVAL)
-        return None
+        return False
+
+    def _choices(self, label, include_areas):
+        regions = [('map', _MAP_LIST_REGION)]
+        if include_areas:
+            regions.append(('area', _AREA_LIST_REGION))
+        return [(box, pane) for pane, region in regions for box in self._ocr(region)
+                if self._exact(box, label)]
+
+    def _selected(self, choice):
+        box, pane = choice
+        return menu_choice_selected(getattr(self.task, 'frame', None), box, pane)
+
+    def _stable_choice(self, label, include_areas):
+        deadline = time.monotonic() + _POLL_SECONDS
+        previous = None
+        previous_selected = None
+        while time.monotonic() <= deadline:
+            if self._menu_open():
+                choices = self._choices(label, include_areas)
+                if len(choices) > 1:
+                    self._failure('ambiguous-label', label)
+                current = choices[0] if choices else None
+                selected = self._selected(current) if current is not None else None
+                if (current is not None and previous is not None and current[1] == previous[1]
+                        and self._same_place(current[0], previous[0])
+                        and selected == previous_selected):
+                    return current
+                previous = current
+                previous_selected = selected
+            else:
+                previous = None
+            self.task.next_frame()
+            self.task.sleep(_POLL_INTERVAL)
+        self._failure('label-not-uniquely-found', label)
+
+    def _choice_applied(self, label, pane, last):
+        if not self._menu_open():
+            # A missing title alone can be an OCR miss or a closed game map.
+            return last and self._has_switch_label(_OPEN_REGION)
+        choices = self._choices(label, include_areas=pane == 'area')
+        matches = [choice for choice in choices if choice[1] == pane]
+        return len(matches) == 1 and self._selected(matches[0])
+
+    def _close_picker(self):
+        # Leaf selection may dismiss the picker automatically. Only dismiss an
+        # observed picker; a map's location button also exists behind the panel.
+        if self._menu_open():
+            self.task.send_key('esc')
+        if not self._wait_state(lambda: not self._menu_open() and self._has_switch_label(_OPEN_REGION)):
+            self._failure('picker-not-closed')
 
     def select(self, context: RouteMapContext):
         if not isinstance(context, RouteMapContext):
             raise TypeError("context must be a RouteMapContext")
 
         try:
-            # Baseline prevents clicking a same-named label already visible behind the picker.
-            baseline = self._ocr(_MENU_REGION)
-            button_hits = [(box, box.name.strip()) for box in self._ocr(_OPEN_REGION)
-                           if any(self._exact(box, label) for label in _OPEN_LABELS)]
-            if len(button_hits) > 1:
-                self._failure("ambiguous-switch-button")
-            if not button_hits:
-                self._failure("switch-button-not-found")
-            _, button_label = button_hits[0]
-            button = self._stable_unique(button_label, _OPEN_REGION)
-            if button is None:
-                self._failure("unstable-switch-button")
-
-            self.task.click(button)
-            opened = self._wait_for_stable_ui_change(baseline, _MENU_REGION)
-            if opened is None:
+            if not self._menu_open():
+                button_hits = [box for box in self._ocr(_OPEN_REGION)
+                               if any(self._exact(box, label) for label in _OPEN_LABELS)]
+                if len(button_hits) > 1:
+                    self._failure('ambiguous-switch-button')
+                if not button_hits:
+                    self._failure('switch-button-not-found')
+                button = self._stable_unique(button_hits[0].name.strip(), _OPEN_REGION)
+                if button is None:
+                    self._failure('unstable-switch-button')
+                self.task.click(button)
+            if not self._wait_state(self._menu_open):
                 self._failure("picker-not-confirmed")
 
-            for label in context.selection_path:
-                # The menu layout is unknown, so this prototype never scrolls or guesses at a list.
-                # A target already present behind the picker at the same position is not evidence.
-                background_matches = [box for box in baseline if self._exact(box, label)]
-                selected = self._stable_unique(label, _MENU_REGION, excluded=background_matches)
-                if selected is None:
-                    self._failure("label-not-uniquely-found")
-
-                before_click = self._ocr(_MENU_REGION)
-                self.task.click(selected)
-                if self._wait_for_stable_ui_change(before_click, _MENU_REGION) is None:
-                    self._failure("selection-transition-not-confirmed")
+            for index, label in enumerate(context.selection_path):
+                last = index == len(context.selection_path) - 1
+                choice = self._stable_choice(label, include_areas=last)
+                # Re-clicking an expanded parent can collapse its children.
+                # Still click a final area to request centring even if its radio
+                # is already selected. No unrelated OCR change counts as success.
+                if not self._selected(choice) or choice[1] == 'area':
+                    self.task.click(choice[0])
+                if not self._wait_state(lambda: self._choice_applied(label, choice[1], last)):
+                    self._failure('selection-state-not-confirmed', label)
+            self._close_picker()
             # This means exact UI labels were selected, not that map identity was verified.
             return context.selection_path
         except TaskDisabledException:
