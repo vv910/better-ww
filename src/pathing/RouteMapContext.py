@@ -230,8 +230,9 @@ class RouteMapSelector:
         return len(matches) == 1 and self._selected(matches[0])
 
     def _close_picker(self):
-        # Leaf selection may dismiss the picker automatically. Only dismiss an
-        # observed picker; a map's location button also exists behind the panel.
+        # The observed game UI centres the area but keeps the picker open.
+        # Dismiss that picker before beacon search, and avoid an extra Esc if
+        # it has already closed. The location button exists behind the panel.
         if self._menu_open():
             self.task.send_key('esc')
         if not self._wait_state(lambda: not self._menu_open() and self._has_switch_label(_OPEN_REGION)):

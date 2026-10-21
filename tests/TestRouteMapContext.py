@@ -131,6 +131,20 @@ class TestRouteMapContext(unittest.TestCase):
         task.send_key.assert_called_once_with('esc')
         self.assertFalse(task.opened)
 
+    def test_new_area_selection_is_followed_by_escape_before_returning_to_map(self):
+        task = PickerTask(auto_close=False)
+        events = Mock()
+        events.attach_mock(task.click, 'click')
+        events.attach_mock(task.send_key, 'key')
+        path = ('Parent', 'Child', 'Area')
+        self.assertEqual(path, self._clocked(task, lambda: RouteMapSelector(task).select(RouteMapContext(path))))
+        actions = [(event[0], event.args[0]) for event in events.mock_calls]
+        self.assertEqual([('click', task.switch), ('click', task.parent), ('click', task.child),
+                          ('click', task.area), ('key', 'esc')], actions)
+        self.assertFalse(task.opened)
+        self.assertIn('Area', task.active)
+        task.screenshot.assert_not_called()
+
     def test_path_can_finish_at_a_selected_map_without_an_area_label(self):
         task = PickerTask(active=('Parent', 'Child'), opened=True)
         self._clocked(task, lambda: RouteMapSelector(task).select(RouteMapContext(('Parent', 'Child'))))
