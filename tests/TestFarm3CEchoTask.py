@@ -1,5 +1,6 @@
-import unittest
+import json
 import tempfile
+import unittest
 from dataclasses import replace
 from types import SimpleNamespace
 from pathlib import Path
@@ -361,6 +362,66 @@ class TestFarm3CEchoTask(unittest.TestCase):
                           call.execute(second)], events.mock_calls)
         self.assertEqual(2, localizer.call_count)
         self.assertEqual(2, localizer.return_value.reset.call_count)
+
+    def test_queue_selection_reports_actual_file_when_display_names_match(self):
+        route = EchoRoute('Local 3C Route', Path('tests/images/path.png'), RoutePoint(10, 10),
+                          (RoutePoint(30, 30),), (0, 0, 1920, 1080))
+        self.task.config.update({'Route File': 'new-route.json', 'Route Queue': 'old-route.json'})
+        self.task.execute_route = Mock()
+        self.task.prepare_fall_protection = Mock()
+        with patch.object(EchoRoute, 'load', return_value=route) as load, \
+                patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.MapLocalizer'):
+            self.task.run()
+        actual = load.call_args.args[0]
+        self.assertEqual('old-route.json', actual.name)
+        self.assertTrue(actual.is_absolute())
+        messages = [call.args[0] for call in self.task.log_info.call_args_list]
+        selection = next(message for message in messages if message.startswith('3C route selection'))
+        selection_data = json.loads(selection.split(': ', 1)[1])
+        self.assertEqual('Route Queue', selection_data['source'])
+        self.assertEqual('new-route.json', selection_data['route_file_setting'])
+        self.assertEqual([str(actual)], selection_data['files'])
+        entry = next(message for message in messages if message.startswith('3C route entry plan'))
+        entry_data = json.loads(entry.split(': ', 1)[1])
+        self.assertEqual(str(actual), entry_data['file'])
+        self.assertEqual('current_position', entry_data['entry_mode'])
+        self.assertIsNone(entry_data['teleport'])
+
+    def test_no_teleport_start_failure_identifies_manual_entry_before_any_walking(self):
+        route = EchoRoute('Local 3C Route', Path('tests/images/path.png'), RoutePoint(900, 800),
+                          (RoutePoint(950, 850),), (0, 0, 1920, 1080))
+        self.task.teleport_to_route = Mock()
+        self.task.recover_route_position = Mock(return_value=None)
+        with patch.object(EchoRoute, 'load', return_value=route), \
+                patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.MapLocalizer'):
+            with self.assertRaisesRegex(RuntimeError, 'route has no teleport metadata'):
+                self.task.run()
+        self.task.teleport_to_route.assert_not_called()
+        self.task.send_key_down.assert_not_called()
+
+    def test_localization_diagnostic_keeps_actual_attempt_and_copied_context_frames(self):
+        frame = np.full((50, 60, 3), 7, np.uint8)
+        self.task._executor = SimpleNamespace(frame=frame)
+        self.task.get_box_by_name = Mock(return_value=Box(0, 0, 10, 10))
+        self.task._last_good_minimap = None
+        self.task._last_route_position = None
+        self.task.localizer.last_diagnostic = {'mode': 'minimap', 'attempts': [{'matches': 1}]}
+        self.task.localizer.locate.return_value = None
+        self.task.screenshot = Mock()
+        Farm3CEchoTask.locate(self.task)
+        frame.fill(10)
+        self.task.localizer.last_diagnostic['attempts'][0]['matches'] = 99
+        self.task.localizer.last_diagnostic = {'mode': 'map_player_localization'}
+        Farm3CEchoTask.save_localization_diagnostic(self.task, 'start', RoutePoint(10, 10))
+        captured = {event.args[0]: event.kwargs['frame'] for event in self.task.screenshot.call_args_list}
+        frame.fill(99)
+        self.task._last_attempt_minimap.fill(88)
+        self.assertTrue((captured['3c-location-start-full'] == 10).all())
+        self.assertTrue((captured['3c-location-start-minimap'] == 10).all())
+        self.assertTrue((captured['3c-location-start-last-attempt-minimap'] == 7).all())
+        self.assertEqual({'mode': 'minimap', 'attempts': [{'matches': 1}]},
+                         self.task._last_minimap_diagnostic)
+        self.assertIn('last_minimap_diagnostic=', self.task.log_warning.call_args.args[0])
 
     def test_queue_missing_teleport_is_rejected_before_game_input(self):
         route = EchoRoute('test', Path('tests/images/path.png'), RoutePoint(10, 10),

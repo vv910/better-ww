@@ -1,6 +1,7 @@
 import json
 import math
 import time
+from copy import deepcopy
 from pathlib import Path
 
 import cv2
@@ -68,6 +69,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._fall_guard = FallGuard()
         self._route_keys = ()
         self._last_good_minimap = None
+        self._last_attempt_minimap = None
+        self._last_minimap_diagnostic = {}
         self._last_route_position = None
         self._active_route = None
         self._airborne_stage = False
@@ -87,7 +90,15 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
 
     def run(self):
         paths = route_files(self.config.get('Route File'), self.config.get('Route Queue', ''))
-        routes = [EchoRoute.load(get_path_relative_to_exe(path)) for path in paths]
+        resolved_paths = [Path(get_path_relative_to_exe(path)).resolve() for path in paths]
+        selection_source = 'Route Queue' if self.config.get('Route Queue', '').strip() else 'Route File'
+        self.log_info('3C route selection / 实际路线选择: ' + json.dumps({
+            'source': selection_source, 'route_file_setting': self.config.get('Route File'),
+            'files': [str(path) for path in resolved_paths], 'task_module': __file__,
+        }, ensure_ascii=False))
+        if selection_source == 'Route Queue':
+            self.log_info('Route Queue overrides Route File / 路线队列非空，本次按队列执行，路线文件选项不生效')
+        routes = [EchoRoute.load(path) for path in resolved_paths]
         if any(route.map_layer for route in routes):
             raise ValueError('Automatic layer switching is not supported yet / 本版尚未支持自动切层，请使用同层路线')
         if any(route.teleport is None for route in routes[1:]):
@@ -111,20 +122,31 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.stop_route_movement()
                 self.info_set('Current Route', index + 1)
                 self.info_set('Route', route.name)
+                self.info_set('Route File', str(resolved_paths[index]))
                 self._active_route = route
                 self.log_info(f'3C route {index + 1}/{len(routes)}: {paths[index]}')
+                self.log_route_entry(route, resolved_paths[index])
                 self.localizer = MapLocalizer(read_map_image(route.map_image), route.map_region)
                 self._last_good_minimap = None
+                self._last_attempt_minimap = None
+                self._last_minimap_diagnostic = {}
                 self._last_route_position = None
                 if route.teleport is not None:
                     self.teleport_to_route(route)
+                else:
+                    self.log_warning('Route has no teleport metadata; starting from the current position / '
+                                     '此路线没有传送信息，本次不会自动传送，需已站在录制起点附近')
                 self.localizer.reset()
                 self._fall_guard.reset()
+                self.info_set('3C Stage', 'Verifying Route Start / 检查路线起点')
                 position = self.wait_until(self.locate, time_out=5, raise_if_not_found=False)
                 if position is None or route.start.distance_to(position.xy) > route.start.tolerance:
                     position = self.recover_route_position()
                 if position is None or route.start.distance_to(position.xy) > route.start.tolerance:
                     self.save_localization_diagnostic('start', expected=route.start)
+                    if route.teleport is None:
+                        raise RuntimeError('Cannot confirm route start: route has no teleport metadata / '
+                                           '此路线未包含传送信息，未执行自动传送；请到起点或录制带信标入口的新路线')
                     raise RuntimeError('Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置')
                 self.prepare_fall_protection()
                 self.execute_route(route)
@@ -137,6 +159,18 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             self.stop_route_movement()
             self._active_route = None
             cv2.setNumThreads(previous_threads)
+
+    def log_route_entry(self, route, path):
+        teleport = route.teleport
+        self.log_info('3C route entry plan / 路线入口信息: ' + json.dumps({
+            'file': str(path), 'map_image': str(route.map_image), 'map_region': route.map_region,
+            'start': [route.start.x, route.start.y, route.start.tolerance],
+            'waypoints': len(route.waypoints),
+            'entry_mode': ('teleport_bookmarks' if teleport.views else 'teleport_anchor')
+                          if teleport is not None else 'current_position',
+            'teleport': None if teleport is None else {'anchor': teleport.anchor, 'views': len(teleport.views)},
+            'selection_path': list(route.map_context.selection_path) if route.map_context is not None else [],
+        }, ensure_ascii=False))
 
     def prepare_route_runtime(self):
         self.log_info('Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候')
@@ -314,17 +348,21 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.info_set('3C Stage', 'Relocalizing from Map / 停步打开大地图重新定位')
         self.info_incr('Map Relocalizations')
         position = None
+        failure_stage = 'map-ui-not-confirmed'
         try:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.4)
             button = self.wait_feature('map_my_location', time_out=2, raise_if_not_found=False)
             if button:
                 self.click(button, after_sleep=.3)
                 self.next_frame()
+                failure_stage = 'player-marker-not-found'
                 player = find_map_player(self.frame, self.get_feature_by_name('arrow').mat, map_region(self.frame))
                 if player is not None:
+                    failure_stage = 'terrain-alignment-failed'
                     position = self.localizer.locate_map_player(self.frame, player, map_region(self.frame))
             if position is None:
-                self.screenshot('3c-map-relocalize-failed')
+                self.screenshot('3c-map-relocalize-failed', frame=self.frame.copy())
+                self.log_warning(f'3C map relocalization failed: stage={failure_stage}')
                 self.log_warning('Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走')
         finally:
             # Close only the map opened by this recovery; cancellation still propagates.
@@ -342,20 +380,26 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
 
     def locate(self):
         minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
+        self._last_attempt_minimap = minimap.copy()
         position = self.localizer.locate(minimap)
+        self._last_minimap_diagnostic = deepcopy(self.localizer.last_diagnostic)
         if position is not None:
             self._last_good_minimap = minimap.copy()
             self._last_route_position = position
         return position
 
     def save_localization_diagnostic(self, stage, expected=None):
-        minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
+        frame = self.frame.copy()
+        minimap = self.get_box_by_name('box_minimap').crop_frame(frame).copy()
         expected_start = None if expected is None else (expected.x, expected.y, expected.tolerance)
-        self.log_warning(f'3C localization failed: stage={stage}, capture={self.frame.shape[1]}x{self.frame.shape[0]}, '
+        self.log_warning(f'3C localization failed: stage={stage}, capture={frame.shape[1]}x{frame.shape[0]}, '
                          f'expected_start={expected_start}, last_position={self._last_route_position}, '
-                         f'diagnostic={self.localizer.last_diagnostic}')
-        self.screenshot(f'3c-location-{stage}-full')
+                         f'diagnostic={self.localizer.last_diagnostic}, '
+                         f'last_minimap_diagnostic={self._last_minimap_diagnostic}')
+        self.screenshot(f'3c-location-{stage}-full', frame=frame)
         self.screenshot(f'3c-location-{stage}-minimap', frame=minimap)
+        if self._last_attempt_minimap is not None:
+            self.screenshot(f'3c-location-{stage}-last-attempt-minimap', frame=self._last_attempt_minimap.copy())
         if self._last_good_minimap is not None:
             self.screenshot(f'3c-location-{stage}-last-good', frame=self._last_good_minimap)
 
@@ -942,4 +986,9 @@ class Record3CEchoRouteTask(BigMap):
         self.info_set('Route File', str(path))
         self.info_set('Route Preview', str(preview_path))
         self.info_set('Route Points', len(data['waypoints']))
+        self.log_info('3C route saved metadata / 已保存路线入口信息: ' + json.dumps({
+            'file': str(path), 'start': data['start'], 'teleport': 'teleport' in data,
+            'views': len(data.get('teleport', {}).get('views', [])),
+            'selection_path': data.get('map_context', {}).get('selection_path', []),
+        }, ensure_ascii=False))
         self.log_info('Route saved. Check point order before farming / 路线已保存，请检查点序后开始刷取', notify=True)
