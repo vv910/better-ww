@@ -692,6 +692,7 @@ class Record3CEchoRouteTask(BigMap):
         self.description = RECORD_DESCRIPTION
         self.default_config.update({'Route File': 'routes/3c/local-route.json', 'Route Name': 'Local 3C Route',
                                     'Start Method': 'Nearest Beacon', 'Capture Teleport Overview': True,
+                                    'Capture Map Context': True,
                                     'Star Selection': 'Connected Group',
                                     'Map Selection Path': '',
                                     'Teleport Anchor': '',
@@ -707,6 +708,7 @@ class Record3CEchoRouteTask(BigMap):
             'Star Selection': 'Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area.',
             'Map Selection Path': 'Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting.',
             'Capture Teleport Overview': 'After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged.',
+            'Capture Map Context': 'After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written.',
             'Teleport Anchor': 'Optional: nearby fixed Boss name in your game language. Keep the start within 50 map pixels of an unlocked beacon.',
             'Maximum Marker Gap': 'Maximum distance between consecutive stars, in 1080p pixels. Distant groups are excluded. Reduce this to separate nearby routes.',
             'Recording Radius': 'Only include stars within this radius of the start, in 1080p pixels. Check the saved preview before farming.',
@@ -828,7 +830,10 @@ class Record3CEchoRouteTask(BigMap):
             raise ValueError('Need at least two nearby stars / 当前范围内需至少两个相连星标，请检查相邻距离与录制半径；其他标记类型不会加入路线')
         self.log_info(f'3C route selected {len(selected)} stars, excluded {len(self.excluded_stars)}, '
                       f'max_gap={gap:.0f}, radius={radius:.0f} / 请检查路线预览中的点序')
-        self._record_map_open = bool(self._entry_beacon and self.config.get('Capture Teleport Overview', True))
+        capture_context = (self.config.get('Capture Map Context', True)
+                           and (self._entry_beacon or self.config.get('Teleport Anchor', '').strip()))
+        self._record_map_open = bool(capture_context or (
+            self._entry_beacon and self.config.get('Capture Teleport Overview', True)))
         if not self._record_map_open or wait_world:
             self.send_key('esc')
             self._record_map_open = False
@@ -883,10 +888,10 @@ class Record3CEchoRouteTask(BigMap):
                 raise ValueError('Keep the diamond and all stars in the central visible map area')
         anchor = self.config.get('Teleport Anchor', '').strip()
         view_images = []
-        if getattr(self, '_entry_beacon', None) is not None:
-            data['teleport'] = {'anchor': anchor, 'x': x, 'y': y,
-                                'views': [{'map_image': image_path.name, 'x': x, 'y': y, 'map_region': region}]}
-            try:
+        try:
+            if getattr(self, '_entry_beacon', None) is not None:
+                data['teleport'] = {'anchor': anchor, 'x': x, 'y': y,
+                                    'views': [{'map_image': image_path.name, 'x': x, 'y': y, 'map_region': region}]}
                 if self.config.get('Capture Teleport Overview', True):
                     self.info_set('3C Stage', 'Recording Map Overview / 正在录制传送地图概览')
                     views = capture_map_views(self, self.big_map_frame, (x, y), tuple(region))
@@ -895,20 +900,23 @@ class Record3CEchoRouteTask(BigMap):
                         view_images.append((view_path, frame))
                         data['teleport']['views'].append({'map_image': view_path.name, 'x': point[0], 'y': point[1],
                                                           'map_region': list(view_region)})
-            finally:
-                if getattr(self, '_record_map_open', False):
-                    self.send_key('esc')
-                    self._record_map_open = False
-        elif anchor:
-            left, top, right, bottom = region
-            beacons = self.find_feature(['map_way_point', 'map_way_point_big'], frame=self.big_map_frame,
-                                        box=Box(left, top, right - left, bottom - top), threshold=0.65)
-            if not beacons:
-                raise ValueError('No beacon visible. Keep an unlocked beacon near the diamond / 菱形附近需要有已解锁信标')
-            beacon = min(beacons, key=lambda box: math.dist(box.center(), (x, y)))
-            if math.dist(beacon.center(), (x, y)) > data['start']['tolerance']:
-                raise ValueError('Place the diamond within 50 map pixels of an unlocked beacon / 起点菱形应在已解锁信标50地图像素以内')
-            data['teleport'] = {'anchor': anchor, 'x': beacon.center()[0], 'y': beacon.center()[1]}
+            elif anchor:
+                left, top, right, bottom = region
+                beacons = self.find_feature(['map_way_point', 'map_way_point_big'], frame=self.big_map_frame,
+                                            box=Box(left, top, right - left, bottom - top), threshold=0.65)
+                if not beacons:
+                    raise ValueError('No beacon visible. Keep an unlocked beacon near the diamond / 菱形附近需要有已解锁信标')
+                beacon = min(beacons, key=lambda box: math.dist(box.center(), (x, y)))
+                if math.dist(beacon.center(), (x, y)) > data['start']['tolerance']:
+                    raise ValueError('Place the diamond within 50 map pixels of an unlocked beacon / 起点菱形应在已解锁信标50地图像素以内')
+                data['teleport'] = {'anchor': anchor, 'x': beacon.center()[0], 'y': beacon.center()[1]}
+            if 'teleport' in data and not selection_path and self.config.get('Capture Map Context', True):
+                self.info_set('3C Stage', 'Recording Map Context / 正在记录地图菜单')
+                selection_path = RouteMapSelector(self).capture().selection_path
+        finally:
+            if getattr(self, '_record_map_open', False):
+                self.send_key('esc')
+                self._record_map_open = False
         if selection_path and 'teleport' not in data:
             raise ValueError('Map Selection Path requires teleport metadata / 地图选择路径需要传送信息')
         if selection_path and 'teleport' in data:

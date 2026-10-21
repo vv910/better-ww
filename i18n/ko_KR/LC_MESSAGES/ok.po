@@ -1545,3 +1545,9 @@ msgstr "지도 선택 경로"
 
 msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
 msgstr "선택 사항: 지도 메뉴의 정확한 이름을 상위 항목부터 하위 항목 순서로 한 줄씩 입력합니다. 텔레포트 전 지도를 자동 선택하도록 경로와 함께 저장됩니다."
+
+msgid "Capture Map Context"
+msgstr "지도 메뉴 자동 기록"
+
+msgid "After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written."
+msgstr "지도 화면을 기록한 뒤 현재 선택된 지도 메뉴 이름을 읽어 경로와 함께 저장합니다. 수동으로 입력한 지도 선택 경로가 우선합니다. 자동 읽기에 실패하면 경로 파일을 저장하지 않습니다."

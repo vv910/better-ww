@@ -238,24 +238,73 @@ class RouteMapSelector:
         if not self._wait_state(lambda: not self._menu_open() and self._has_switch_label(_OPEN_REGION)):
             self._failure('picker-not-closed')
 
+    def _open_picker(self):
+        if not self._menu_open():
+            button_hits = [box for box in self._ocr(_OPEN_REGION)
+                           if any(self._exact(box, label) for label in _OPEN_LABELS)]
+            if len(button_hits) > 1:
+                self._failure('ambiguous-switch-button')
+            if not button_hits:
+                self._failure('switch-button-not-found')
+            button = self._stable_unique(button_hits[0].name.strip(), _OPEN_REGION)
+            if button is None:
+                self._failure('unstable-switch-button')
+            self.task.click(button)
+        if not self._wait_state(self._menu_open):
+            self._failure('picker-not-confirmed')
+
+    def _selected_context(self):
+        selected_maps = []
+        selected_areas = []
+        for pane, region, selected in (('map', _MAP_LIST_REGION, selected_maps),
+                                        ('area', _AREA_LIST_REGION, selected_areas)):
+            for box in self._ocr(region):
+                name = getattr(box, 'name', None)
+                if isinstance(name, str) and self._exact(box, name.strip()) and self._selected((box, pane)):
+                    selected.append(box)
+        if not 1 <= len(selected_maps) <= 3 or len(selected_areas) != 1:
+            return None
+        ordered = sorted(selected_maps, key=lambda box: box.center()[1])
+        if any(abs(first.center()[1] - second.center()[1]) <= self._position_tolerance()
+               for first, second in zip(ordered, ordered[1:])):
+            return None
+        labels = tuple(box.name.strip() for box in (*ordered, selected_areas[0]))
+        if len(set(labels)) != len(labels):
+            return None
+        try:
+            return RouteMapContext(labels)
+        except ValueError:
+            return None
+
+    def capture(self):
+        """Read only selected menu rows; opening/closing never chooses an area.
+
+        Called after stars and bookmarks have been captured, so UI changes
+        cannot alter their pixel coordinates. Missing or ambiguous selection
+        stops recording instead of silently saving a route for another map.
+        """
+        try:
+            self._open_picker()
+            deadline = time.monotonic() + _POLL_SECONDS
+            previous = None
+            while time.monotonic() <= deadline:
+                current = self._selected_context() if self._menu_open() else None
+                if current is not None and current == previous:
+                    self._close_picker()
+                    return current
+                previous = current
+                self.task.next_frame()
+                self.task.sleep(_POLL_INTERVAL)
+            self._failure('selected-context-not-confirmed')
+        finally:
+            self.task.mouse_up()
+
     def select(self, context: RouteMapContext):
         if not isinstance(context, RouteMapContext):
             raise TypeError("context must be a RouteMapContext")
 
         try:
-            if not self._menu_open():
-                button_hits = [box for box in self._ocr(_OPEN_REGION)
-                               if any(self._exact(box, label) for label in _OPEN_LABELS)]
-                if len(button_hits) > 1:
-                    self._failure('ambiguous-switch-button')
-                if not button_hits:
-                    self._failure('switch-button-not-found')
-                button = self._stable_unique(button_hits[0].name.strip(), _OPEN_REGION)
-                if button is None:
-                    self._failure('unstable-switch-button')
-                self.task.click(button)
-            if not self._wait_state(self._menu_open):
-                self._failure("picker-not-confirmed")
+            self._open_picker()
 
             for index, label in enumerate(context.selection_path):
                 last = index == len(context.selection_path) - 1

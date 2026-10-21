@@ -3,10 +3,21 @@
 import math
 import time
 
+import cv2
+import numpy as np
 from ok import Box
 
 from src.pathing.EchoRoute import read_map_image
 from src.pathing.MapLocalizer import MapLocalizer
+
+
+_MAP_STABLE_TIMEOUT = 3.0
+_MAP_STABLE_POLL = 0.08
+_MAP_STABLE_PAIRS = 2
+_MAP_SIGNATURE_WIDTH = 160
+_MAP_CHANGE_THRESHOLD = 8
+_MAP_CHANGE_RATIO = 0.015
+_MAP_MEAN_CHANGE = 1.5
 
 
 def map_region(frame):
@@ -92,6 +103,91 @@ class RouteMapNavigator:
                 return projected
         return None
 
+    @staticmethod
+    def _map_signature(frame):
+        """Downsample only the world-map panel; reject blank/loading captures."""
+        if not isinstance(frame, np.ndarray) or frame.ndim not in (2, 3):
+            return None
+        height, width = frame.shape[:2]
+        left, top, right, bottom = map_region(frame)
+        if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+            return None
+        roi = frame[top:bottom, left:right]
+        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY) if roi.ndim == 3 else roi
+        signature_height = max(1, round(gray.shape[0] * _MAP_SIGNATURE_WIDTH / gray.shape[1]))
+        signature = cv2.resize(gray, (_MAP_SIGNATURE_WIDTH, signature_height),
+                               interpolation=cv2.INTER_AREA)
+        # An all-black loading frame, blank capture, or uniform placeholder must
+        # never count as a settled world map. project() remains the final validator.
+        if (int(signature.max()) < 12 or np.count_nonzero(signature > 8) < signature.size * .05
+                or float(signature.std()) < 1.5 or int(signature.max()) - int(signature.min()) < 8):
+            return None
+        return signature
+
+    @staticmethod
+    def _same_map_signature(first, second):
+        if first.shape != second.shape:
+            return False
+        difference = cv2.absdiff(first, second)
+        changed = np.count_nonzero(difference > _MAP_CHANGE_THRESHOLD) / difference.size
+        return (changed <= _MAP_CHANGE_RATIO
+                and float(difference.mean()) <= _MAP_MEAN_CHANGE)
+
+    def _wait_for_map_stable(self, deadline):
+        """Wait for two quiet frame pairs, capped by both 3s and find()'s budget."""
+        stable_deadline = min(deadline, time.monotonic() + _MAP_STABLE_TIMEOUT)
+        previous = None
+        stable_pairs = 0
+        while time.monotonic() < stable_deadline:
+            self.task.next_frame()
+            current = self._map_signature(getattr(self.task, 'frame', None))
+            if current is None:
+                previous = None
+                stable_pairs = 0
+            elif previous is not None and self._same_map_signature(previous, current):
+                stable_pairs += 1
+                if stable_pairs >= _MAP_STABLE_PAIRS:
+                    return True
+            else:
+                stable_pairs = 0
+            previous = current
+            self.task.sleep(_MAP_STABLE_POLL)
+        return False
+
+    def _stability_failure(self, stage):
+        frame = getattr(self.task, 'frame', None)
+        self.task.screenshot(f'3c-map-search-{stage}-unstable', frame=frame)
+        log_warning = getattr(self.task, 'log_warning', None)
+        if callable(log_warning):
+            log_warning(f'Map view did not stabilize during {stage}; stopping beacon search')
+
+    @staticmethod
+    def _point_tolerance(frame):
+        height = frame.shape[0] if isinstance(frame, np.ndarray) and frame.ndim >= 2 else 1080
+        return max(4.0, height * .006)
+
+    def _confirm_beacon(self, initial_projection, initial_beacon, deadline):
+        """Reproject and re-detect the same beacon on two fresh settled frames."""
+        tolerance = self._point_tolerance(self.task.frame)
+        previous_projection = initial_projection
+        previous_beacon = initial_beacon
+        for _ in range(2):
+            if time.monotonic() >= deadline or not self._wait_for_map_stable(deadline):
+                self._stability_failure('beacon-confirmation')
+                return None
+            projection = self.project()
+            if projection is None or math.dist(projection.xy, previous_projection.xy) > tolerance:
+                self.task.screenshot('3c-map-search-beacon-projection-drift', frame=self.task.frame)
+                return None
+            beacon = self.beacon_at(projection)
+            if (beacon is None
+                    or math.dist(beacon.center(), previous_beacon.center()) > tolerance):
+                self.task.screenshot('3c-map-search-beacon-drift', frame=self.task.frame)
+                return None
+            previous_projection = projection
+            previous_beacon = beacon
+        return previous_beacon
+
     def beacon_at(self, projected):
         height, width = self.task.frame.shape[:2]
         radius = max(20, round(width * .018))
@@ -104,13 +200,18 @@ class RouteMapNavigator:
 
     def find(self, search=False):
         deadline = time.monotonic() + 40
+        if not self._wait_for_map_stable(deadline):
+            self._stability_failure('initial-view')
+            return None
         projected = self.project()
         if projected is None and search:
             # Runtime zoom changes are deliberate; the recorded route image remains untouched.
             left, top, right, bottom = map_region(self.task.frame)
             self.task.scroll(round((left + right) / 2), round((top + bottom) / 2), -16)
             self.task.sleep(.5)
-            self.task.next_frame()
+            if not self._wait_for_map_stable(deadline):
+                self._stability_failure('overview-zoom')
+                return None
             previous = (0, 0)
             for index, cell in enumerate(spiral_steps()):
                 if time.monotonic() >= deadline:
@@ -123,7 +224,9 @@ class RouteMapNavigator:
                                         round(cy - dy * (bottom - top) * .42), duration=.3, after_sleep=.25)
                     finally:
                         self.task.mouse_up()
-                    self.task.next_frame()
+                    if not self._wait_for_map_stable(deadline):
+                        self._stability_failure('map-drag')
+                        return None
                 previous = cell
                 self.task.info_set('Map Search Views', index + 1)
                 projected = self.project()
@@ -134,13 +237,15 @@ class RouteMapNavigator:
         for _ in range(7):
             beacon = self.beacon_at(projected)
             if beacon is not None:
-                return beacon
+                return self._confirm_beacon(projected, beacon, deadline)
             if time.monotonic() >= deadline:
                 break
             # Zoom at the verified target, then re-align; never assume the cursor is the zoom centre.
             self.task.scroll(round(projected.x), round(projected.y), 2)
             self.task.sleep(.35)
-            self.task.next_frame()
+            if not self._wait_for_map_stable(deadline):
+                self._stability_failure('beacon-zoom')
+                return None
             projected = self.project()
             if projected is None:
                 break

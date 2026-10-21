@@ -1543,3 +1543,9 @@ msgstr "マップ選択パス"
 
 msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
 msgstr "任意：マップメニューの正確なラベルを、親から子の順に1行ずつ入力します。テレポート前のマップ自動選択用に、このルートと一緒に保存されます。"
+
+msgid "Capture Map Context"
+msgstr "マップメニューを自動記録"
+
+msgid "After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written."
+msgstr "マップの表示範囲を記録した後、選択中のマップメニューのラベルを読み取り、ルートと一緒に保存します。手動の「マップ選択パス」が入力されている場合は、そちらを優先します。自動読み取りに失敗した場合、ルートファイルは保存されません。"

@@ -1480,3 +1480,9 @@ msgstr "Ruta de selección del mapa"
 
 msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
 msgstr "Opcional: etiquetas exactas del menú del mapa, una por línea desde el nivel superior hasta el inferior. Se guarda con esta ruta para seleccionar el mapa automáticamente antes de teletransportarse."
+
+msgid "Capture Map Context"
+msgstr "Registrar automáticamente el contexto del mapa"
+
+msgid "After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written."
+msgstr "Después de grabar las vistas del mapa, lee las etiquetas seleccionadas del menú y las guarda con la ruta. La ruta de selección manual del mapa tiene prioridad. Si falla la lectura automática, no se guardarán archivos de ruta."

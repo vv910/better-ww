@@ -145,6 +145,64 @@ class TestRouteMapContext(unittest.TestCase):
         self.assertIn('Area', task.active)
         task.screenshot.assert_not_called()
 
+    def test_capture_reads_selected_hierarchy_without_selecting_a_map(self):
+        task = PickerTask(active=('Parent', 'Child', 'Area'))
+        original_selection = set(task.active)
+        context = self._clocked(task, lambda: RouteMapSelector(task).capture())
+        self.assertEqual(('Parent', 'Child', 'Area'), context.selection_path)
+        self.assertEqual([task.switch], [call.args[0] for call in task.click.call_args_list])
+        task.send_key.assert_called_once_with('esc')
+        self.assertEqual(original_selection, task.active)
+        self.assertFalse(task.opened)
+
+    def test_capture_cannot_infer_an_area_from_visible_unselected_labels(self):
+        task = PickerTask(active=('Parent', 'Child'), opened=True)
+        with self.assertRaisesRegex(RuntimeError, 'selected-context-not-confirmed'):
+            self._clocked(task, lambda: RouteMapSelector(task).capture())
+        task.click.assert_not_called()
+        task.mouse_up.assert_called_once_with()
+
+    def test_capture_does_not_save_low_confidence_selected_text(self):
+        task = PickerTask(active=('Parent', 'Child', 'Area'), opened=True)
+        task.area.confidence = .59
+        with self.assertRaisesRegex(RuntimeError, 'selected-context-not-confirmed'):
+            self._clocked(task, lambda: RouteMapSelector(task).capture())
+        task.click.assert_not_called()
+
+    def test_capture_rejects_multiple_selected_area_rows(self):
+        task = PickerTask(active=('Parent', 'Child', 'Area'), opened=True)
+        second_area = Box(1490, 375, 150, 32, name='Second Area')
+        original_render = task.render
+
+        def render():
+            original_render()
+            cv2.circle(task.frame, (second_area.x - 32, int(second_area.center()[1])),
+                       7, (255, 255, 255), -1)
+
+        task.next_frame.side_effect = render
+        task.ocr.side_effect = lambda *region: task.read(*region) + (
+            [second_area] if region == (.76, .12, .96, .84) else [])
+        render()
+        with self.assertRaisesRegex(RuntimeError, 'selected-context-not-confirmed'):
+            self._clocked(task, lambda: RouteMapSelector(task).capture())
+        task.click.assert_not_called()
+
+    def test_capture_waits_for_two_consistent_selected_paths(self):
+        task = PickerTask(active=('Parent', 'Child', 'Area'), opened=True)
+        reads = [RouteMapContext(('Other', 'Area')), RouteMapContext(('Parent', 'Child', 'Area'))]
+        selector = RouteMapSelector(task)
+        with patch.object(selector, '_selected_context', side_effect=[*reads, reads[1]]) as read:
+            result = self._clocked(task, selector.capture)
+        self.assertEqual(reads[1], result)
+        self.assertEqual(3, read.call_count)
+
+    def test_capture_cancellation_propagates_and_releases_mouse(self):
+        task = PickerTask(opened=True)
+        task.sleep.side_effect = TaskDisabledException()
+        with self.assertRaises(TaskDisabledException):
+            RouteMapSelector(task).capture()
+        task.mouse_up.assert_called_once_with()
+
     def test_path_can_finish_at_a_selected_map_without_an_area_label(self):
         task = PickerTask(active=('Parent', 'Child'), opened=True)
         self._clocked(task, lambda: RouteMapSelector(task).select(RouteMapContext(('Parent', 'Child'))))

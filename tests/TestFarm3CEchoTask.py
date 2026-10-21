@@ -598,7 +598,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
             path = Path(directory) / 'route.json'
             task = Record3CEchoRouteTask.__new__(Record3CEchoRouteTask)
             task.config = {'Route File': str(path), 'Route Name': 'TP', 'Teleport Anchor': '无冠者',
-                           'Start Method': 'Diamond'}
+                           'Start Method': 'Diamond', 'Capture Map Context': False}
             task.big_map_frame = cv2.imread('tests/images/path.png')
             task.diamond = Box(1190, 460, 20, 20)
             task.stars = [task.diamond, Box(1100, 540, 20, 20), Box(1030, 600, 20, 20)]
@@ -614,6 +614,79 @@ class TestFarm3CEchoTask(unittest.TestCase):
             with patch.object(WWOneTimeTask, 'run'), self.assertRaisesRegex(ValueError, 'within 50'):
                 task.run()
             self.assertFalse(Path(task.config['Route File']).exists())
+
+    def make_bookmark_recorder(self, path):
+        task = Record3CEchoRouteTask.__new__(Record3CEchoRouteTask)
+        task.config = {'Route File': str(path), 'Route Name': 'automatic map context',
+                       'Capture Teleport Overview': False}
+        task.big_map_frame = cv2.imread('tests/images/path.png')
+        task.diamond = Box(1190, 460, 20, 20)
+        task.stars = [task.diamond, Box(1100, 540, 20, 20)]
+        task._entry_beacon = task.diamond
+        task._record_map_open = True
+        task.load_stars = task.info_set = task.log_info = Mock()
+        task.send_key = Mock()
+        return task
+
+    def test_recorder_automatically_saves_map_context_without_changing_coordinates(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            original = task.big_map_frame.copy()
+            context = RouteMapContext(('Recorded World', 'Recorded Map', 'Recorded Area'))
+            with patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                selector.return_value.capture.return_value = context
+                task.run()
+            route = EchoRoute.load(path)
+            self.assertEqual(context, route.map_context)
+            self.assertEqual((1200, 470), (route.start.x, route.start.y))
+            np.testing.assert_array_equal(original, cv2.imread(str(route.map_image)))
+            selector.return_value.capture.assert_called_once_with()
+            selector.return_value.select.assert_not_called()
+            task.send_key.assert_called_once_with('esc')
+
+    def test_recorder_keeps_manual_path_as_override_and_can_disable_capture(self):
+        with tempfile.TemporaryDirectory() as directory:
+            for manual in ('World\nMap\nArea', ''):
+                with self.subTest(manual=manual):
+                    path = Path(directory) / ('manual.json' if manual else 'same-map.json')
+                    task = self.make_bookmark_recorder(path)
+                    task.config.update({'Map Selection Path': manual, 'Capture Map Context': bool(manual)})
+                    with patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                        task.run()
+                    selector.assert_not_called()
+                    route = EchoRoute.load(path)
+                    self.assertEqual(RouteMapContext(('World', 'Map', 'Area')) if manual else None,
+                                     route.map_context)
+
+    def test_automatic_map_context_failure_writes_no_route_or_map_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            with patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                selector.return_value.capture.side_effect = RuntimeError('selected-context-not-confirmed')
+                with self.assertRaisesRegex(RuntimeError, 'selected-context-not-confirmed'):
+                    task.run()
+            self.assertEqual([], list(Path(directory).iterdir()))
+            task.send_key.assert_called_once_with('esc')
+
+    def test_diamond_with_anchor_also_records_context_before_closing_map(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'diamond.json'
+            task = self.make_bookmark_recorder(path)
+            task._entry_beacon = None
+            task.config.update({'Start Method': 'Diamond', 'Teleport Anchor': 'Legacy Boss'})
+            task.find_feature = Mock(return_value=[Box(1195, 465, 20, 20)])
+            context = RouteMapContext(('World', 'Map', 'Area'))
+            events = Mock()
+            events.attach_mock(task.send_key, 'key')
+            with patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                selector.return_value.capture.return_value = context
+                events.attach_mock(selector.return_value.capture, 'capture')
+                task.run()
+            route = EchoRoute.load(path)
+            self.assertEqual(context, route.map_context)
+            self.assertEqual([call.capture(), call.key('esc')], events.mock_calls)
 
 
 if __name__ == '__main__':

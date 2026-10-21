@@ -1673,3 +1673,9 @@ msgstr "地圖選擇路徑"
 
 msgid "Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting."
 msgstr "選填：依父層到子層的順序，每行填寫一個地圖選單中的正確名稱。此路徑會與路線一併儲存，用於傳送前自動選擇地圖。"
+
+msgid "Capture Map Context"
+msgstr "自動記錄地圖選單"
+
+msgid "After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written."
+msgstr "錄製地圖檢視後，讀取目前選取的地圖選單標籤並與路線一併儲存，自動記錄父層地圖、子地圖及區域。手動填寫的「地圖選擇路徑」優先；自動辨識失敗時，不會寫入路線檔案。"

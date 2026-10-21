@@ -47,6 +47,13 @@ class TestRouteMarkerSelection(unittest.TestCase):
         self.assertEqual(3, len(self.task.stars))
         self.assertEqual(2, len(self.task.excluded_stars))
 
+    def test_diamond_anchor_keeps_map_open_for_automatic_context_capture(self):
+        self.task.config.update({'Teleport Anchor': 'Legacy Boss', 'Capture Map Context': True,
+                                 'Capture Teleport Overview': False})
+        self.load([marker(1000, 500), marker(1100, 550)])
+        self.assertTrue(self.task._record_map_open)
+        self.task.send_key.assert_not_called()
+
     def test_distance_limits_scale_with_capture_resolution(self):
         self.task._executor.frame = np.zeros((1440, 2560, 3), np.uint8)
         self.load([marker(1250, 800), marker(1500, 800)], diamonds=[marker(1000, 800)])
