@@ -84,7 +84,7 @@ def _bundle_path(root, relative):
 
 
 class NavigationReplay:
-    """Retain recent lossless minimap inputs in RAM and write once after failure.
+    """Retain recent visual inputs in RAM and write once after failure.
 
     Times accepted by record_* are absolute monotonic seconds. Images are copied,
     never resized or encoded while walking. Disk failures are exposed in
@@ -151,10 +151,10 @@ class NavigationReplay:
         if (not isinstance(image, np.ndarray) or image.dtype != np.uint8
                 or image.ndim not in (2, 3) or min(image.shape[:2]) < 1
                 or (image.ndim == 3 and image.shape[2] != 3)):
-            self._error('Invalid minimap input was not retained')
+            self._error('Invalid navigation image was not retained')
             return None
         if image.nbytes > self.max_bytes:
-            self._error('Minimap input exceeds replay raw-memory budget')
+            self._error('Navigation image exceeds replay raw-memory budget')
             return None
         if self.frames:
             previous_id = next(reversed(self.frames))
@@ -181,6 +181,18 @@ class NavigationReplay:
     def record_heading(self, minimap, estimate, *, timestamp=None, capture_size=None):
         self._record('heading', timestamp, frame=self._frame(minimap), estimate=estimate,
                      capture_size=capture_size or self.capture_size)
+
+    def record_map_ui(self, frame, stage, diagnostic=None, timestamp=None):
+        """Retain a failed map check's actual full frame within the same ring budget.
+
+        A map UI observation is never a minimap localization input. Only error
+        paths call this, after movement has stopped.
+        """
+        frame_id = self._frame(frame)
+        if frame_id is not None:
+            self.capture_size = [int(frame.shape[1]), int(frame.shape[0])]
+        self._record('map_ui', timestamp, frame=frame_id, stage=stage,
+                     diagnostic=diagnostic, capture_size=self.capture_size)
 
     def record_reset(self, position_hint=None, *, timestamp=None):
         self._record('reset', timestamp, hint=position_hint)
@@ -330,7 +342,7 @@ def load_replay(path):
         if (isinstance(stamp, bool) or not isinstance(stamp, (int, float))
                 or not math.isfinite(stamp) or stamp < 0 or stamp < previous_time):
             raise ValueError('Replay events require finite, nondecreasing monotonic times')
-        if event.get('kind') not in ('locate', 'heading', 'reset', 'absolute_request', 'keys', 'target'):
+        if event.get('kind') not in ('locate', 'heading', 'reset', 'absolute_request', 'keys', 'target', 'map_ui'):
             raise ValueError('Replay event kind is unsupported')
         for field in ('position', 'diagnostic', 'estimate'):
             if event.get(field) is not None and not isinstance(event[field], dict):
@@ -424,6 +436,7 @@ def replay_statistics(events):
     elapsed = [event.get('elapsed_ms') for event in observations]
     elapsed = [value for value in elapsed if isinstance(value, (int, float)) and math.isfinite(value)]
     headings = [event for event in events if event.get('kind') == 'heading']
+    map_checks = [event for event in events if event.get('kind') == 'map_ui']
     reliable = sum(isinstance(event.get('estimate'), dict)
                    and (event['estimate'].get('confidence') or 0) >= .72
                    and (event['estimate'].get('margin') or 0) >= .08 for event in headings)
@@ -435,6 +448,8 @@ def replay_statistics(events):
             'largest_accepted_step_map_pixels': round(largest_step, 3),
             'accepted_steps_over_100_map_pixels': jump_count,
             'heading_calls': len(headings), 'reliable_heading_calls': reliable,
+            'map_ui_events': len(map_checks),
+            'map_ui_stages': dict(Counter(event.get('stage', 'unknown') for event in map_checks)),
             'mean_locate_ms': None if not elapsed else round(sum(elapsed) / len(elapsed), 3)}
 
 

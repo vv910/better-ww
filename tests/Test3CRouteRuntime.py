@@ -36,12 +36,14 @@ def make_task():
     task.send_key = Mock()
     task.send_key_down = Mock()
     task.wait_feature = Mock(return_value=Box(370, 215, 20, 20))
+    task.find_one = Mock(return_value=Box(370, 215, 20, 20))
     task.click = Mock()
     task.next_frame = Mock()
     task.sleep = Mock()
     task.get_feature_by_name = Mock(return_value=SimpleNamespace(mat=np.zeros((10, 10, 3), np.uint8)))
     task.screenshot = Mock()
     task.log_warning = Mock()
+    task.log_debug = Mock()
     task.log_info = Mock()
     task.info_set = Mock()
     task.info_incr = Mock()
@@ -55,7 +57,7 @@ class Test3CRouteRuntime(unittest.TestCase):
         task = make_task()
         events = Mock()
         events.attach_mock(task.send_key, 'key')
-        events.attach_mock(task.wait_feature, 'button')
+        events.attach_mock(task.find_one, 'button')
         events.attach_mock(task.click, 'click')
         events.attach_mock(task.next_frame, 'frame')
         events.attach_mock(task.localizer.locate_map_player, 'map_player')
@@ -66,10 +68,9 @@ class Test3CRouteRuntime(unittest.TestCase):
             result = task.recover_route_position()
 
         self.assertEqual(MapPosition(201, 121, 0.9, 25), result)
-        self.assertLess(events.mock_calls.index(call.key('m', after_sleep=0.4)),
-                        events.mock_calls.index(call.button('map_my_location', time_out=2,
-                                                            raise_if_not_found=False)))
-        self.assertLess(events.mock_calls.index(call.click(task.wait_feature.return_value, after_sleep=0.3)),
+        first_button = next(index for index, event in enumerate(events.mock_calls) if event[0] == 'button')
+        self.assertLess(events.mock_calls.index(call.key('m', after_sleep=0.4)), first_button)
+        self.assertLess(events.mock_calls.index(call.click(task.find_one.return_value, after_sleep=0.3)),
                         events.mock_calls.index(call.map_player(task.frame, (200, 120),
                                                                 (112, 29, 348, 216))))
         map_hint = MapPosition(200, 120, 0.9, 25, source='map')
@@ -287,7 +288,7 @@ class Test3CRouteRuntime(unittest.TestCase):
 
     def test_cancellation_after_opening_map_closes_it_without_directional_input(self):
         task = make_task()
-        task.wait_feature.side_effect = TaskDisabledException()
+        task.find_one.side_effect = TaskDisabledException()
         with patch('src.task.Farm3CEchoTask.map_region', return_value=(300, 100, 1700, 950)), \
                 self.assertRaises(TaskDisabledException):
             task.recover_route_position()

@@ -7,6 +7,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import cv2
+import numpy as np
 from ok import Box, TaskDisabledException, get_path_relative_to_exe, og
 
 from src import text_white_color
@@ -20,6 +21,7 @@ from src.pathing.NavigationReplay import NavigationReplay
 from src.pathing.RouteApproach import RouteApproach
 from src.pathing.RouteMarkers import RouteMarkerDetector
 from src.pathing.RouteMapContext import RouteMapSelector, parse_selection_path
+from src.pathing.RouteMapUI import RouteMapUI
 from src.pathing.RouteSteering import RouteSteering
 from src.pathing.RouteMapNavigation import (RouteMapNavigator, capture_map_views, map_point_tolerance,
                                             map_region, wait_for_map_stable)
@@ -80,6 +82,9 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._last_route_position = None
         self._active_route = None
         self._navigation_replay = None
+        self._route_map_ui_detector = None
+        self._last_map_ui_frame = None
+        self._last_map_ui_diagnostic = {}
         self._airborne_stage = False
         self.config_type['Route Queue'] = {'type': 'text_edit'}
 
@@ -178,6 +183,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 if failure_reason is not None:
                     self.save_navigation_replay(failure_reason)
                 self._navigation_replay = None
+                self._last_map_ui_frame = None
                 self._active_route = None
                 cv2.setNumThreads(previous_threads)
 
@@ -206,7 +212,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             source_root = Path(__file__).resolve().parents[1]
             fingerprints = {}
             for relative in ('task/Farm3CEchoTask.py', 'pathing/MapLocalizer.py',
-                             'pathing/TrackingVerifier.py', 'pathing/RouteApproach.py'):
+                             'pathing/TrackingVerifier.py', 'pathing/RouteApproach.py',
+                             'pathing/RouteMapUI.py'):
                 source = source_root / relative
                 if source.is_file():
                     try:
@@ -330,14 +337,21 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             self.open_anchor_map(route.teleport.anchor)
         else:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.5)
-            if not self.wait_feature('map_my_location', time_out=3, raise_if_not_found=False):
+            if not self.wait_route_map_ui(time_out=3):
+                self.save_map_ui_diagnostic('route-entry', '3c-map-entry-failed')
                 raise RuntimeError('Cannot open map for route entry / 无法打开路线传送地图')
         if route.map_context is not None:
             self.info_set('3C Stage', 'Selecting Route Map / 正在选择路线地图')
-            RouteMapSelector(self).select(route.map_context)
+            try:
+                RouteMapSelector(self).select(route.map_context)
+            except TaskDisabledException:
+                raise
+            except Exception:
+                self.save_map_ui_diagnostic('map-context-selection', '3c-map-context-selection-failed')
+                raise
             self.next_frame()
-            if not self.wait_feature('map_my_location', time_out=3, raise_if_not_found=False):
-                self.screenshot('3c-map-context-not-closed')
+            if not self.wait_route_map_ui(time_out=3):
+                self.save_map_ui_diagnostic('map-context', '3c-map-context-not-closed')
                 raise RuntimeError('Map selector did not return to map / 地图选择未完成，停止传送')
         if route.teleport.views:
             beacon = RouteMapNavigator(self, route).find(search=True)
@@ -347,6 +361,105 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         else:
             beacon = self.find_legacy_route_beacon(route)
         self.travel_to_route_beacon(beacon)
+
+    def wait_route_map_ui(self, time_out=3):
+        """Confirm a map control on two fresh frames; never retry the map toggle."""
+        deadline = time.monotonic() + max(0, time_out)
+        previous = None
+        self._last_map_ui_frame = None
+        self._last_map_ui_diagnostic = {'status': 'rejected', 'reason': 'no_observation'}
+        try:
+            while time.monotonic() < deadline:
+                try:
+                    self.next_frame()
+                    frame = self.frame.copy()
+                except TaskDisabledException:
+                    raise
+                except Exception as error:
+                    self._last_map_ui_diagnostic = {'status': 'rejected', 'reason': 'capture_failed',
+                                                    'error': str(error)}
+                    return None
+                self._last_map_ui_frame = frame
+                diagnostic = {'capture_size': [frame.shape[1], frame.shape[0]]}
+                try:
+                    control = self.find_one('map_my_location', frame=frame)
+                except TaskDisabledException:
+                    raise
+                except Exception as error:
+                    control = None
+                    diagnostic['legacy_error'] = str(error)
+                control = control or None
+                layout = 'legacy'
+                diagnostic['legacy_matched'] = control is not None
+                if control is None:
+                    layout = 'current'
+                    try:
+                        if getattr(self, '_route_map_ui_detector', None) is None:
+                            self._route_map_ui_detector = RouteMapUI()
+                        control = self._route_map_ui_detector.detect(frame)
+                        diagnostic['current'] = deepcopy(self._route_map_ui_detector.last_diagnostic)
+                    except TaskDisabledException:
+                        raise
+                    except Exception as error:
+                        control = None
+                        diagnostic['current'] = {'status': 'rejected', 'reason': 'detector_failed',
+                                                  'error': str(error)}
+                diagnostic.update(layout=layout, status='rejected', reason='map_controls_not_found')
+                if time.monotonic() >= deadline:
+                    diagnostic['reason'] = 'ui_confirmation_budget_exhausted'
+                    self._last_map_ui_diagnostic = diagnostic
+                    return None
+                if control is not None:
+                    center = control.center()
+                    evidence = layout, frame.shape[:2], center
+                    if (previous is not None and previous[:2] == evidence[:2]
+                            and math.dist(previous[2], center) <= map_point_tolerance(frame)):
+                        diagnostic.update(status='matched', reason='two_fresh_map_controls_confirmed')
+                        self._last_map_ui_diagnostic = diagnostic
+                        self._last_map_ui_frame = None
+                        return control
+                    previous = evidence
+                    diagnostic['reason'] = 'awaiting_second_stable_control'
+                else:
+                    previous = None
+                self._last_map_ui_diagnostic = diagnostic
+                self.sleep(min(.1, max(0, deadline - time.monotonic())))
+            return None
+        except BaseException:
+            self._last_map_ui_frame = None
+            raise
+
+    def save_map_ui_diagnostic(self, stage, screenshot_name):
+        """Preserve the frame actually inspected, even after input clears executor._frame."""
+        frame = getattr(self, '_last_map_ui_frame', None)
+        if frame is None:
+            executor = getattr(self, '_executor', None)
+            # Read storage only: executor.frame can initiate another capture.
+            storage = getattr(executor, '__dict__', {})
+            candidate = storage.get('_frame', storage.get('frame'))
+            if isinstance(candidate, np.ndarray):
+                frame = candidate.copy()
+        diagnostic = deepcopy(getattr(self, '_last_map_ui_diagnostic', {}))
+        self.log_warning(f'3C map UI confirmation failed: stage={stage}, diagnostic={diagnostic}')
+        try:
+            replay = getattr(self, '_navigation_replay', None)
+            if replay is not None:
+                try:
+                    replay.record_map_ui(frame, stage, diagnostic=diagnostic)
+                except TaskDisabledException:
+                    raise
+                except Exception as error:
+                    self.log_debug(f'3C replay capture disabled: {error}')
+                    self._navigation_replay = None
+            if frame is not None:
+                try:
+                    self.screenshot(screenshot_name, frame=frame)
+                except TaskDisabledException:
+                    raise
+                except Exception as error:
+                    self.log_debug(f'3C map UI screenshot failed: {error}')
+        finally:
+            self._last_map_ui_frame = None
 
     def open_anchor_map(self, anchor):
         self.openF2Book('gray_book_all_monsters')
@@ -415,7 +528,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         deadline = time.monotonic() + 10
         try:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.4)
-            button = self.wait_feature('map_my_location', time_out=2, raise_if_not_found=False)
+            button = self.wait_route_map_ui(time_out=min(2, max(0, deadline - time.monotonic())))
             if button:
                 failure_stage = 'map-open-unstable'
                 if wait_for_map_stable(self, deadline):
@@ -459,10 +572,11 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     else:
                         position = initial_position
             if position is None:
-                self.screenshot('3c-map-relocalize-failed', frame=self.frame.copy())
+                self.save_map_ui_diagnostic('recovery:' + failure_stage, '3c-map-relocalize-failed')
                 self.log_warning(f'3C map relocalization failed: stage={failure_stage}')
                 self.log_warning('Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走')
         finally:
+            self._last_map_ui_frame = None
             # Close only the map opened by this recovery; cancellation still propagates.
             if not self.in_team()[0]:
                 self.send_key('esc')

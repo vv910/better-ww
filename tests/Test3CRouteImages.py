@@ -116,6 +116,16 @@ class Test3CRouteImages(TaskTestCase):
             self.assertTrue(self.task.route_enemy_visible())
         load_chars.assert_not_called()
 
+    def test_current_map_controls_pass_the_real_task_when_legacy_location_pin_is_absent(self):
+        self.set_image('tests/images/3c-map-current-ui.png')
+        self.assertIsNone(self.task.find_one('map_my_location'))
+        with patch.object(self.task, 'sleep'):
+            control = self.task.wait_route_map_ui()
+        self.assertIsNotNone(control, self.task._last_map_ui_diagnostic)
+        np.testing.assert_allclose(control.center(), (2278, 86), atol=2)
+        self.assertEqual('current', self.task._last_map_ui_diagnostic['layout'])
+        self.assertEqual('matched', self.task._last_map_ui_diagnostic['status'])
+
     def test_reference_point_projects_on_real_map_after_zoom_and_pan(self):
         image = cv2.imread('tests/images/path.png')
         localizer = MapLocalizer(image, (538, 130, 1670, 972))

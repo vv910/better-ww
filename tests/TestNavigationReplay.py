@@ -106,6 +106,39 @@ class TestNavigationReplay(unittest.TestCase):
         self.assertEqual(bundle, writer.flush('again', root=self.root / 'ignored'))
         self.assertFalse((self.root / 'ignored').exists())
 
+    def test_map_entry_failure_keeps_the_actual_frame_without_inventing_minimap_observations(self):
+        writer = self.writer()
+        frame = np.repeat(self.reference[:, :, None], 3, axis=2)
+        expected = frame.copy()
+        diagnostic = {'layout': 'current', 'reason': 'missing_zoom_out', 'scores': {'center': .96}}
+        writer.record_map_ui(frame, 'map-entry-open-failed', diagnostic, timestamp=101)
+        frame[:] = 0
+        bundle = self.flush(writer)
+        root, metadata, events = load_replay(bundle)
+        self.assertEqual([600, 500], metadata['capture_size'])
+        self.assertEqual('map_ui', events[0]['kind'])
+        self.assertEqual(diagnostic, events[0]['diagnostic'])
+        saved = cv2.imread(str(root / metadata['frames'][events[0]['frame']]))
+        np.testing.assert_array_equal(expected, saved)
+        summary = replay_statistics(events)
+        self.assertEqual(0, summary['locate_calls'])
+        self.assertEqual({'map-entry-open-failed': 1}, summary['map_ui_stages'])
+        with patch.object(MapLocalizer, 'locate') as locate:
+            report = relocalize_replay(bundle)
+        locate.assert_not_called()
+        self.assertEqual(1, report['statistics']['map_ui_events'])
+        self.assertEqual(1, report['replayed_events'])
+
+    def test_map_ui_evidence_shares_the_existing_raw_memory_limit(self):
+        writer = self.writer(max_bytes=self.query.nbytes)
+        writer.record_locate(self.query, None, {}, started_at=100)
+        writer.record_map_ui(np.ones_like(self.query), 'map-recovery-failed', {}, timestamp=101)
+        self.assertEqual(1, writer.frames_evicted)
+        self.assertLessEqual(writer.raw_bytes, self.query.nbytes)
+        writer.record_map_ui(np.ones((500, 600, 3), np.uint8), 'oversized', {}, timestamp=102)
+        self.assertIsNone(writer.events[-1]['frame'])
+        self.assertIn('budget', writer.last_error)
+
     def test_failure_to_flush_never_masks_original_error_or_retries_io(self):
         writer = self.writer()
         blocked = self.root / 'not-a-directory'

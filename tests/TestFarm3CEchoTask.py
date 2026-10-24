@@ -691,6 +691,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
             setattr(self.task, name, Mock())
         self.task.find_feature.return_value = [Box(590, 440, 20, 20)]
         self.task.wait_feature.return_value = Box(1700, 950, 50, 20)
+        self.task.wait_route_map_ui = Mock(return_value=Box(1700, 950, 50, 20))
         return EchoRoute('TP test', Path('tests/images/path.png'), RoutePoint(600, 450),
                          (RoutePoint(650, 470),), (0, 0, 1920, 1080),
                          RouteTeleport('无冠者', RoutePoint(600, 450)))

@@ -86,7 +86,7 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 ## 自动失败复现包 {#navigation-replay}
 
-每条当前路线在内存中保留最近最多 120 个小地图，原始图总量最多 24 MiB；移动时只复制小地图和事件，不编码图片或写盘。识别失败等异常退出时，先释放移动键，再尝试一次性保存到 `logs/3c-replays/<唯一编号>/`；用户主动取消不生成失败包，磁盘异常不会掩盖原始任务错误。
+每条当前路线在内存中保留最近最多 120 个视觉输入，原始图总量最多 24 MiB；移动时只复制小地图和事件，不编码图片或写盘。地图界面校验失败时另记录当次检查的实际完整画面，与小地图共享上述数量和内存预算。异常退出时，先释放移动键，再尝试一次性保存到 `logs/3c-replays/<唯一编号>/`；用户主动取消不生成失败包，磁盘异常不会掩盖原始任务错误。
 
 包内包含实际选中的路线快照、引用的主图与概览副本、可用的箭头模板、连续小地图和 JSONL 事件，记录定位来源、拒绝原因、耗时、地图提示/重置、朝向、目标和按键命令。地图副本在 `map_region` 外置零，原文件不修改，图像坐标保持不变。内存淘汰的帧、缺失图片和不完整资产都会明确报告，不能把截断记录当作完整实机录像。
 
@@ -98,6 +98,18 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 ```
 
 默认只统计定位可用率、来源、拒绝原因、失配间隔、已接受位置跳变和识别耗时；已接受的坐标不等于真实坐标。显式 `--relocalize` 才重新运行视觉，比较原始与重放统计。重放保留帧间隔和地图提示年龄，缺帧会中断跟踪；无法精确重现另一台电脑内部每一步计算的时钟，不能替代游戏内验收。
+
+`map_ui` 事件单独保存界面检查的阶段和诊断；统计中的 `map_ui_stages` 可区分地图入口和恢复失败。这些完整画面不会送入小地图定位器，离线重定位只原样保留该类事件，不将其计作定位成功或失败。
+
+## 2026-10-25 的地图界面兼容修复
+
+测试机上传的 `b9819ce` 诊断提交记录了源码 `cebf937` 下的两次路线入口失败：2026-10-24 23:02:55 与 23:03:16 发送地图键后，三秒内没有识别到 `map_my_location`，尚未执行地图菜单选择、信标配准或小地图定位。两份复现包均无小地图帧；唯一截图是此前录制地图时的画面，不能证明超时瞬间地图是否已打开。
+
+用该录制画面离线核对发现兼容缺口：原 `map_my_location` 来自旧黄色图钉，默认区域得分约 0.155，即使全图搜索最高也仅约 0.599，低于原阈值 0.8。画面右上实际存在白色回中按钮及同列的缩放加减按钮。因此仅检测旧图钉会拒绝这一已打开的地图界面，扩大搜索范围或降低原阈值不能可靠解决。
+
+`RouteMapUI` 新增这套界面的三个按钮联合校验，各匹配得分须达到 0.88，按截图高度缩放、距右边缘的位置查找，并检查加减按钮同列。路线入口、地图菜单选择完成和途中大地图恢复共用兼容检查，旧图钉检测继续保留；连续新帧中按钮位置稳定后才能继续。后续地图身份与信标位置仍须通过原有书签和地形配准，控件只证明界面状态，不证明地图或位置正确。
+
+真实按钮素材的 1080p、1440p、2160p 与 JPEG 变体通过；普通世界、战斗、缺少按钮、交换加减按钮及地图地形负例会被拒绝。失败检查现在明确保存实际检测画面和控件得分，防止入口失败发生在首次小地图采样前时只留下空事件包。这是根据测试机材料完成的离线修复，仍需更新后重新实测地图入口。
 
 ## 后续结构性改造
 
@@ -111,6 +123,8 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 ## 复核命令
 
+2026-10-25 定向回归：147 项逻辑测试与 17 项截图测试通过，覆盖新旧地图入口、取消、超时、真实控件、新失败画面事件及既有移动/回放逻辑；文档严格构建通过。新增截图用例经实际任务和 FeatureSet 确认旧图钉缺失时可以识别新控件。未运行游戏内整条路线验收。
+
 2026-10-24 最终定向回归：212 项逻辑测试和 16 项真实截图测试通过，文档严格构建通过。未运行游戏内完整路线验收。
 
 2026-10-23 最终定向回归：154 项逻辑测试和 16 项真实截图测试通过，文档严格构建通过。未运行游戏内完整路线验收。
@@ -120,6 +134,7 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 ```powershell
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMapHintSearch tests.TestTerrainSearch tests.TestMinimapTracker tests.TestTerrainMatcher tests.TestMapFeatureRegions tests.TestEchoRoute tests.Test3CRouteRuntime tests.TestRouteMapNavigation tests.TestFarm3CEchoTask
 .\.venv\Scripts\python.exe -u run_test.py tests.TestLocalizationFreshness tests.TestContinuousTerrainTracking tests.TestTrackingVerifier tests.TestRouteCapture tests.TestRouteSteering tests.TestNavigationReplay tests.TestNavigationReplayTask
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapUI tests.Test3CMapEntry
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -m mkdocs build --strict
 ```
