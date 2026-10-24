@@ -118,8 +118,10 @@ git submodule update --init --recursive
 
 如果提示 `Cannot confirm minimap player heading after 3 frames`，日志会包含画面尺寸、匹配分数和方向分数差；请同时保留“截图目录”中名称包含 `3c-heading-minimap` 的图片。程序重启可能清理旧截图，先保存诊断图片再重启。现有路线可以继续使用，不需要因朝向识别失败重新录制。
 
-如果提示 `Minimap position lost for 5 seconds` 或 `Cannot confirm route start`，表示当前位置没有通过地图匹配或起点距离检查。请提供这条路线的 JSON、它引用的 `.map.png` 和全部 `.view-N.png` 原图，以及同一次运行的日志和 `3c-location-` 诊断图片。`last-attempt-minimap` 是最后一次小地图匹配实际处理的输入，日志中的 `last_minimap_diagnostic` 保留其匹配结果，不会被随后的大地图恢复覆盖；`minimap` 是报错时画面的小地图，`last-good` 是最后一次成功定位的小地图；`start-` 表示在起点检查阶段失败。可在开发工具点击“导出日志”，生成包含 `logs` 和 `screenshots` 的 ZIP；它不包含路线 JSON 和路线图片，需要另外加入。先保存这些文件再重启程序，不需要仅为了诊断重新录制路线。
+如果提示 `Minimap position lost for 5 seconds` 或 `Cannot confirm route start`，表示当前位置没有通过地图匹配或起点距离检查。2026-10-24 的改进会在异常退出时把当前路线快照、引用地图副本及失败前连续小地图保存到 `logs/3c-replays/`。日志出现“已保存寻路复现包”后，直接点击开发工具的“导出日志”，ZIP 会包含该包；导出功能本身不会遍历整个 `routes` 目录。若日志提示包未保存或资产不完整，再手动加入该路线 JSON、`.map.png` 和全部 `.view-N.png` 原图。
+
+静态诊断也继续保留：`last-attempt-minimap` 是最后一次小地图匹配实际处理的输入，日志中的 `last_minimap_diagnostic` 保留其匹配结果，不会被随后的大地图恢复覆盖；`minimap` 是报错时画面的小地图，`last-good` 是最后一次成功定位的小地图；`start-` 表示在起点检查阶段失败。先导出同一次运行的日志再重启，无需仅为了诊断重新录制路线。复现包及离线回放命令见[导航调研与改进](pathing-research.md#navigation-replay)。
 
 排查没有自动传送时，先检查任务的“路线文件”和“路线队列”：队列非空会覆盖单路线文件，多个文件也可能使用相同显示名称。日志 `3C route selection` 记录实际文件绝对路径、设置来源和正在执行的源码路径，`3C route entry plan` 记录实际起点、图片、传送视图数及地图菜单路径。首条旧式路线可以没有 `teleport`，此时会明确提示从当前位置开始，不会自动传送；有 `teleport.views` 时 `anchor` 可以为空。若日志文件名或起点与提供的 JSON 不同，应先核对实际选中的文件，再分析截图失配。更新源码后须关闭旧进程、重新启动才能生效。
 
-`3C Stage` 可区分移动、战斗和搜索声骸。所有标记都录成 `combat` 时，每一点都会停下检查战斗并搜索声骸；纯转弯位置应改为 `walk`。移动中的短暂 SIFT 失配会由最多 3 秒、60 个地图像素的视觉跟踪衔接，超过预算或跟踪质量不足仍会松键；不能仅凭一次恢复运行就判断配套地图的持续匹配已解决。
+`3C Stage` 可区分移动、战斗和搜索声骸。所有标记都录成 `combat` 时，每一点都会停下检查战斗并搜索声骸；纯转弯位置应改为 `walk`。短暂 SIFT 失配由最多 3 秒、60 个地图像素的光流衔接；独立全图地形复核通过后可建立新绝对定位，复核失败不会延长光流预算。近点会减速，最终到点需要停步后的新画面绝对确认；不能仅凭一次恢复运行就判断配套地图的持续匹配已解决。

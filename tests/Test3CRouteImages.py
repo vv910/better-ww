@@ -81,12 +81,21 @@ class Test3CRouteImages(TaskTestCase):
                 moved = cv2.warpAffine(minimap, np.float32([[1, 0, -4], [0, 1, 2]]), (width, height))
                 expected = transform @ np.array([width // 2 + 4, height // 2 - 2, 1])
                 clock.return_value = 0.6
-                with patch.object(localizer, '_locate_absolute', return_value=None):
+                with patch.object(localizer, '_locate_absolute', return_value=None), \
+                        patch.object(localizer.tracking_verifier, 'verify', return_value=None):
                     result = localizer.locate(moved)
                 self.assertIsNotNone(result, localizer.last_diagnostic)
                 self.assertEqual('flow', result.source)
                 np.testing.assert_allclose(result.xy, expected[:2], atol=1)
                 self.assertEqual(0, localizer.tracker.anchor_at)
+                clock.return_value = 1.6
+                localizer.request_absolute()
+                with patch.object(localizer, '_locate_absolute', return_value=None):
+                    verified = localizer.locate(moved)
+                self.assertIsNotNone(verified, localizer.last_diagnostic)
+                self.assertEqual('terrain_track', verified.source)
+                np.testing.assert_allclose(verified.xy, expected[:2], atol=2)
+                self.assertEqual(1.6, localizer.tracker.anchor_at)
 
     def test_route_template_warmup_uses_existing_features_before_moving(self):
         self.set_image('tests/images/mini_map.png')
@@ -95,6 +104,8 @@ class Test3CRouteImages(TaskTestCase):
             self.task.prepare_route_runtime()
         detect.assert_called_once()
         self.assertTrue(self.task.read_route_heading().reliable)
+        # Warmup precedes the replay writer: keep its template for the route bundle.
+        np.testing.assert_array_equal(self.task._heading_template, self.task.get_feature_by_name('arrow').mat)
 
     def test_passive_route_enemy_detection_avoids_character_reload(self):
         self.task._in_combat = False
@@ -154,8 +165,10 @@ class Test3CRouteImages(TaskTestCase):
                 self.task.save_localization_diagnostic('lost')
         names = [call.args[0] for call in screenshot.call_args_list]
         self.assertEqual(['3c-location-lost-full', '3c-location-lost-minimap',
-                          '3c-location-lost-last-good'], names)
+                          '3c-location-lost-last-attempt-minimap', '3c-location-lost-last-good'], names)
         self.assertIn('too_few_minimap_features', warning.call_args.args[0])
+        np.testing.assert_array_equal(self.task._last_attempt_minimap,
+                                      screenshot.call_args_list[-2].kwargs['frame'])
         np.testing.assert_array_equal(last_good, screenshot.call_args_list[-1].kwargs['frame'])
 
     def test_record_real_map_markers_to_loadable_route(self):

@@ -1,4 +1,5 @@
 import json
+import math
 import tempfile
 import unittest
 from dataclasses import replace
@@ -13,7 +14,7 @@ from src.pathing.EchoRoute import EchoRoute, RoutePoint, RouteTeleport
 from src.pathing.MapLocalizer import MapPosition
 from src.pathing.MinimapHeading import HeadingEstimate
 from src.pathing.FallGuard import FallGuard
-from src.pathing.RouteSteering import RouteSteering
+from src.pathing.RouteSteering import DIRECTIONS, RouteSteering
 from src.pathing.RouteMapContext import RouteMapContext
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.combat.CombatCheck import CombatCheck
@@ -63,6 +64,11 @@ class TestFarm3CEchoTask(unittest.TestCase):
     def setUp(self):
         self.task = make_task()
         self.clock = 0
+        # Task control cases use fixture routes and must not write failure bundles
+        # into the user's logs. Replay I/O and integration have dedicated tests.
+        replay_patch = patch('src.task.Farm3CEchoTask.NavigationReplay')
+        replay_patch.start()
+        self.addCleanup(replay_patch.stop)
 
     def tick(self):
         self.clock += 1
@@ -173,10 +179,10 @@ class TestFarm3CEchoTask(unittest.TestCase):
 
     def test_airborne_at_target_waits_for_ground_before_dispatching_combat(self):
         self.task._camera_aligned = True
-        self.task.observe_route_airborne.side_effect = [True, True, False]
+        self.task.observe_route_airborne.side_effect = [True, True, False, False]
         self.task.locate.return_value = MapPosition(30, 0, 1, 20)
         self.task.follow_point(RoutePoint(30, 0, tolerance=2))
-        self.assertEqual(3, self.task.locate.call_count)
+        self.assertEqual(4, self.task.locate.call_count)
         self.task.center_camera.assert_not_called()
         self.task.send_key_down.assert_not_called()
 
@@ -214,7 +220,8 @@ class TestFarm3CEchoTask(unittest.TestCase):
     def test_mid_route_combat_finishes_before_movement_resumes(self):
         self.task.fight_and_pickup = Mock()
         self.task.route_enemy_visible.side_effect = [True, False, False, False]
-        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), MapPosition(30, 0, 1, 20),
+                                       MapPosition(30, 0, 1, 20)]
         events = Mock()
         events.attach_mock(self.task.fight_and_pickup, 'battle')
         events.attach_mock(self.task.send_key_down, 'move')
@@ -236,7 +243,8 @@ class TestFarm3CEchoTask(unittest.TestCase):
     def test_transient_heading_failure_retries_fresh_frames_before_moving(self):
         self.task.read_route_heading.side_effect = [HeadingEstimate(0, 0.55, 0.2), None,
                                                     HeadingEstimate(90, 0.9, 0.2)]
-        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+        self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), MapPosition(30, 0, 1, 20),
+                                       MapPosition(30, 0, 1, 20)]
         self.task.follow_point(RoutePoint(30, 0, tolerance=2))
         self.task.send_key_down.assert_called_once_with('a')
         self.assertEqual(3, self.task.read_route_heading.call_count)
@@ -270,7 +278,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.save_heading_diagnostic.assert_not_called()
 
     def test_straight_path_holds_one_key_and_centers_camera_once(self):
-        self.task.locate.side_effect = [MapPosition(x, 0, 1, 20) for x in (0, 10, 20, 30)]
+        self.task.locate.side_effect = [MapPosition(x, 0, 1, 20) for x in (0, 10, 20, 30, 30)]
         self.task.follow_point(RoutePoint(30, 0, tolerance=2))
         self.task.send_key_down.assert_called_once_with('w')
         self.task.center_camera.assert_called_once()
@@ -278,7 +286,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.send_key.assert_not_called()
 
     def test_walk_points_keep_input_held_between_points(self):
-        self.task.locate.side_effect = [MapPosition(x, 0, 1, 20) for x in (0, 10, 20)]
+        self.task.locate.side_effect = [MapPosition(x, 0, 1, 20) for x in (0, 10, 20, 20)]
         self.task.follow_point(RoutePoint(10, 0, tolerance=2), keep_moving=True)
         self.assertEqual(('w',), self.task._route_keys)
         self.task.send_key_up.assert_not_called()
@@ -299,18 +307,21 @@ class TestFarm3CEchoTask(unittest.TestCase):
 
     def test_short_localization_gap_releases_input_without_recentering_camera(self):
         self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None,
-                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20),
+                                       MapPosition(30, 0, 1, 20)]
         events = Mock()
         events.attach_mock(self.task.send_key_down, 'down')
         events.attach_mock(self.task.send_key_up, 'up')
         self.task.follow_point(RoutePoint(30, 0, tolerance=2))
         self.task.center_camera.assert_called_once()
         moves = [event for event in events.mock_calls if event in (call.down('w'), call.up('w'))]
-        self.assertEqual([call.down('w'), call.up('w'), call.down('w'), call.up('w')], moves)
+        self.assertEqual([call.down('w'), call.up('w'), call.down('w'), call.up('w')], moves[:4])
+        self.assertTrue(all(event == call.up('w') for event in moves[4:]))
 
     def test_long_localization_pause_recalibrates_camera_before_moving_again(self):
         self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None, None,
-                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20)]
+                                       MapPosition(10, 0, 1, 20), MapPosition(30, 0, 1, 20),
+                                       MapPosition(30, 0, 1, 20)]
         self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + 0.6)
         with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock):
             self.task.follow_point(RoutePoint(30, 0, tolerance=2))
@@ -318,12 +329,241 @@ class TestFarm3CEchoTask(unittest.TestCase):
 
     def test_short_pause_keeps_camera_heading_when_player_faces_diagonally(self):
         self.task.locate.side_effect = [MapPosition(0, 0, 1, 20), None,
-                                       MapPosition(10, 10, 1, 20), MapPosition(60, 60, 1, 20)]
+                                       MapPosition(10, 10, 1, 20), MapPosition(60, 60, 1, 20),
+                                       MapPosition(60, 60, 1, 20)]
         self.task.read_route_heading.side_effect = [HeadingEstimate(0, 0.9, 0.2),
                                                    HeadingEstimate(45, 0.9, 0.2)]
         self.task.follow_point(RoutePoint(60, 60, tolerance=2))
         self.assertEqual([call('w'), call('d'), call('w'), call('d')], self.task.send_key_down.call_args_list)
         self.task.center_camera.assert_called_once()
+
+    @staticmethod
+    def motion_task(speed=150, frame_delay=.05):
+        task = make_task()
+        task._camera_aligned = True
+        task.config['Keep Camera Behind Player'] = False
+        state = {'x': 0.0, 'y': 0.0, 'now': 0.0, 'heading': 0.0, 'samples': [], 'held_at_samples': []}
+
+        def advance(seconds):
+            state['now'] += seconds
+            if task._route_keys:
+                state['heading'] = DIRECTIONS.index(task._route_keys) * 45
+                angle = math.radians(state['heading'])
+                state['x'] += math.cos(angle) * speed * seconds
+                state['y'] += math.sin(angle) * speed * seconds
+
+        def locate():
+            state['samples'].append((state['x'], state['y']))
+            state['held_at_samples'].append(task._route_keys)
+            return MapPosition(state['x'], state['y'], .9, 20)
+
+        task.next_frame.side_effect = lambda: advance(frame_delay)
+        task.sleep.side_effect = advance
+        task.locate.side_effect = locate
+        task.read_route_heading.side_effect = lambda: HeadingEstimate(state['heading'], .9, .2)
+        task.recover_route_position = Mock(return_value=None)
+        return task, state, advance, locate
+
+    def test_fast_approach_reaches_narrow_targets_in_both_directions_and_diagonally(self):
+        cases = [((15, 0), 150, .05), ((-15, 0), 150, .05),
+                 ((15, 15), 150, .05), ((15, -15), 300, .13)]
+        for target, speed, frame_delay in cases:
+            with self.subTest(target=target, speed=speed, frame_delay=frame_delay):
+                task, state, _, _ = self.motion_task(speed, frame_delay)
+                with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: state['now']):
+                    task.follow_point(RoutePoint(*target, tolerance=2, timeout=10))
+                self.assertLessEqual(math.dist((state['x'], state['y']), target), 2)
+                self.assertLess(state['now'], 5)
+                self.assertEqual((), state['held_at_samples'][-1])
+                task.localizer.request_absolute.assert_called_once()
+                task.recover_route_position.assert_not_called()
+
+    def test_precise_walk_corner_is_reached_before_following_the_next_leg(self):
+        task, state, _, _ = self.motion_task()
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: state['now']):
+            task.follow_point(RoutePoint(15, 0, tolerance=2, timeout=10), keep_moving=True)
+            self.assertLessEqual(math.dist((state['x'], state['y']), (15, 0)), 2)
+            task.follow_point(RoutePoint(15, 15, tolerance=2, timeout=10))
+        self.assertLessEqual(math.dist((state['x'], state['y']), (15, 15)), 2)
+        self.assertLess(state['now'], 5)
+
+    def test_approach_resumes_after_a_visual_gap_or_battle_without_old_motion_history(self):
+        for interruption in ('visual-gap', 'battle'):
+            with self.subTest(interruption=interruption):
+                task, state, advance, locate = self.motion_task()
+                events = {'seen': False, 'locations': 0}
+                if interruption == 'visual-gap':
+                    def interrupted_locate():
+                        events['locations'] += 1
+                        if events['locations'] == 3:
+                            events['seen'] = True
+                            return None
+                        return locate()
+
+                    task.locate.side_effect = interrupted_locate
+                else:
+                    def enemy():
+                        if not events['seen'] and state['now'] >= .4:
+                            events['seen'] = True
+                            return True
+                        return False
+
+                    task.route_enemy_visible.side_effect = enemy
+                    task.fight_and_pickup = Mock(side_effect=lambda: advance(1))
+                with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: state['now']):
+                    task.follow_point(RoutePoint(180, 0, tolerance=2, timeout=10))
+                self.assertTrue(events['seen'])
+                self.assertLessEqual(math.dist((state['x'], state['y']), (180, 0)), 2)
+                self.assertEqual((), state['held_at_samples'][-1])
+                self.assertLess(state['now'], 6)
+
+    def test_single_arrival_outlier_is_rejected_by_a_fresh_stationary_observation(self):
+        samples = iter([0, 100, 20, 100, 100])
+        held_at_confirmation = []
+
+        def locate():
+            x = next(samples)
+            if self.task.locate.call_count in (3, 5):
+                held_at_confirmation.append(self.task._route_keys)
+            return MapPosition(x, 0, .9, 20)
+
+        self.task.locate.side_effect = locate
+        self.task.follow_point(RoutePoint(100, 0, tolerance=12))
+        self.assertEqual(5, self.task.locate.call_count)
+        self.assertEqual([(), ()], held_at_confirmation)
+        self.assertEqual(2, self.task.localizer.request_absolute.call_count)
+
+    def test_flow_alone_cannot_finish_a_combat_point_or_trigger_pickup(self):
+        self.task._camera_aligned = True
+        self.task.locate.return_value = MapPosition(100, 0, .9, 20, source='flow')
+        self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + seconds)
+        self.task.fight_and_pickup = Mock()
+        self.task.pickup_echoes = Mock()
+        route = EchoRoute('test', Path('tests/images/path.png'), RoutePoint(0, 0),
+                          (RoutePoint(100, 0, 'combat', tolerance=2, timeout=5),), (0, 0, 1920, 1080))
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                self.assertRaisesRegex(RuntimeError, 'timed out'):
+            self.task.execute_route(route)
+        self.task.fight_and_pickup.assert_not_called()
+        self.task.pickup_echoes.assert_not_called()
+        self.assertEqual((), self.task._route_keys)
+
+    def test_arrival_waits_for_fresh_absolute_evidence_after_flow(self):
+        self.task._camera_aligned = True
+        self.task.locate.side_effect = [MapPosition(100, 0, .9, 20, source=source)
+                                       for source in ('flow', 'flow', 'flow', 'terrain_track')]
+        self.task.follow_point(RoutePoint(100, 0, tolerance=2))
+        self.assertEqual(4, self.task.locate.call_count)
+        self.assertEqual(2, self.task.localizer.request_absolute.call_count)
+        self.task.send_key_down.assert_not_called()
+
+    def test_slow_heading_or_camera_refresh_cannot_move_using_an_old_position(self):
+        for slow_method in ('confirm_route_heading', 'maintain_route_camera'):
+            with self.subTest(slow_method=slow_method):
+                task = make_task()
+                task._camera_aligned = True
+                task.locate.side_effect = [MapPosition(0, 0, .9, 20), MapPosition(100, 0, .9, 20),
+                                           MapPosition(100, 0, .9, 20)]
+                elapsed = [0.0]
+
+                def delayed(*args):
+                    elapsed[0] += 1.2
+                    task.next_frame()
+                    return 0
+
+                setattr(task, slow_method, Mock(side_effect=delayed))
+                with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: elapsed[0]):
+                    task.follow_point(RoutePoint(100, 0, tolerance=2, timeout=10))
+                task.send_key_down.assert_not_called()
+                self.assertEqual(3, task.locate.call_count)
+
+    def test_cancellation_during_arrival_confirmation_releases_input(self):
+        self.task._camera_aligned = True
+        self.task._route_keys = ('w',)
+        self.task.locate.return_value = MapPosition(100, 0, .9, 20)
+        self.task.next_frame.side_effect = [None, TaskDisabledException()]
+        with self.assertRaises(TaskDisabledException):
+            self.task.follow_point(RoutePoint(100, 0, tolerance=2))
+        self.task.localizer.request_absolute.assert_called_once()
+        self.assertEqual(1, self.task.locate.call_count)
+        self.assertEqual((), self.task._route_keys)
+        self.task.send_key_up.assert_any_call('w')
+
+    def test_cancellation_during_a_short_approach_pulse_releases_all_movement(self):
+        task, state, advance, _ = self.motion_task()
+
+        def cancel_pulse(seconds):
+            if seconds < .12:
+                raise TaskDisabledException()
+            advance(seconds)
+
+        task.sleep.side_effect = cancel_pulse
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: state['now']), \
+                self.assertRaises(TaskDisabledException):
+            task.follow_point(RoutePoint(15, 0, tolerance=2, timeout=10))
+        self.assertEqual((), task._route_keys)
+        for key in ('w', 'a', 's', 'd'):
+            task.send_key_up.assert_any_call(key)
+
+    def test_successful_map_recovery_does_not_consume_the_movement_budget(self):
+        self.task._camera_aligned = True
+        self.task.locate.return_value = None
+        self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + seconds)
+
+        def recover():
+            self.clock += 8
+            self.task.locate.return_value = MapPosition(15, 0, .9, 20)
+            return self.task.locate.return_value
+
+        self.task.recover_route_position = Mock(side_effect=recover)
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock):
+            self.task.follow_point(RoutePoint(15, 0, tolerance=2, timeout=5))
+        self.task.recover_route_position.assert_called_once()
+        self.assertGreater(self.clock, 8)
+        self.assertLess(self.clock, 13)
+
+    def test_failed_map_recovery_keeps_the_existing_attempt_limit(self):
+        self.task._camera_aligned = True
+        self.task.locate.return_value = None
+        self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + seconds)
+
+        def recover():
+            self.clock += 8
+            return None
+
+        self.task.recover_route_position = Mock(side_effect=recover)
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                self.assertRaisesRegex(RuntimeError, 'position lost'):
+            self.task.follow_point(RoutePoint(15, 0, tolerance=2, timeout=30))
+        self.task.recover_route_position.assert_called_once()
+        self.assertEqual((), self.task._route_keys)
+
+    def test_realigning_a_moving_player_does_not_consume_the_movement_budget(self):
+        self.task.config['Keep Camera Behind Player'] = False
+        self.task._camera_aligned = True
+        state = {'recovered': False, 'samples': 0}
+        self.task.next_frame.side_effect = lambda: setattr(self, 'clock', self.clock + .5)
+        self.task.sleep.side_effect = lambda seconds: setattr(self, 'clock', self.clock + seconds)
+
+        def locate():
+            if state['recovered']:
+                return MapPosition(1000, 0, .9, 20)
+            state['samples'] += 1
+            xy = ((-10, 0), (0, 10), (10, 0), (0, -10))[state['samples'] % 4]
+            return MapPosition(*xy, .9, 20)
+
+        def recover():
+            self.clock += 8
+            state['recovered'] = True
+            return MapPosition(1000, 0, .9, 20)
+
+        self.task.locate.side_effect = locate
+        self.task.recover_route_position = Mock(side_effect=recover)
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock):
+            self.task.follow_point(RoutePoint(1000, 0, tolerance=2, timeout=20))
+        self.task.recover_route_position.assert_called_once()
+        self.assertGreater(self.clock, 20)
+        self.assertLess(self.clock, 28)
 
     def test_empty_pickup_sweep_checks_four_views_with_short_camera_waits(self):
         self.task.pickup_echoes()

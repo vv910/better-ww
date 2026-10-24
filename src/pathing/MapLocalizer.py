@@ -8,6 +8,8 @@ import numpy as np
 from src.pathing.MinimapTracker import MinimapTracker
 from src.pathing.TerrainMask import terrain_feature_mask
 from src.pathing.TerrainMatcher import TerrainMatcher
+from src.pathing.TerrainSearch import TerrainSearch
+from src.pathing.TrackingVerifier import TrackingVerifier
 
 
 @dataclass(frozen=True)
@@ -26,6 +28,10 @@ class MapPosition:
 class MapLocalizer:
     """Match the north-up minimap against one local map snapshot, without game memory."""
 
+    MAX_OBSERVATION_AGE = 1.0
+    GEOMETRY_CONFLICTS = frozenset(('position_jump', 'minimap_not_north_up', 'scale_out_of_range',
+                                  'position_outside_recorded_map', 'absolute_disagrees_with_tracking'))
+
     def __init__(self, image, region=None, min_inliers=6, max_jump=100):
         self.gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY) if image.ndim == 3 else image
         self.height, self.width = self.gray.shape
@@ -37,10 +43,18 @@ class MapLocalizer:
         self.locations = np.float32([keypoint.pt for keypoint in self.keypoints])
         self.matcher = cv2.BFMatcher(cv2.NORM_L2)
         self.terrain_matcher = TerrainMatcher()
+        self.tracking_verifier = TrackingVerifier()
+        self._terrain_search = None  # Teleport overview references never need this extra image pyramid.
         self.min_inliers = min_inliers
         self.max_jump = max_jump
         self.tracker = MinimapTracker()
         self.reset()
+
+    @property
+    def terrain_search(self):
+        if self._terrain_search is None:
+            self._terrain_search = TerrainSearch(self.gray, self.region)
+        return self._terrain_search
 
     def _region_features(self, gray, region, mask=None, source_image=None):
         # SIFT applies its feature quota BEFORE its mask. Detect on the ROI itself so
@@ -104,6 +118,14 @@ class MapLocalizer:
         self._last_sift_at = -math.inf
         self._candidate_transform = None
         self._terrain_proposal = None
+        # Only a visually registered full-map player position may seed template search.
+        # Hand-entered route starts and ordinary optical flow are not such evidence.
+        self._map_search_hint = (position_hint.xy if isinstance(position_hint, MapPosition)
+                                 and position_hint.source == 'map' else None)
+        self._map_search_hint_at = time.monotonic() if self._map_search_hint is not None else -math.inf
+        self._last_template_at = -math.inf
+        self._absolute_transform = None
+        self._last_terrain_refresh_at = -math.inf
 
     def _reject(self, reason):
         self.last_diagnostic.update(status='rejected', reason=reason)
@@ -112,7 +134,17 @@ class MapLocalizer:
             attempts[-1]['reason'] = reason
         return None
 
+    def request_absolute(self):
+        """Check fresh absolute image evidence on the next frame, e.g. after stopping."""
+        self._last_sift_at = -math.inf
+
+    def _geometry_conflict(self):
+        reasons = {self.last_diagnostic.get('reason')}
+        reasons.update(attempt.get('reason') for attempt in self.last_diagnostic.get('attempts', ()))
+        return bool(reasons & self.GEOMETRY_CONFLICTS)
+
     def locate(self, minimap):
+        now = time.monotonic()  # Timestamp the image before preprocessing, not after recognition.
         gray = cv2.cvtColor(minimap, cv2.COLOR_BGR2GRAY) if minimap.ndim == 3 else minimap
         height, width = gray.shape
         self.last_diagnostic = {'mode': 'minimap', 'minimap_size': [width, height],
@@ -125,7 +157,6 @@ class MapLocalizer:
         cv2.circle(mask, center, radius, 255, -1)
         cv2.circle(mask, center, int(radius * 0.23), 0, -1)  # player arrow/camera cone
         mask = cv2.bitwise_and(mask, terrain_feature_mask(minimap))
-        now = time.monotonic()
         tracked = self.tracker.track(gray, mask, now)
         self.last_diagnostic['tracking'] = dict(self.tracker.last_diagnostic)
         if tracked is not None:
@@ -138,26 +169,97 @@ class MapLocalizer:
         self._last_sift_at = now
         self._candidate_transform = None
         result = self._locate_absolute(gray, mask, center)
+        if result is None and tracked is None:
+            result = self._search_map_hint(minimap, mask)
+        if result is None and tracked is not None and not self._geometry_conflict():
+            result = self._revalidate_tracking(minimap, mask, tracked, now)
         if result is not None and tracked is not None and math.dist(result.xy, tracked.xy) > 12:
             # Conflicting visual evidence is not a temporary lack of landmarks.
             self.tracker.reset()
             return self._reject('absolute_disagrees_with_tracking')
         if result is not None:
+            elapsed = time.monotonic() - now
+            self.last_diagnostic['observation_age'] = round(elapsed, 3)
+            if elapsed > self.MAX_OBSERVATION_AGE:
+                self.tracker.reset()
+                return self._reject('observation_expired')
             self.previous = result
+            self._map_search_hint = None  # A map hint is a one-time bootstrap, never renewed by flow.
+            self._absolute_transform = self._candidate_transform.copy()
             self.tracker.anchor(gray, mask, self._candidate_transform, result.xy, now)
             self.last_diagnostic.update(status='matched', reason='matched', method=result.source, position=result.xy,
                                         inliers=result.inliers, confidence=round(result.confidence, 3))
             return result
         if tracked is not None:
-            if self.last_diagnostic.get('reason') in ('position_jump', 'minimap_not_north_up',
-                                                      'scale_out_of_range', 'position_outside_recorded_map'):
+            if self._geometry_conflict():
                 self.tracker.reset()
+                self._map_search_hint = None
                 return None
             self.last_diagnostic['absolute_reason'] = self.last_diagnostic.get('reason')
             return self._accept_tracking(gray, mask, tracked, now)
         return None
 
+    def _revalidate_tracking(self, minimap, mask, tracked, observed_at):
+        completed_at = time.monotonic()
+        if (self._absolute_transform is None or completed_at - self._last_terrain_refresh_at < 1
+                or completed_at - observed_at > self.MAX_OBSERVATION_AGE
+                or completed_at - self.tracker.anchor_at > self.tracker.max_age
+                or completed_at - self.tracker.previous_at > 2.0):
+            return None
+        self._last_terrain_refresh_at = completed_at
+        verified = self.tracking_verifier.verify(self.gray, minimap, mask, self.region,
+                                                 tracked, self._absolute_transform)
+        self.last_diagnostic['terrain_revalidation'] = dict(self.tracking_verifier.last_diagnostic)
+        if verified is None:
+            return None
+        if self.previous is not None and math.dist(verified.xy, self.previous.xy) > self.max_jump:
+            return self._reject('position_jump')
+        self._candidate_transform = verified.transform
+        return MapPosition(*verified.xy, verified.score, 0, source='terrain_track')
+
+    def _search_map_hint(self, minimap, mask):
+        if self._map_search_hint is None:
+            return None
+        now = time.monotonic()  # SIFT may already have consumed the hint's remaining lifetime.
+        if now - self._map_search_hint_at > 5:
+            self._map_search_hint = None
+            self.last_diagnostic['template_search'] = {'status': 'rejected', 'reason': 'map_hint_expired'}
+            return None
+        # Missing evidence can be supplemented; conflicting geometry cannot.
+        if self._geometry_conflict():
+            self._map_search_hint = None
+            self.last_diagnostic['template_search'] = {'status': 'rejected', 'reason': 'conflicting_geometry'}
+            return None
+        if now - self._last_template_at < 1:
+            self.last_diagnostic['template_search'] = {'status': 'rejected', 'reason': 'search_throttled'}
+            return None
+        self._last_template_at = now
+        matched = self.terrain_search.search(minimap, mask, self._map_search_hint)
+        self.last_diagnostic['template_search'] = dict(self.terrain_search.last_diagnostic)
+        if time.monotonic() - self._map_search_hint_at > 5:
+            self._map_search_hint = None
+            self.last_diagnostic['template_search'].update(status='rejected', reason='map_hint_expired')
+            return None
+        if matched is None:
+            return None
+        if self.previous is not None and math.dist(matched.xy, self.previous.xy) > self.max_jump:
+            return self._reject('position_jump')
+        self._candidate_transform = matched.transform
+        # Correlation support is not a count of independent SIFT inliers.
+        return MapPosition(*matched.xy, matched.score, 0, source='template')
+
     def _accept_tracking(self, gray, mask, tracked, now):
+        completed_at = time.monotonic()
+        self.last_diagnostic['observation_age'] = round(completed_at - now, 3)
+        if completed_at - now > self.MAX_OBSERVATION_AGE:
+            self.tracker.reset()
+            return self._reject('observation_expired')
+        if (completed_at - self.tracker.anchor_at > self.tracker.max_age
+                or completed_at - self.tracker.previous_at > 2.0):
+            self.last_diagnostic['tracking'].update(reason='tracking_expired',
+                                                    age=round(completed_at - self.tracker.anchor_at, 3))
+            self.tracker.reset()
+            return self._reject('tracking_expired_during_localization')
         result = MapPosition(*tracked.xy, tracked.confidence, tracked.inliers, source='flow')
         self.tracker.commit(gray, mask, tracked, now)
         self.previous = result

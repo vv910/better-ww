@@ -42,6 +42,7 @@ nav:
   - Development:
       - Contributing: development/contributing.md
       - Echo farming / 声骸刷取: development/echo-farming.md
+      - Pathing research / 导航调研: development/pathing-research.md
       - Releases: development/releases.md
       - Testing on another PC / 跨电脑测试: development/testing-on-another-pc.md
 

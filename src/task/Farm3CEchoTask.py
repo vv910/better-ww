@@ -1,6 +1,8 @@
+import hashlib
 import json
 import math
 import time
+from contextlib import contextmanager
 from copy import deepcopy
 from pathlib import Path
 
@@ -14,10 +16,13 @@ from src.pathing.MapLocalizer import MapLocalizer
 from src.pathing.MapPlayer import find_map_player
 from src.pathing.MinimapHeading import MinimapHeading
 from src.pathing.MovementWindow import MovementWindow
+from src.pathing.NavigationReplay import NavigationReplay
+from src.pathing.RouteApproach import RouteApproach
 from src.pathing.RouteMarkers import RouteMarkerDetector
 from src.pathing.RouteMapContext import RouteMapSelector, parse_selection_path
 from src.pathing.RouteSteering import RouteSteering
-from src.pathing.RouteMapNavigation import RouteMapNavigator, capture_map_views, map_region
+from src.pathing.RouteMapNavigation import (RouteMapNavigator, capture_map_views, map_point_tolerance,
+                                            map_region, wait_for_map_stable)
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.task.FarmMapTask import BigMap, sort_stars
 from src.task.WWOneTimeTask import WWOneTimeTask
@@ -62,6 +67,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         })
         self._combat_deadline = None
         self._heading_detector = None
+        self._heading_template = None
         self._steering = None
         self._camera_aligned = False
         self._camera_recenter_at = 0
@@ -73,6 +79,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._last_minimap_diagnostic = {}
         self._last_route_position = None
         self._active_route = None
+        self._navigation_replay = None
         self._airborne_stage = False
         self.config_type['Route Queue'] = {'type': 'text_edit'}
 
@@ -113,6 +120,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         # Like the teleport executor, first return from map/menu UI to the world HUD.
         self.wait_in_team_and_world(time_out=10, esc=True)
         previous_threads = cv2.getNumThreads()
+        failure_reason = None
         try:
             # OpenCV's default worker count can contend with the game on high-core CPUs.
             cv2.setNumThreads(min(previous_threads, 2))
@@ -124,6 +132,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.info_set('Route', route.name)
                 self.info_set('Route File', str(resolved_paths[index]))
                 self._active_route = route
+                self._navigation_replay = NavigationReplay(
+                    resolved_paths[index], arrow_template=getattr(self, '_heading_template', None))
                 self.log_info(f'3C route {index + 1}/{len(routes)}: {paths[index]}')
                 self.log_route_entry(route, resolved_paths[index])
                 self.localizer = MapLocalizer(read_map_image(route.map_image), route.map_region)
@@ -136,7 +146,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 else:
                     self.log_warning('Route has no teleport metadata; starting from the current position / '
                                      '此路线没有传送信息，本次不会自动传送，需已站在录制起点附近')
-                self.localizer.reset()
+                self.reset_route_localizer()
                 self._fall_guard.reset()
                 self.info_set('3C Stage', 'Verifying Route Start / 检查路线起点')
                 position = self.wait_until(self.locate, time_out=5, raise_if_not_found=False)
@@ -152,13 +162,66 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.execute_route(route)
                 self.info_incr('Completed Routes')
             self.log_info('3C route queue completed / 3C 路线队列已完成', notify=True)
-        except CharDeadException:
+        except TaskDisabledException:
+            raise
+        except CharDeadException as error:
+            failure_reason = f'Character death: {error}'
             self.log_error('Route stopped after character death / 角色死亡，路线已停止', notify=True)
             raise
+        except Exception as error:
+            failure_reason = f'{type(error).__name__}: {error}'
+            raise
         finally:
-            self.stop_route_movement()
-            self._active_route = None
-            cv2.setNumThreads(previous_threads)
+            try:
+                self.stop_route_movement()
+            finally:
+                if failure_reason is not None:
+                    self.save_navigation_replay(failure_reason)
+                self._navigation_replay = None
+                self._active_route = None
+                cv2.setNumThreads(previous_threads)
+
+    def _record_navigation(self, method, *args, **kwargs):
+        replay = getattr(self, '_navigation_replay', None)
+        if replay is not None:
+            try:
+                return getattr(replay, method)(*args, **kwargs)
+            except Exception as error:
+                # Diagnostics must not interrupt movement, cancellation or cleanup.
+                self.log_debug(f'3C replay capture disabled: {error}')
+                self._navigation_replay = None
+
+    def reset_route_localizer(self, position_hint=None):
+        if position_hint is None:
+            self.localizer.reset()
+        else:
+            self.localizer.reset(position_hint=position_hint)
+        self._record_navigation('record_reset', position_hint)
+
+    def save_navigation_replay(self, reason):
+        replay = getattr(self, '_navigation_replay', None)
+        if replay is None:
+            return
+        try:
+            source_root = Path(__file__).resolve().parents[1]
+            fingerprints = {}
+            for relative in ('task/Farm3CEchoTask.py', 'pathing/MapLocalizer.py',
+                             'pathing/TrackingVerifier.py', 'pathing/RouteApproach.py'):
+                source = source_root / relative
+                if source.is_file():
+                    try:
+                        fingerprints[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+                    except OSError:
+                        pass
+            destination = replay.flush(reason, metadata={'navigation_interval': self.navigation_interval,
+                                                         'opencv_version': cv2.__version__,
+                                                         'runtime_sources_sha256': fingerprints})
+            if destination is not None:
+                self.log_info(f'3C navigation replay saved / 已保存寻路复现包: {destination}')
+            if replay.last_error:
+                self.log_warning(f'3C replay could not be fully saved / 复现包未完整保存: {replay.last_error}')
+        except Exception as error:
+            self.log_debug(f'3C replay save failed: {error}')
 
     def log_route_entry(self, route, path):
         teleport = route.teleport
@@ -180,7 +243,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                      'edge_levitator', 'wheel_levitator'):
             self.get_feature_by_name(name)
             self.sleep(0.01)  # Yield to cancellation while templates load, before movement starts.
-        self._heading_detector = MinimapHeading(self.get_feature_by_name('arrow').mat)
+        self._prepare_route_heading()
         self.load_chars()
         # Compile and run the first inference while stationary, not during the first pickup.
         og.my_app.yolo_detect(self.frame, threshold=0.6, label=0)
@@ -336,7 +399,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             raise RuntimeError('Beacon cannot be teleported to / 信标不可传送或尚未解锁')
         self.click_box(travel, relative_x=1.5, after_sleep=0.5)
         self.wait_in_team_and_world(time_out=30)
-        self.localizer.reset()
+        self.reset_route_localizer()
         self.next_frame()
 
     def recover_route_position(self):
@@ -349,17 +412,52 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.info_incr('Map Relocalizations')
         position = None
         failure_stage = 'map-ui-not-confirmed'
+        deadline = time.monotonic() + 10
         try:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.4)
             button = self.wait_feature('map_my_location', time_out=2, raise_if_not_found=False)
             if button:
-                self.click(button, after_sleep=.3)
-                self.next_frame()
-                failure_stage = 'player-marker-not-found'
-                player = find_map_player(self.frame, self.get_feature_by_name('arrow').mat, map_region(self.frame))
-                if player is not None:
-                    failure_stage = 'terrain-alignment-failed'
-                    position = self.localizer.locate_map_player(self.frame, player, map_region(self.frame))
+                failure_stage = 'map-open-unstable'
+                if wait_for_map_stable(self, deadline):
+                    self.click(button, after_sleep=.3)
+                    initial_player = None
+                    initial_position = None
+                    # Centering the map animates. As with beacon confirmation,
+                    # require the same marker on two further fresh settled views.
+                    for sample in range(3):
+                        failure_stage = 'map-center-unstable' if sample == 0 else 'player-confirmation-unstable'
+                        if not wait_for_map_stable(self, deadline):
+                            break
+                        player = find_map_player(self.frame, self.get_feature_by_name('arrow').mat,
+                                                 map_region(self.frame))
+                        failure_stage = 'player-marker-not-found'
+                        if player is None:
+                            break
+                        failure_stage = 'player-marker-drift'
+                        if (initial_player is not None
+                                and math.dist(player, initial_player) > map_point_tolerance(self.frame)):
+                            break
+                        if initial_player is None:
+                            initial_player = player
+                        if sample != 1:
+                            if time.monotonic() >= deadline:
+                                failure_stage = 'recovery-budget-exhausted'
+                                break
+                            failure_stage = 'terrain-alignment-failed'
+                            candidate = self.localizer.locate_map_player(self.frame, player, map_region(self.frame))
+                            if time.monotonic() >= deadline:
+                                failure_stage = 'recovery-budget-exhausted'
+                                break
+                            if candidate is None:
+                                break
+                            failure_stage = 'map-position-drift'
+                            if (initial_position is not None
+                                    and math.dist(candidate.xy, initial_position.xy)
+                                    > map_point_tolerance(self.localizer.gray)):
+                                break
+                            initial_position = candidate
+                    else:
+                        position = initial_position
             if position is None:
                 self.screenshot('3c-map-relocalize-failed', frame=self.frame.copy())
                 self.log_warning(f'3C map relocalization failed: stage={failure_stage}')
@@ -371,7 +469,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self.wait_in_team_and_world(time_out=5)
         if position is None:
             return None
-        self.localizer.reset(position_hint=position)
+        self.reset_route_localizer(position)
         self.next_frame()
         confirmed = self.wait_until(self.locate, time_out=3, raise_if_not_found=False)
         if confirmed is not None:
@@ -379,14 +477,55 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         return confirmed
 
     def locate(self):
+        started_at = time.monotonic()
         minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
         self._last_attempt_minimap = minimap.copy()
         position = self.localizer.locate(minimap)
         self._last_minimap_diagnostic = deepcopy(self.localizer.last_diagnostic)
+        self._record_navigation('record_locate', minimap, position, self._last_minimap_diagnostic,
+                                started_at=started_at, elapsed=time.monotonic() - started_at,
+                                capture_size=(self.frame.shape[1], self.frame.shape[0]))
         if position is not None:
             self._last_good_minimap = minimap.copy()
             self._last_route_position = position
         return position
+
+    def next_frame(self):
+        if getattr(self, '_active_route', None) is not None and getattr(self, '_route_keys', ()):
+            # Bound the capture poll and avoid an implicit six-second retry via frame.
+            started_at = time.monotonic()
+            with self._route_capture_scope():
+                frame = self.executor.next_frame(time_out=.5)
+            if frame is None or time.monotonic() - started_at > 1:
+                self.pause_route_movement()
+                self.reset_route_localizer()
+                raise RuntimeError('3C capture unavailable or delayed; movement stopped / '
+                                   '截图未及时更新，已停止移动')
+            return frame
+        frame = super().next_frame()
+        if getattr(self, '_active_route', None) is not None and frame is None:
+            self.pause_route_movement()
+            self.reset_route_localizer()
+            raise RuntimeError('3C capture unavailable; movement stopped / 截图未更新，已停止移动')
+        return frame
+
+    @contextmanager
+    def _route_capture_scope(self):
+        suppress = getattr(self, '_active_route', None) is not None and bool(getattr(self, '_route_keys', ()))
+        previous = getattr(self, 'sleep_check_interval', -1)
+        if suppress:
+            # Executor.sleep otherwise captures directly for combat sleep checks,
+            # bypassing the route capture timeout. Navigation checks enemies itself.
+            self.sleep_check_interval = -1
+        try:
+            yield
+        finally:
+            if suppress:
+                self.sleep_check_interval = previous
+
+    def sleep(self, timeout):
+        with self._route_capture_scope():
+            return super().sleep(timeout)
 
     def save_localization_diagnostic(self, stage, expected=None):
         frame = self.frame.copy()
@@ -404,6 +543,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             self.screenshot(f'3c-location-{stage}-last-good', frame=self._last_good_minimap)
 
     def stop_route_movement(self):
+        if getattr(self, '_route_keys', ()):
+            self._record_navigation('record_keys', ())
         self._route_keys = ()
         self._steering = None
         self._camera_aligned = False
@@ -430,12 +571,15 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             if key not in previous:
                 self.send_key_down(key)
         self._route_keys = keys
+        if previous != keys:
+            self._record_navigation('record_keys', keys)
 
     def route_enemy_visible(self):
         # Passive check only: no character recognition, camera reset or retarget wait while walking.
         return self._in_combat or self.has_health_bar()
 
     def follow_point(self, point, keep_moving=False):
+        self._record_navigation('record_target', point)
         self.info_set('3C Stage', 'Moving / 移动')
         deadline = time.monotonic() + point.timeout
         lost_since = None
@@ -450,6 +594,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         map_recoveries = 0
         alignment_attempts = 0
         movement = MovementWindow(min_displacement=max(3, min(6, point.tolerance * .3)))
+        approach = RouteApproach()
         try:
             while time.monotonic() < deadline:
                 cycle_start = time.monotonic()
@@ -457,6 +602,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 airborne = self.observe_route_airborne()
                 if not airborne and cycle_start >= enemy_check_at and self.route_enemy_visible():
                     self.stop_route_movement()
+                    approach.reset()
                     battles += 1
                     if battles > 5:
                         raise RuntimeError('Too many repeated battles at the same route point')
@@ -482,15 +628,23 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     self.pause_route_movement()
                     self.sleep(0.1)
                     continue
+                position_observed_at = time.monotonic()
                 position = self.locate()
                 if position is None:
                     movement.reset()
+                    approach.reset()
                     self.pause_route_movement()
                     if lost_since is None:
                         lost_since = time.monotonic()
                     if not airborne and map_recoveries < 1 and time.monotonic() - lost_since >= 1.5:
                         map_recoveries += 1
-                        if self.recover_route_position() is not None:
+                        recovery_start = time.monotonic()
+                        try:
+                            recovered = self.recover_route_position()
+                        finally:
+                            deadline += time.monotonic() - recovery_start
+                            approach.reset()
+                        if recovered is not None:
                             lost_since = None
                             progress_at = time.monotonic()
                             continue
@@ -501,19 +655,43 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     continue
                 if lost_since is not None and time.monotonic() - lost_since > 1:
                     self.stop_route_movement()  # A long pause can let automatic camera recentering finish.
+                    approach.reset()
                     lost_since = None
                     continue
                 lost_since = None
                 distance = point.distance_to(position.xy)
                 if airborne:
                     movement.reset()
+                    approach.reset()
                 else:
                     movement.observe(position.xy, time.monotonic())
+                    approach.observe(position.xy, time.monotonic())
                 self.info_set('Distance to Route Point', round(distance, 1))
                 if distance <= point.tolerance:
                     if not airborne:
-                        reached = True
-                        return
+                        if keep_moving:
+                            reached = True
+                            return
+                        # A single accepted localization outlier must not start
+                        # combat/pickup. Stop and confirm from a fresh world frame.
+                        self.pause_route_movement()
+                        approach.reset()
+                        self._record_navigation('record_absolute_request')
+                        self.localizer.request_absolute()
+                        self.sleep(.1)  # Let the key release reach the game before confirming arrival.
+                        self.next_frame()
+                        if self.observe_route_airborne() or self.route_enemy_visible():
+                            continue
+                        confirmed = self.locate()
+                        if (confirmed is not None and point.distance_to(confirmed.xy) <= point.tolerance
+                                and confirmed.source in ('sift', 'terrain', 'template', 'terrain_track')):
+                            reached = True
+                            return
+                        if confirmed is None:
+                            lost_since = time.monotonic()
+                        elif confirmed.source == 'flow':
+                            self.sleep(.1)
+                        continue
                     self.pause_route_movement()
                     self.sleep(0.1)
                     continue
@@ -526,6 +704,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                             self.save_navigation_diagnostic(point, position, 'blocked', movement.displacement)
                             raise RuntimeError('Route blocked after two recovery attempts / 确认角色停滞，请检查点序、障碍和楼层')
                         self.recover_stuck(recoveries)
+                        approach.reset()
                         recoveries += 1
                         progress_at = time.monotonic()
                         best_distance = math.inf
@@ -535,7 +714,12 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                         # Distance can temporarily increase while physically moving along terrain.
                         # Recheck the view/position once; do not misclassify this as a jump-worthy trap.
                         self.stop_route_movement()
-                        self.recover_route_position()
+                        recovery_start = time.monotonic()
+                        try:
+                            self.recover_route_position()
+                        finally:
+                            deadline += time.monotonic() - recovery_start
+                            approach.reset()
                         alignment_attempts += 1
                         progress_at = time.monotonic()
                         best_distance = math.inf
@@ -544,12 +728,19 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                     if alignment_attempts and time.monotonic() - progress_at >= 30:
                         self.save_navigation_diagnostic(point, position, 'not-approaching', movement.displacement)
                         raise RuntimeError('Moving without approaching route point / 角色在移动但未接近目标，请检查误标点并补充途经点')
+                moving_before_heading = bool(self._route_keys)
                 heading = self.confirm_route_heading()
                 if heading is None:  # Combat started while waiting for a clear arrow frame.
                     continue
                 heading = self.maintain_route_camera(heading, time.monotonic()) if not airborne else heading
                 if heading is None:
                     continue
+                if time.monotonic() - position_observed_at > 1.0:
+                    self.pause_route_movement()
+                    approach.reset()
+                    continue
+                if moving_before_heading and not self._route_keys:
+                    approach.reset()
                 if self._steering is None:
                     self._steering = RouteSteering(heading)
                 keys = self._steering.update(target_angle(position.xy, point), heading, time.monotonic())
@@ -558,7 +749,14 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 samples += 1
                 vision_seconds += elapsed
                 interval = min(self.navigation_interval, 0.1) if airborne else self.navigation_interval
-                self.sleep(max(0.01, interval - elapsed))
+                pulse = None if airborne else approach.pulse(distance, point.tolerance, interval)
+                if pulse is None:
+                    self.sleep(max(0.01, interval - elapsed))
+                else:
+                    try:
+                        self.sleep(min(pulse, max(0, deadline - time.monotonic())))
+                    finally:
+                        self.set_route_keys(())
             raise RuntimeError('Route waypoint timed out')
         finally:
             if not (reached and keep_moving):
@@ -590,11 +788,21 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         self._steering = RouteSteering(heading)
         return heading
 
+    def _prepare_route_heading(self):
+        template = self.get_feature_by_name('arrow').mat
+        self._heading_template = template.copy()
+        self._record_navigation('set_arrow_template', template)
+        self._heading_detector = MinimapHeading(template)
+
     def read_route_heading(self):
         if self._heading_detector is None:
-            self._heading_detector = MinimapHeading(self.get_feature_by_name('arrow').mat)
+            self._prepare_route_heading()
         minimap = self.get_box_by_name('box_minimap').crop_frame(self.frame)
-        return self._heading_detector.estimate(minimap)
+        observed_at = time.monotonic()
+        estimate = self._heading_detector.estimate(minimap)
+        self._record_navigation('record_heading', minimap, estimate, timestamp=observed_at,
+                                capture_size=(self.frame.shape[1], self.frame.shape[0]))
+        return estimate
 
     def confirm_route_heading(self):
         result = None
@@ -726,7 +934,7 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         finally:
             self.stop_route_movement()
             # Combat/pickup can move the player and rotate the camera. Re-anchor before resuming.
-            self.localizer.reset()
+            self.reset_route_localizer()
 
 
 class Record3CEchoRouteTask(BigMap):

@@ -91,6 +91,11 @@ class TestLocalizerTracking(unittest.TestCase):
         result = self.localizer.locate(self.map[280:480, 380:580])
         self.assertIsNotNone(result)
         self.assertEqual('sift', result.source)
+        # These cases isolate optical flow when no independent absolute evidence
+        # succeeds. Terrain revalidation has its own real-image integration tests.
+        verifier_patch = patch.object(self.localizer.tracking_verifier, 'verify', return_value=None)
+        verifier_patch.start()
+        self.addCleanup(verifier_patch.stop)
 
     def test_short_sift_failure_uses_visual_motion_then_returns_to_absolute_matching(self):
         with patch.object(self.localizer, '_locate_absolute', return_value=None) as absolute:

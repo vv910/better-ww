@@ -25,6 +25,62 @@ def map_region(frame):
     return (round(width * .28), round(height * .12), round(width * .87), round(height * .90))
 
 
+def map_signature(frame):
+    """Downsample only the world-map panel; reject blank/loading captures."""
+    if not isinstance(frame, np.ndarray) or frame.ndim not in (2, 3):
+        return None
+    height, width = frame.shape[:2]
+    left, top, right, bottom = map_region(frame)
+    if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+        return None
+    roi = frame[top:bottom, left:right]
+    gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY) if roi.ndim == 3 else roi
+    signature_height = max(1, round(gray.shape[0] * _MAP_SIGNATURE_WIDTH / gray.shape[1]))
+    signature = cv2.resize(gray, (_MAP_SIGNATURE_WIDTH, signature_height),
+                           interpolation=cv2.INTER_AREA)
+    # A settled capture still needs a terrain match before it can locate anything.
+    if (int(signature.max()) < 12 or np.count_nonzero(signature > 8) < signature.size * .05
+            or float(signature.std()) < 1.5 or int(signature.max()) - int(signature.min()) < 8):
+        return None
+    return signature
+
+
+def same_map_signature(first, second):
+    if first.shape != second.shape:
+        return False
+    difference = cv2.absdiff(first, second)
+    changed = np.count_nonzero(difference > _MAP_CHANGE_THRESHOLD) / difference.size
+    return (changed <= _MAP_CHANGE_RATIO
+            and float(difference.mean()) <= _MAP_MEAN_CHANGE)
+
+
+def wait_for_map_stable(task, deadline):
+    """Read fresh frames until two quiet pairs, within 3s and the caller's budget."""
+    stable_deadline = min(deadline, time.monotonic() + _MAP_STABLE_TIMEOUT)
+    previous = None
+    stable_pairs = 0
+    while time.monotonic() < stable_deadline:
+        task.next_frame()
+        current = map_signature(getattr(task, 'frame', None))
+        if current is None:
+            previous = None
+            stable_pairs = 0
+        elif previous is not None and same_map_signature(previous, current):
+            stable_pairs += 1
+            if stable_pairs >= _MAP_STABLE_PAIRS:
+                return True
+        else:
+            stable_pairs = 0
+        previous = current
+        task.sleep(_MAP_STABLE_POLL)
+    return False
+
+
+def map_point_tolerance(frame):
+    height = frame.shape[0] if isinstance(frame, np.ndarray) and frame.ndim >= 2 else 1080
+    return max(4.0, height * .006)
+
+
 def capture_map_views(task, frame, point, region, max_views=6):
     """Zoom out gradually and carry the beacon only across verified adjacent views."""
     views = []
@@ -103,56 +159,12 @@ class RouteMapNavigator:
                 return projected
         return None
 
-    @staticmethod
-    def _map_signature(frame):
-        """Downsample only the world-map panel; reject blank/loading captures."""
-        if not isinstance(frame, np.ndarray) or frame.ndim not in (2, 3):
-            return None
-        height, width = frame.shape[:2]
-        left, top, right, bottom = map_region(frame)
-        if not (0 <= left < right <= width and 0 <= top < bottom <= height):
-            return None
-        roi = frame[top:bottom, left:right]
-        gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY) if roi.ndim == 3 else roi
-        signature_height = max(1, round(gray.shape[0] * _MAP_SIGNATURE_WIDTH / gray.shape[1]))
-        signature = cv2.resize(gray, (_MAP_SIGNATURE_WIDTH, signature_height),
-                               interpolation=cv2.INTER_AREA)
-        # An all-black loading frame, blank capture, or uniform placeholder must
-        # never count as a settled world map. project() remains the final validator.
-        if (int(signature.max()) < 12 or np.count_nonzero(signature > 8) < signature.size * .05
-                or float(signature.std()) < 1.5 or int(signature.max()) - int(signature.min()) < 8):
-            return None
-        return signature
-
-    @staticmethod
-    def _same_map_signature(first, second):
-        if first.shape != second.shape:
-            return False
-        difference = cv2.absdiff(first, second)
-        changed = np.count_nonzero(difference > _MAP_CHANGE_THRESHOLD) / difference.size
-        return (changed <= _MAP_CHANGE_RATIO
-                and float(difference.mean()) <= _MAP_MEAN_CHANGE)
+    _map_signature = staticmethod(map_signature)
+    _same_map_signature = staticmethod(same_map_signature)
+    _point_tolerance = staticmethod(map_point_tolerance)
 
     def _wait_for_map_stable(self, deadline):
-        """Wait for two quiet frame pairs, capped by both 3s and find()'s budget."""
-        stable_deadline = min(deadline, time.monotonic() + _MAP_STABLE_TIMEOUT)
-        previous = None
-        stable_pairs = 0
-        while time.monotonic() < stable_deadline:
-            self.task.next_frame()
-            current = self._map_signature(getattr(self.task, 'frame', None))
-            if current is None:
-                previous = None
-                stable_pairs = 0
-            elif previous is not None and self._same_map_signature(previous, current):
-                stable_pairs += 1
-                if stable_pairs >= _MAP_STABLE_PAIRS:
-                    return True
-            else:
-                stable_pairs = 0
-            previous = current
-            self.task.sleep(_MAP_STABLE_POLL)
-        return False
+        return wait_for_map_stable(self.task, deadline)
 
     def _stability_failure(self, stage):
         frame = getattr(self.task, 'frame', None)
@@ -160,11 +172,6 @@ class RouteMapNavigator:
         log_warning = getattr(self.task, 'log_warning', None)
         if callable(log_warning):
             log_warning(f'Map view did not stabilize during {stage}; stopping beacon search')
-
-    @staticmethod
-    def _point_tolerance(frame):
-        height = frame.shape[0] if isinstance(frame, np.ndarray) and frame.ndim >= 2 else 1080
-        return max(4.0, height * .006)
 
     def _confirm_beacon(self, initial_projection, initial_beacon, deadline):
         """Reproject and re-detect the same beacon on two fresh settled frames."""
