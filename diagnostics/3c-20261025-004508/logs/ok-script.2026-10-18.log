@@ -1,0 +1,851 @@
+2026-10-18 23:00:32,897 INFO MainThread ok:ok-script init dev, ['main_debug.py'], pid=114852 config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x00000269C9B49300>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x00000269B09EC770>, <ok.util.config.ConfigOption object at 0x00000269B09EC7A0>, <ok.util.config.ConfigOption object at 0x00000269B09B8F50>, <ok.util.config.ConfigOption object at 0x00000269B2BDD670>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x00000269B2C53100>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x00000269C9B49260>, 'launch_arguments': <function get_game_launch_arguments at 0x00000269B2C77600>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-18 23:00:32,897 DEBUG MainThread ok:environment contains 44 entries
+2026-10-18 23:00:32,897 INFO MainThread ok:pyappify  app_version:None, app_profile:None, pyappify_version:None pyappify_upgradeable:False, pyappify_executable:None
+2026-10-18 23:00:32,902 DEBUG MainThread Config:init self.config = {'Auto Start Game When App Starts': False, 'Minimize Window to System Tray when Closing': False, 'Mute Game while in Background': False, 'Auto Resize Game Window': True, 'Exit App when Game Exits': False, 'Use DirectML': 'Yes', 'Trigger Interval': 1, 'Start/Stop': 'F9', 'Kill Launcher After Start': True, 'Launch with DX11': False, 'Enable Blur': False, 'Blur Algorithm': 'Inpaint', 'Blur Interval': 1, 'Game Package': 'hd'}
+2026-10-18 23:00:32,907 DEBUG MainThread Config:init self.config = {'Echo Key': 'q', 'Liberation Key': 'r', 'Resonance Key': 'e', 'Tool Key': 't', 'Jump Key': 'space', 'Dodge Key': 'lshift', 'Wheel Key': 'tab', 'Guidebook Key': 'f2', 'Bag Key': 'b'}
+2026-10-18 23:00:32,910 DEBUG MainThread Config:init self.config = {'Iuno C6': False, 'Chisa DPS': False}
+2026-10-18 23:00:32,913 DEBUG MainThread Config:init self.config = {'Check Monthly Card': True, 'Monthly Card Time': 4}
+2026-10-18 23:00:32,914 INFO MainThread capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-18 23:00:33,006 DEBUG MainThread Config:init self.config = {'System Notification': True, 'Discord Notification': False, 'Discord Webhook': '', 'Telegram Notification': False, 'Telegram Bot Token': '', 'Telegram Chat ID': '', 'Enterprise WeChat Webhook Notification': False, 'Enterprise WeChat Webhook URL': '', 'QQ Bot API Notification': False, 'QQ Bot API App ID': '', 'QQ Bot API Token': '', 'QQ Bot API Channel ID': '', 'SMTP Notification': False, 'SMTP Host': '', 'SMTP Port': 587, 'SMTP Username': '', 'SMTP Password': '', 'SMTP Use TLS': True, 'SMTP Default Sender': '', 'SMTP Default Recipient': '', 'QQ Desktop Notification (Not Reliable)': False, 'QQ Desktop Nickname': '', 'WeChat Desktop Notification (Not Reliable)': False, 'WeChat Desktop Nickname': ''}
+2026-10-18 23:00:33,006 INFO MainThread ok:use_dml result is True
+2026-10-18 23:00:33,007 INFO MainThread ok:SetProcessDpiAwareness 0
+2026-10-18 23:00:33,008 INFO MainThread ok:do_init, config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x00000269C9B49300>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x00000269B09EC770>, <ok.util.config.ConfigOption object at 0x00000269B09EC7A0>, <ok.util.config.ConfigOption object at 0x00000269B09B8F50>, <ok.util.config.ConfigOption object at 0x00000269B2BDD670>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x00000269B2C53100>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x00000269C9B49260>, 'launch_arguments': <function get_game_launch_arguments at 0x00000269B2C77600>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False, 'start_exe': True, 'start_method': 'start'}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-18 23:00:33,133 INFO MainThread DeviceManager:__init__ start
+2026-10-18 23:00:33,140 DEBUG MainThread Config:init self.config = {'preferred': 'pc_656930', 'pc_full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'capture': 'WGC', 'selected_exe': '', 'selected_hwnd': 656930, 'interaction': 'PostMessage'}
+2026-10-18 23:00:33,142 INFO MainThread hwnd_window:HwndWindow init title:None player_id:-1 exe_name:['Client-Win64-Shipping.exe'] hwnd_class:UnrealWindow top_hwnd_class:[re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button']
+2026-10-18 23:00:33,142 DEBUG MainThread hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-18 23:00:33,144 INFO MainThread DeviceManager:__init__ end
+2026-10-18 23:00:33,170 DEBUG MainThread screenshot:init Screenshot E:\Better_ww\screenshots None
+2026-10-18 23:00:33,171 DEBUG MainThread screenshot:load font C:\Windows\Fonts\msyh.ttc
+2026-10-18 23:00:33,171 INFO screenshot screenshot:clear E:\Better_ww\screenshots
+2026-10-18 23:00:33,171 DEBUG MainThread FeatureSet:Loading features from E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:00:33,173 INFO MainThread TaskExecutor:install ocr translations error for en_US
+2026-10-18 23:00:33,174 INFO DefaultOCRInit TaskExecutor:start init default ocr
+2026-10-18 23:00:33,570 INFO DefaultOCRInit TaskExecutor:init onnxocr {'use_openvino': True, 'use_npu': True}
+2026-10-18 23:00:33,588 INFO DefaultOCRInit TaskExecutor:use_openvino: True
+2026-10-18 23:00:33,588 INFO DefaultOCRInit TaskExecutor:use_npu: True
+2026-10-18 23:00:33,589 INFO DefaultOCRInit TaskExecutor:use_angle_cls: False
+2026-10-18 23:00:33,589 INFO DefaultOCRInit TaskExecutor:det_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\det\det.onnx
+2026-10-18 23:00:33,589 INFO DefaultOCRInit TaskExecutor:rec_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\rec\rec.onnx
+2026-10-18 23:00:33,589 INFO DefaultOCRInit TaskExecutor:rec_image_shape: 3, 48, 320
+2026-10-18 23:00:34,207 DEBUG MainThread app:resources.qt_resource_name b'\x00\x03\x00\x00x\xa3\x00q\x00s\x00s\x00\x04\x00\x06\xc4\xee\x00i\x001\x008\x00n\x00\x08\t:h\xfd\x00e\x00s\x00_\x00E\x00S\x00.\x00q\x00m\x00\x08\x0eI\xb5}\x00z\x00h\x00_\x00T\x00W\x00.\x00q\x00m\x00\x08\x05@[=\x00k\x00o\x00_\x00K\x00R\x00.\x00q\x00m\x00\x08\x0e8\x05}\x00z\x00h\x00_\x00C\x00N\x00.\x00q\x00m\x00\x08\x07?;}\x00j\x00a\x00_\x00J\x00P\x00.\x00q\x00m\x00\x04\x00\x06\xa8\x8b\x00d\x00a\x00r\x00k\x00\x05\x00r\xfd\xf4\x00l\x00i\x00g\x00h\x00t\x00\x12\x0c\xf9E\xe3\x00m\x00e\x00s\x00s\x00a\x00g\x00e\x00_\x00w\x00i\x00n\x00d\x00o\x00w\x00.\x00q\x00s\x00s\x00\x0b\x06QI\x87\x00d\x00i\x00s\x00c\x00o\x00r\x00d\x00.\x00s\x00v\x00g\x00\x0e\r\x92\xd4\xa3\x00s\x00t\x00a\x00t\x00u\x00s\x00_\x00b\x00a\x00r\x00.\x00q\x00s\x00s\x00\x08\x08\x87U\x83\x00c\x00a\x00r\x00d\x00.\x00q\x00s\x00s\x00\t\x08\x97\x87\xa7\x00h\x00e\x00a\x00r\x00t\x00.\x00s\x00v\x00g\x00\x08\x0bcU\x87\x00s\x00t\x00o\x00p\x00.\x00s\x00v\x00g\x00\x07\nuXC\x00t\x00a\x00b\x00.\x00q\x00s\x00s' cfg.themeMode
+2026-10-18 23:00:34,304 INFO MainThread app:translator install success <PySide6.QtCore.QLocale()/* Chinese, Simplified Han, China */ at 0x00000269CE48C440>, 开发工具
+2026-10-18 23:00:34,305 INFO MainThread TaskExecutor:install ocr translations error for zh_CN
+2026-10-18 23:00:34,315 DEBUG MainThread Config:init self.config = {'window_x': 840, 'window_y': 214, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-18 23:00:34,315 DEBUG MainThread ok:locale name zh_CN
+2026-10-18 23:00:34,471 DEBUG MainThread ok:init app end
+2026-10-18 23:00:34,517 DEBUG MainThread Config:init self.config = {'0': 874, '1': 0, '2': 0, '3': 879, '4': 0, '5': 0}
+2026-10-18 23:00:34,517 DEBUG MainThread AutoCombatTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,520 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Auto Target': True, 'Use Liberation': True, 'Check Levitator': True, 'Switch to Healer before and after Combat': True}
+2026-10-18 23:00:34,521 DEBUG MainThread AutoPickTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,525 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Pick Up White List': ['吸收', 'Absorb'], 'Pick Up Black List': ['开始合成', '领取奖励', 'Claim', '合成台', '开始烹饪']}
+2026-10-18 23:00:34,526 DEBUG MainThread AutoLoginTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,530 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-18 23:00:34,533 DEBUG MainThread AutoDialogTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,534 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-18 23:00:34,542 DEBUG MainThread FastTravelTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,545 DEBUG MainThread Config:init self.config = {'_enabled': False}
+2026-10-18 23:00:34,546 DEBUG MainThread MouseResetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,548 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-18 23:00:34,584 DEBUG MainThread DailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,588 DEBUG MainThread Config:init self.config = {'Which to Farm': 'Tacet Suppression', 'Which Tacet Suppression to Farm': 1, 'Which Forgery Challenge to Farm': 1, 'Material Selection': 'Shell Credit', 'Farm Nightmare Nest for Daily Echo': True, 'Additional Tasks to Run After Daily Task': ['Check Weekly Garden'], 'Exit After Task': False}
+2026-10-18 23:00:34,588 DEBUG MainThread FarmEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,592 DEBUG MainThread Config:init self.config = {'Teleport to Boss': 'No', 'Boss Level': '80', 'Boss': 'Other', 'Repeat Farm Count': 10000, 'Combat Wait Time': 0, 'Echo Pickup Method': 'Walk', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Which Weekly Boss to Teleport': 1, 'Which Boss Challenge to Teleport': 1, 'Which Special Nightmare to Teleport': 1, 'Exit After Task': False}
+2026-10-18 23:00:34,592 DEBUG MainThread NightmareNestTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,596 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Which to Farm': ['Nightmare Purification', 'Tacet Discord Nest']}
+2026-10-18 23:00:34,598 DEBUG MainThread TacetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,601 DEBUG MainThread Config:init self.config = {'Which Tacet Suppression to Farm': 1}
+2026-10-18 23:00:34,602 DEBUG MainThread ForgeryTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,606 DEBUG MainThread Config:init self.config = {'Which Forgery Challenge to Farm': 1}
+2026-10-18 23:00:34,606 DEBUG MainThread SimulationTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,609 DEBUG MainThread Config:init self.config = {'Material Selection': 'Shell Credit'}
+2026-10-18 23:00:34,632 DEBUG MainThread MultiAccountDailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,636 DEBUG MainThread Config:init self.config = {'Exit After Task': False}
+2026-10-18 23:00:34,636 DEBUG MainThread MergeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,638 DEBUG MainThread Config:init self.config = {}
+2026-10-18 23:00:34,639 DEBUG MainThread EnhanceEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,643 DEBUG MainThread Config:init self.config = {'必须有双爆': True, '双爆出现之前必须全有效词条': True, '双爆总计>=': 13.8, '首条双爆>=': 6.9, '有效词条>=': 3, '第一条必须为有效词条': True, '有效词条': ['暴击', '暴击伤害', '攻击百分比'], 'Pause after Success': True}
+2026-10-18 23:00:34,644 DEBUG MainThread ChangeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,648 DEBUG MainThread Config:init self.config = {'目标属性': '攻击'}
+2026-10-18 23:00:34,648 DEBUG MainThread GardenTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,649 DEBUG MainThread Config:init self.config = {}
+2026-10-18 23:00:34,722 DEBUG MainThread Farm3CEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,728 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-route5.json', 'Route Queue': '', 'Navigation Interval': 0.2, 'Keep Camera Behind Player': True, 'Auto Glide when Airborne': True, 'Select Levitator Automatically': False, 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Combat Timeout': 180, 'Pickup Timeout': 20}
+2026-10-18 23:00:34,728 DEBUG MainThread Record3CEchoRouteTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x00000269CE496C30>
+2026-10-18 23:00:34,734 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-route5.json', 'Route Name': 'Local 3C Route1', 'Start Method': 'Nearest Beacon', 'Capture Teleport Overview': True, 'Teleport Anchor': '', 'Maximum Marker Gap': 200, 'Recording Radius': 500}
+2026-10-18 23:00:34,734 INFO MainThread task_manager:Found tasks: []
+2026-10-18 23:00:34,742 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-18 23:00:34,780 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-18 23:00:34,848 INFO MainThread task_manager:Built-in task file map: 18 files
+2026-10-18 23:00:34,848 INFO MainThread task_manager:Debug file watcher initialized, watching dirs ['E:\\Better_ww\\ok_tasks', 'E:\\Better_ww\\src\\task']
+2026-10-18 23:00:34,848 INFO MainThread ok:do_init, end
+2026-10-18 23:00:34,848 INFO MainThread ok:OK start id:2652957815440 pid:114852
+2026-10-18 23:00:34,956 INFO MainThread MainWindow:main window __init__
+2026-10-18 23:00:34,960 INFO MainThread MainWindow:Refresh primary button color: #0067c0
+2026-10-18 23:00:34,966 DEBUG MainThread Config:init self.config = {'last_version': 'dev'}
+2026-10-18 23:00:35,132 DEBUG MainThread StartCard:basic_options.start/stop: F9
+2026-10-18 23:00:35,172 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:00:35,216 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-18 23:00:35,220 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-18 23:00:35,223 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-18 23:00:35,223 INFO MainThread ok:translation installed for zh_CN
+2026-10-18 23:00:35,411 DEBUG TaskEnable MouseResetTask:schedule mouse reset
+2026-10-18 23:00:35,471 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-18 23:00:35,623 INFO DefaultOCRInit TaskExecutor:onnxocr init finished, result: use_npu=True, test_ocr=[[[[[17.0, 40.0], [326.0, 44.0], [325.0, 133.0], [16.0, 129.0]], ('okscript', 0.9991297721862793)]]], cost: 2.03s
+2026-10-18 23:00:35,623 INFO DefaultOCRInit TaskExecutor:ocr_lib init <onnxocr.onnx_paddleocr.ONNXPaddleOcr object at 0x00000269CA9BD850> onnxocr
+2026-10-18 23:00:35,625 INFO DefaultOCRInit TaskExecutor:default ocr init end, cost: 2.45s
+2026-10-18 23:00:35,940 DEBUG MainThread MainWindow:add default onetime_tab len 13
+2026-10-18 23:00:36,120 DEBUG MainThread Config:init self.config = {'target_task': 'DailyTask', 'target_images': [], 'target_function': ''}
+2026-10-18 23:00:36,164 DEBUG DebugTab DebugTab:bind_hot_keys
+2026-10-18 23:00:36,175 DEBUG MainThread Config:init self.config = {'code': ''}
+2026-10-18 23:00:36,298 DEBUG MainThread Config:init self.config = {'generate_label_enum': False, 'label_enum_relative_path': 'ok_tasks/LabelEnum.py'}
+2026-10-18 23:00:36,334 INFO MainThread Loaded 0 tasks from cache
+2026-10-18 23:00:36,335 INFO ScheduleRefresh schedule_index_sync:schedule index sync start: 13 onetime_tasks, root=\OK-WW
+2026-10-18 23:00:36,341 INFO ScheduleRefresh schedule_index_sync:schedule index sync skipped: cache is empty/invalid
+2026-10-18 23:00:36,341 INFO ScheduleRefresh Loaded 0 tasks from cache
+2026-10-18 23:00:36,415 INFO ScheduleRefresh Initializing Windows Task Scheduler COM service, root=\OK-WW
+2026-10-18 23:00:36,503 INFO ScheduleRefresh Windows Task Scheduler COM service initialized, root=\OK-WW
+2026-10-18 23:00:36,506 DEBUG ScheduleRefresh Failed to query schedule folder \OK-WW: (-2147352567, '发生意外。', (0, None, None, None, 0, -2147024894), None)
+2026-10-18 23:00:36,508 INFO ScheduleRefresh Saved 0 tasks to cache
+2026-10-18 23:00:36,925 INFO MainThread UpdateCard:using v0.0.0 for nonnumeric test version 'dev'
+2026-10-18 23:00:36,926 INFO MainThread UpdateCard:initialized current_version='v0.0.0', pyappify_module='E:\\Better_ww\\.venv\\Lib\\site-packages\\pyappify\\__init__.py', pyappify_app_version=None, test_mode=True
+2026-10-18 23:00:36,954 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-18 23:00:37,268 INFO MainThread MainWindow:main window __init__ done
+2026-10-18 23:00:37,268 DEBUG MainThread ok:dpi_scaling: 1.0
+2026-10-18 23:00:37,304 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x269cc80d100) at 0x00000269CEF4F580>>
+2026-10-18 23:00:37,315 INFO MainThread ok:pyappify no need to upgrade False 1.2.3 447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a ['https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip']
+2026-10-18 23:00:37,315 INFO MainThread MainWindow:Window has fully displayed
+2026-10-18 23:00:37,315 DEBUG MainThread DeviceManager:calling refresh
+2026-10-18 23:00:37,316 INFO MainThread MainWindow:MainWindow showEvent Kill Launcher After Start
+2026-10-18 23:00:37,316 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-18 23:00:37,317 INFO MainThread MainWindow:schedule pyappify update check in 10000ms
+2026-10-18 23:00:37,375 INFO RefreshAdb DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,375 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-18 23:00:37,375 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-18 23:00:37,375 DEBUG MainThread ok:show_main_window end
+2026-10-18 23:00:37,376 DEBUG RefreshAdb DeviceManager:set_preferred_device None -1
+2026-10-18 23:00:37,376 DEBUG MainThread ok:start app.exec()
+2026-10-18 23:00:37,376 INFO RefreshAdb DeviceManager:first start use first or connected device {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,376 INFO MainThread ok:app.exec()
+2026-10-18 23:00:37,376 INFO RefreshAdb DeviceManager:preferred device did change pc
+2026-10-18 23:00:37,381 DEBUG RefreshAdb DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,381 DEBUG RefreshAdb DeviceManager:refresh {'pc': {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}}
+2026-10-18 23:00:37,381 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-18 23:00:37,381 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-18 23:00:37,383 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-18 23:00:37,383 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-18 23:00:37,383 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-18 23:00:37,383 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-18 23:00:37,384 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-18 23:00:37,384 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-18 23:00:37,384 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-18 23:00:37,384 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-18 23:00:37,384 INFO RefreshAdb update:use BitBlt_RenderFull capture render_full: True
+2026-10-18 23:00:37,385 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.bitblt.BitBltCaptureMethod'>
+2026-10-18 23:00:37,511 INFO MainThread ScheduleTaskTab:Loaded 0 tasks
+2026-10-18 23:00:37,540 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-18 23:00:37,557 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-18 23:00:37,558 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:00:37,559 DEBUG MainThread StartTab:device_index_changed 0
+2026-10-18 23:00:37,559 DEBUG MainThread DeviceManager:set_preferred_device None 0
+2026-10-18 23:00:37,559 DEBUG MainThread DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,561 DEBUG MainThread StartTab:capture_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,565 DEBUG MainThread StartTab:interaction_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:00:37,566 DEBUG MainThread StartTab:device_index_changed done 0
+2026-10-18 23:00:37,567 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:00:38,310 INFO global MainWindow:Window geometry updated in ok_config {'window_x': 840, 'window_y': 214, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-18 23:00:47,313 INFO pyappify-update UpdateCard:calling pyappify.get_version_list(release_only=True)
+2026-10-18 23:00:47,335 ERROR pyappify-update UpdateCard:pyappify.get_version_list(release_only=True) failed: PyAppify does not support checking for updates for pyappify_version: None Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 167, in run
+    result = operation()
+             ^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 142, in <lambda>
+    lambda: get_versions(release_only=release_only, exit_event=self.exit_event),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\pyappify\__init__.py", line 416, in get_version_list
+    raise RuntimeError(
+RuntimeError: PyAppify does not support checking for updates for pyappify_version: None
+
+2026-10-18 23:02:00,634 INFO update_window_size hwnd_window:do_update_window_size hwnd changed from 0 to 264642 top 264642 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-18 23:02:00,634 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:02:00,635 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:02:00,635 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:05:39,874 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:05:39,875 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:05:39,875 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:05:40,081 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:05:40,081 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:05:40,082 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:07,102 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:07,103 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:19:07,104 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:07,716 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:07,717 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:07,717 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:19:09,097 INFO ok.task.task MouseResetTask:move mouse back (1058, 633)
+2026-10-18 23:19:11,757 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:11,757 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:19:11,758 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:12,367 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:12,368 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:19:12,368 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:15,439 INFO ok.task.task MouseResetTask:move mouse back (967, 878)
+2026-10-18 23:19:28,057 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:28,058 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:19:28,060 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:49,460 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:19:49,461 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:19:49,461 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:02,816 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:02,816 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:02,816 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:09,512 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:09,512 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:09,513 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:09,716 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:09,716 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:09,717 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:10,331 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:10,331 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:10,332 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:30,810 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:30,811 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:30,811 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:31,624 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:31,625 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:31,625 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:33,654 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:33,654 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:33,654 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:35,691 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:35,692 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:35,692 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:53,301 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:53,301 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:20:53,301 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:53,916 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:20:53,917 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:20:53,918 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:23:06,056 INFO ok.task.task MouseResetTask:move mouse back (697, 1413)
+2026-10-18 23:23:07,063 INFO ok.task.task MouseResetTask:move mouse back (697, 1413)
+2026-10-18 23:23:08,067 INFO ok.task.task MouseResetTask:move mouse back (697, 1413)
+2026-10-18 23:23:10,075 INFO ok.task.task MouseResetTask:move mouse back (1071, 819)
+2026-10-18 23:23:11,777 INFO ok.task.task MouseResetTask:move mouse back (1844, 563)
+2026-10-18 23:23:12,785 INFO ok.task.task MouseResetTask:move mouse back (1844, 563)
+2026-10-18 23:24:09,044 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:24:09,044 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:24:09,045 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:24:09,247 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:24:09,248 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:24:09,248 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:25:45,874 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:25:45,874 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:25:45,875 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:25:47,896 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:25:47,896 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:25:47,897 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:25:53,293 INFO ok.task.task MouseResetTask:move mouse back (836, 1273)
+2026-10-18 23:25:54,298 INFO ok.task.task MouseResetTask:move mouse back (836, 1273)
+2026-10-18 23:25:55,308 INFO ok.task.task MouseResetTask:move mouse back (836, 1273)
+2026-10-18 23:25:56,316 INFO ok.task.task MouseResetTask:move mouse back (836, 1273)
+2026-10-18 23:26:00,830 INFO ok.task.task MouseResetTask:move mouse back (1983, 1294)
+2026-10-18 23:26:01,838 INFO ok.task.task MouseResetTask:move mouse back (1983, 1294)
+2026-10-18 23:26:06,318 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:26:06,319 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:26:06,319 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:26:07,130 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:26:07,130 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:26:07,131 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:26:50,471 INFO ok.task.task MouseResetTask:move mouse back (1506, 651)
+2026-10-18 23:27:49,110 INFO ok.task.task MouseResetTask:move mouse back (234, 232)
+2026-10-18 23:28:28,303 INFO ok.task.task MouseResetTask:move mouse back (2148, 1345)
+2026-10-18 23:28:30,709 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:28:30,710 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:28:30,710 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:28:31,319 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:28:31,319 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:28:31,320 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:28:33,075 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:34,088 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:35,099 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:36,109 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:38,069 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:39,080 INFO ok.task.task MouseResetTask:move mouse back (1462, 547)
+2026-10-18 23:28:49,002 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:50,041 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:51,166 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:52,237 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:53,263 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:54,303 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:55,318 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:56,334 INFO ok.task.task MouseResetTask:move mouse back (2284, 1190)
+2026-10-18 23:28:58,607 INFO update_window_size hwnd_window:hwnd changed,connected:0
+2026-10-18 23:28:58,610 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:0 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:28:58,740 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:28:58,741 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:31:40,922 INFO update_window_size hwnd_window:do_update_window_size hwnd changed from 0 to 723096 top 723096 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-18 23:31:40,922 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:31:40,922 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:31:40,922 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:10,257 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:10,257 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:10,257 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:10,460 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:10,460 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:10,460 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:10,664 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:10,664 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:10,664 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:11,475 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:11,475 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:11,476 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:48,088 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:48,089 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:48,089 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:32:49,099 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:32:49,099 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:32:49,100 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:33:02,548 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:33:02,549 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:33:02,549 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:33:04,982 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:33:04,982 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:33:04,982 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:33:12,892 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:33:12,892 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:33:12,893 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:12,870 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:34:12,870 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:34:12,870 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:15,567 INFO ok.core.start_controller start_controller:do_start: call do_refresh True
+2026-10-18 23:34:15,569 INFO ok.core.start_controller DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:34:15,570 DEBUG ok.core.start_controller DeviceManager:do_start
+2026-10-18 23:34:15,570 DEBUG ok.core.start_controller DeviceManager:set_preferred_device None -1
+2026-10-18 23:34:15,570 INFO ok.core.start_controller DeviceManager:first start use first or connected device {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-18 23:34:15,570 INFO ok.core.start_controller DeviceManager:preferred device did change pc_723096
+2026-10-18 23:34:15,593 DEBUG ok.core.start_controller DeviceManager:preferred device: {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-18 23:34:15,594 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-18 23:34:15,596 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-18 23:34:15,596 DEBUG ok.core.start_controller DeviceManager:refresh {'pc_723096': {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}}
+2026-10-18 23:34:15,596 INFO ok.core.start_controller start_controller:start_device: {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-18 23:34:15,597 INFO ok.core.start_controller start_controller:test check_device_error msg: 鸣潮   is not connected, please select the game window.
+2026-10-18 23:34:15,597 ERROR ok.core.start_controller start_controller:Game window is not connected BitBlt_True_2560x1440 
+2026-10-18 23:34:15,597 ERROR ok.core.start_controller start_controller:waiting for game to start error 鸣潮   is not connected, please select the game window. 
+2026-10-18 23:34:15,599 INFO RefreshAdb hwnd_window:do_update_window_size hwnd changed from 0 to 723096 top 723096 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-18 23:34:15,600 INFO RefreshAdb hwnd_window:hwnd changed,connected:1
+2026-10-18 23:34:15,600 INFO RefreshAdb hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:34:15,600 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-18 23:34:15,602 INFO RefreshAdb windows_graphics:start_or_stop start WGC capture
+2026-10-18 23:34:15,604 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:15,606 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:15,857 INFO RefreshAdb update:use WGC capture
+2026-10-18 23:34:15,858 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.windows_graphics.WindowsGraphicsCaptureMethod'>
+2026-10-18 23:34:15,860 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:17,599 INFO ok.core.start_controller DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-18 23:34:17,599 DEBUG ok.core.start_controller DeviceManager:do_start
+2026-10-18 23:34:17,600 DEBUG ok.core.start_controller hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-18 23:34:17,604 INFO ok.core.start_controller hwnd_window:do_update_window_size hwnd changed from 0 to 723096 top 723096 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-18 23:34:17,604 INFO ok.core.start_controller hwnd_window:hwnd changed,connected:1
+2026-10-18 23:34:17,604 INFO ok.core.start_controller hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:34:17,605 INFO ok.core.start_controller capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-18 23:34:17,607 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:17,624 INFO ok.core.start_controller update:use WGC capture
+2026-10-18 23:34:17,624 INFO ok.core.start_controller DeviceManager:capture method <class 'ok.device.capture_methods.windows_graphics.WindowsGraphicsCaptureMethod'>
+2026-10-18 23:34:17,624 DEBUG ok.core.start_controller DeviceManager:refresh {'pc_723096': {'address': '', 'imei': 'pc_723096', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 723096, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}}
+2026-10-18 23:34:17,625 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:17,625 INFO ok.core.start_controller start_controller:test check_device_error msg: 鸣潮   is not connected, please select the game window.
+2026-10-18 23:34:17,640 INFO ok.core.start_controller start_controller:check_device_error: capturing frame (2560, 1440)
+2026-10-18 23:34:17,640 INFO ok.core.start_controller start_controller:check_device_error: checking feature_set size
+2026-10-18 23:34:17,640 INFO ok.core.start_controller FeatureSet:FeatureSet: Width and height changed from 0x0 to 2560x1440
+2026-10-18 23:34:17,641 INFO ok.core.start_controller start_controller:check_device_error: checking resolution
+2026-10-18 23:34:17,641 INFO ok.core.start_controller TaskExecutor:start check_frame_and_resolution
+2026-10-18 23:34:17,760 INFO ok.core.start_controller gpu_driver_settings:Windows HDR enabled: False (\\.\DISPLAY1: enabled=False, supported=True, bits=8)
+2026-10-18 23:34:17,784 INFO ok.core.start_controller gpu_driver_settings:NVIDIA filter profile in use: Unknown (NVIDIA filter profile slot not found for E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe)
+2026-10-18 23:34:17,982 INFO ok.core.start_controller gpu_driver_settings:NVIDIA Image Sharpening enabled: False
+2026-10-18 23:34:17,983 INFO ok.core.start_controller gpu_driver_settings:AMD image sharpening check skipped: ADLXPybind is not installed
+2026-10-18 23:34:18,151 INFO ok.core.start_controller gpu_driver_settings:NVIDIA RTX Dynamic Vibrance enabled: False
+2026-10-18 23:34:18,152 INFO ok.core.start_controller gpu_driver_settings:NVIDIA RTX HDR enabled: False (Windows HDR is not enabled)
+2026-10-18 23:34:18,152 INFO ok.core.start_controller gpu_driver_settings:GPU driver post-processing detected features: []
+2026-10-18 23:34:18,152 INFO ok.core.start_controller TaskExecutor:queued onetime_task 📍 Record 3C Route from Map
+2026-10-18 23:34:18,152 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x00000269CE45F980>
+2026-10-18 23:34:18,155 INFO TaskExecutor TaskExecutor:start execute
+2026-10-18 23:34:18,155 INFO TaskExecutor TaskExecutor:get queued onetime_task 📍 Record 3C Route from Map
+2026-10-18 23:34:18,170 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:34:18,175 DEBUG TaskExecutor TaskExecutor:start running onetime_task 📍 Record 3C Route from Map
+2026-10-18 23:34:18,176 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x00000269CDFF6330>, <src.task.FarmEchoTask.FarmEchoTask object at 0x00000269CED11520>, <src.task.NightmareNestTask.NightmareNestTask object at 0x00000269CE2F7470>, <src.task.TacetTask.TacetTask object at 0x00000269CECFC860>, <src.task.ForgeryTask.ForgeryTask object at 0x00000269CE401D60>, <src.task.SimulationTask.SimulationTask object at 0x00000269CD7AED80>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x00000269CE45EF60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x00000269CED3EF90>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x00000269CEE22C00>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x00000269CEE22D20>, <src.task.GardenTask.GardenTask object at 0x00000269CEE9A6C0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x00000269CE45F980>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x00000269CE496BD0>, <src.task.AutoPickTask.AutoPickTask object at 0x00000269CE50A0C0>, <src.task.AutoLoginTask.AutoLoginTask object at 0x00000269CECAF8C0>, <src.task.SkipDialogTask.AutoDialogTask object at 0x00000269CECE5370>, <src.task.FastTravelTask.FastTravelTask object at 0x00000269CE45F770>, <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>]
+2026-10-18 23:34:18,176 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:34:18,176 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:34:18,710 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:18,792 DEBUG TaskExecutor FeatureSet:loaded big_map_skull resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:18,793 DEBUG TaskExecutor FeatureSet:loaded big_map_diamond resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:18,795 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:18,870 DEBUG TaskExecutor FeatureSet:loaded teleport_port resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:18,870 DEBUG TaskExecutor FeatureSet:loaded big_map_star resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:19,146 INFO TaskExecutor Record3CEchoRouteTask:3C map markers: capture=2560x1440, diamonds=0, stars=3, scores={'diamond': 0.6078184247016907, 'diamond_top': 0.7203577756881714, 'star': 0.9858089089393616}
+2026-10-18 23:34:19,147 INFO TaskExecutor Record3CEchoRouteTask:3C marker candidates: region=[717, 173, 2227, 1296], stars=[((1578.3, 623.7), 0.986), ((1371.7, 935.7), 0.984), ((954.3, 865.0), 0.978)], template_sizes=diamond:(48, 56),star:(37, 40)
+2026-10-18 23:34:19,148 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:19,222 DEBUG TaskExecutor FeatureSet:loaded map_way_point resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:19,223 DEBUG TaskExecutor FeatureSet:loaded map_way_point_big resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:19,223 DEBUG TaskExecutor FeatureSet:loaded map_way_point_pop_up_box resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:19,309 INFO TaskExecutor FeatureSet:find_one_feature map_way_point took 161.84ms (check_size: 0.00ms, prepare: 77.58ms, match: 81.76ms, post: 2.50ms)
+2026-10-18 23:34:19,400 INFO TaskExecutor Record3CEchoRouteTask:info_set Selected Route Stars 1
+2026-10-18 23:34:19,400 INFO TaskExecutor Record3CEchoRouteTask:info_set Excluded Route Stars 2
+2026-10-18 23:34:19,417 INFO TaskExecutor Record3CEchoRouteTask:3C route selected 1 stars, excluded 2, max_gap=267, radius=667 / 请检查路线预览中的点序
+2026-10-18 23:34:19,417 INFO TaskExecutor Record3CEchoRouteTask:info_set 3C Stage Recording Map Overview / 正在录制传送地图概览
+2026-10-18 23:34:19,600 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:20,350 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:21,105 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:21,850 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:22,592 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:23,330 DEBUG TaskExecutor post_message:scroll 1618, 700, -2
+2026-10-18 23:34:24,062 DEBUG TaskExecutor base:Sending key esc
+2026-10-18 23:34:25,201 INFO TaskExecutor Record3CEchoRouteTask:info_set Route File E:\Better_ww\routes\3c\local-routeff1.json
+2026-10-18 23:34:25,201 INFO TaskExecutor Record3CEchoRouteTask:info_set Route Preview E:\Better_ww\routes\3c\local-routeff1.preview.png
+2026-10-18 23:34:25,202 INFO TaskExecutor Record3CEchoRouteTask:info_set Route Points 1
+2026-10-18 23:34:25,202 INFO TaskExecutor Record3CEchoRouteTask:Route saved. Check point order before farming / 路线已保存，请检查点序后开始刷取
+2026-10-18 23:34:25,205 DEBUG TaskExecutor TaskExecutor:end running onetime_task 📍 Record 3C Route from Map
+2026-10-18 23:34:25,251 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:34:25,264 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,293 DEBUG TaskExecutor FeatureSet:loaded yangyang_sp resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:25,309 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,354 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:34:25,355 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:34:25,365 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:25,387 DEBUG TaskExecutor FeatureSet:loaded box_concerto_last_dot resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,392 DEBUG TaskExecutor FeatureSet:loaded char_verina resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,397 DEBUG TaskExecutor FeatureSet:loaded char_yinlin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,397 DEBUG TaskExecutor FeatureSet:loaded char_taoqi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,404 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,489 DEBUG TaskExecutor FeatureSet:loaded char_shorekeeper resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,490 DEBUG TaskExecutor FeatureSet:loaded multiplayer_world_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,494 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,518 DEBUG TaskExecutor FeatureSet:loaded char_suisui resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:25,518 DEBUG TaskExecutor FeatureSet:loaded suisui_forte3 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:25,519 DEBUG TaskExecutor FeatureSet:loaded suisui_forte2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:25,520 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,587 DEBUG TaskExecutor FeatureSet:loaded box_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,587 DEBUG TaskExecutor FeatureSet:loaded box_char_1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,588 DEBUG TaskExecutor FeatureSet:loaded box_char_2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,588 DEBUG TaskExecutor FeatureSet:loaded char_rover resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,589 DEBUG TaskExecutor FeatureSet:loaded box_char2_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,589 DEBUG TaskExecutor FeatureSet:loaded char_yuanwu resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,589 DEBUG TaskExecutor FeatureSet:loaded box_char3_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,589 DEBUG TaskExecutor FeatureSet:loaded box_char1_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,592 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,663 DEBUG TaskExecutor FeatureSet:loaded char_zhezhi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,663 DEBUG TaskExecutor FeatureSet:loaded char_rover_male resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,667 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,751 DEBUG TaskExecutor FeatureSet:loaded char_jianxin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,752 DEBUG TaskExecutor FeatureSet:loaded char_sanhua resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,752 DEBUG TaskExecutor FeatureSet:loaded char_encore resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,755 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,766 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:34:25,767 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:34:25,767 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:34:25,820 DEBUG TaskExecutor FeatureSet:loaded char_sanhua2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,825 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,908 DEBUG TaskExecutor FeatureSet:loaded char_jinhsi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,911 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:25,977 DEBUG TaskExecutor FeatureSet:loaded char_jinhsi2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:25,980 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,047 DEBUG TaskExecutor FeatureSet:loaded chang_changli resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,047 DEBUG TaskExecutor FeatureSet:loaded world_earth_icon resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,051 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,113 DEBUG TaskExecutor FeatureSet:loaded char_changli2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,116 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,185 DEBUG TaskExecutor FeatureSet:loaded char_danjin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,186 DEBUG TaskExecutor FeatureSet:loaded char_mortefi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,186 DEBUG TaskExecutor FeatureSet:loaded char_chixia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,189 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,255 DEBUG TaskExecutor FeatureSet:loaded char_baizhi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,256 DEBUG TaskExecutor FeatureSet:loaded char_calcharo resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,256 DEBUG TaskExecutor FeatureSet:loaded char_jiyan resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,263 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,330 DEBUG TaskExecutor FeatureSet:loaded char_xiangliyao resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,334 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,398 DEBUG TaskExecutor FeatureSet:loaded char_camellya resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,405 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,474 DEBUG TaskExecutor FeatureSet:loaded char_youhu resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,478 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,548 DEBUG TaskExecutor FeatureSet:loaded char_carlotta resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,549 DEBUG TaskExecutor FeatureSet:loaded con_ice resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,554 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,621 DEBUG TaskExecutor FeatureSet:loaded char_carlotta2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,624 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,709 DEBUG TaskExecutor FeatureSet:loaded char_roccia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,714 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,782 DEBUG TaskExecutor FeatureSet:loaded char_phoebe resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,783 DEBUG TaskExecutor FeatureSet:loaded con_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,787 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,848 DEBUG TaskExecutor FeatureSet:loaded char_brant resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,851 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:26,914 DEBUG TaskExecutor FeatureSet:loaded char_cantarella resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:26,917 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,007 DEBUG TaskExecutor FeatureSet:loaded char_zani resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,007 DEBUG TaskExecutor FeatureSet:loaded lib_ready_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,007 DEBUG TaskExecutor FeatureSet:loaded con_full_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,008 DEBUG TaskExecutor FeatureSet:loaded con_mark_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,009 DEBUG TaskExecutor FeatureSet:loaded lib_mark_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,012 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,076 DEBUG TaskExecutor FeatureSet:loaded char_zani2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,080 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,142 DEBUG TaskExecutor FeatureSet:loaded char_ciaccona resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,146 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,212 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_space resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,213 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,213 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,213 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,214 DEBUG TaskExecutor FeatureSet:loaded char_cartethyia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,217 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,283 DEBUG TaskExecutor FeatureSet:loaded lupa_wolf_icon2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,284 DEBUG TaskExecutor FeatureSet:loaded lupa_wolf_icon1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,284 DEBUG TaskExecutor FeatureSet:loaded char_lupa resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,287 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,354 DEBUG TaskExecutor FeatureSet:loaded char_phrolova resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,357 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,419 DEBUG TaskExecutor FeatureSet:loaded Augusta_lib1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,420 DEBUG TaskExecutor FeatureSet:loaded Augusta resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,425 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,490 DEBUG TaskExecutor FeatureSet:loaded char_iuno resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,491 DEBUG TaskExecutor FeatureSet:loaded iuno_jump resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,491 DEBUG TaskExecutor FeatureSet:loaded iuno_heavy resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,491 DEBUG TaskExecutor FeatureSet:loaded box_extra_action resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,491 DEBUG TaskExecutor FeatureSet:loaded target_box_long2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,495 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,560 DEBUG TaskExecutor FeatureSet:loaded char_galbrena resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,563 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,629 DEBUG TaskExecutor FeatureSet:loaded char_chouyuan resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,635 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,699 DEBUG TaskExecutor FeatureSet:loaded char_chisa resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,703 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,727 DEBUG TaskExecutor FeatureSet:loaded char_chisa2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:27,729 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,760 DEBUG TaskExecutor FeatureSet:loaded char_denia resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:27,763 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,828 DEBUG TaskExecutor FeatureSet:loaded char_douling resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,831 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,892 DEBUG TaskExecutor FeatureSet:loaded char_linnai resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,896 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,920 DEBUG TaskExecutor FeatureSet:loaded char_linnai2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:27,923 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:27,986 DEBUG TaskExecutor FeatureSet:loaded char_moning resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:27,989 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,010 DEBUG TaskExecutor FeatureSet:loaded char_moning_new resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,013 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,073 DEBUG TaskExecutor FeatureSet:loaded aemeath_e2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,073 DEBUG TaskExecutor FeatureSet:loaded char_aemeath resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,077 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,142 DEBUG TaskExecutor FeatureSet:loaded char_xigelika resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,143 DEBUG TaskExecutor FeatureSet:loaded e_forte resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,147 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,211 DEBUG TaskExecutor FeatureSet:loaded char_luhesi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,211 DEBUG TaskExecutor FeatureSet:loaded luhesi_kick resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,211 DEBUG TaskExecutor FeatureSet:loaded box_luhesi_lib resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,214 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,281 DEBUG TaskExecutor FeatureSet:loaded char_hiyuki resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,282 DEBUG TaskExecutor FeatureSet:loaded hiyuki_right resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,285 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,309 DEBUG TaskExecutor FeatureSet:loaded char_lucilla resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,309 DEBUG TaskExecutor FeatureSet:loaded target_box_short resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,311 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,339 DEBUG TaskExecutor FeatureSet:loaded char_lucy resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,340 DEBUG TaskExecutor FeatureSet:loaded char_rebecca resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,342 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,406 DEBUG TaskExecutor FeatureSet:loaded qingxiao_h1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,406 DEBUG TaskExecutor FeatureSet:loaded char_qingxiao resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,409 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,471 DEBUG TaskExecutor FeatureSet:loaded char_jingran resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,474 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,536 DEBUG TaskExecutor FeatureSet:loaded char_hsin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,538 INFO TaskExecutor AutoCombatTask:warm_up_char_features loaded 61 character templates
+2026-10-18 23:34:28,539 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,560 DEBUG TaskExecutor FeatureSet:loaded char_1_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,564 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,585 DEBUG TaskExecutor FeatureSet:loaded char_2_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,585 DEBUG TaskExecutor FeatureSet:loaded char_3_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,585 DEBUG TaskExecutor FeatureSet:loaded mouse_forte resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:34:28,588 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,648 DEBUG TaskExecutor FeatureSet:loaded edge_levitator resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,648 DEBUG TaskExecutor FeatureSet:loaded box_target_enemy_inner resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,648 DEBUG TaskExecutor FeatureSet:loaded box_target_enemy resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,649 DEBUG TaskExecutor FeatureSet:loaded box_target_mouse resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,649 DEBUG TaskExecutor FeatureSet:loaded box_liberation resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,649 DEBUG TaskExecutor FeatureSet:loaded box_echo resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,650 DEBUG TaskExecutor FeatureSet:loaded box_resonance resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,650 DEBUG TaskExecutor FeatureSet:loaded has_target resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,654 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,735 DEBUG TaskExecutor FeatureSet:loaded no_target resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,736 DEBUG TaskExecutor FeatureSet:loaded q resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,736 DEBUG TaskExecutor FeatureSet:loaded e resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,736 DEBUG TaskExecutor FeatureSet:loaded t resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,737 DEBUG TaskExecutor FeatureSet:loaded r resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,740 DEBUG TaskExecutor BaseCombatTask:set_key best match Echo Key: Box(name='q', x=2281, y=1343, width=21, height=21, confidence=78)
+2026-10-18 23:34:28,742 DEBUG TaskExecutor BaseCombatTask:set_key best match Liberation Key: Box(name='r', x=2408, y=1342, width=21, height=20, confidence=92)
+2026-10-18 23:34:28,742 INFO TaskExecutor AutoCombatTask:info_set Liberation Key r
+2026-10-18 23:34:28,742 INFO TaskExecutor AutoCombatTask:info_set Echo Key q
+2026-10-18 23:34:28,877 INFO TaskExecutor AutoCombatTask:info_set Chars 弗洛洛, Qingxiao, 维里奈
+2026-10-18 23:34:28,877 INFO TaskExecutor AutoCombatTask:loaded chars success Phrolova 0.9873560070991516
+2026-10-18 23:34:28,877 INFO TaskExecutor AutoCombatTask:loaded chars success Qingxiao 0.9419592618942261
+2026-10-18 23:34:28,878 INFO TaskExecutor AutoCombatTask:loaded chars success Verina 0.9376320242881775
+2026-10-18 23:34:28,903 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:28,989 DEBUG TaskExecutor FeatureSet:loaded boss_break_shield resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,990 DEBUG TaskExecutor FeatureSet:loaded f_break resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:28,994 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:29,068 DEBUG TaskExecutor FeatureSet:loaded boss_break_lock resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:29,080 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:34:29,155 DEBUG TaskExecutor FeatureSet:loaded pick_up_f_hcenter_vcenter resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:29,156 DEBUG TaskExecutor FeatureSet:loaded dialog_3_dots resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:34:29,159 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:34:29,159 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:34:39,183 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:34:39,184 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:34:49,200 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:34:49,200 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:34:59,209 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:34:59,210 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:09,226 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:09,226 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:10,452 INFO ok.core.start_controller start_controller:queue task while another task is running <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:35:10,454 INFO ok.core.start_controller TaskExecutor:queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:35:10,454 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:35:10,482 INFO TaskExecutor TaskExecutor:get queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:35:10,514 DEBUG TaskExecutor TaskExecutor:start running onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:35:10,588 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x00000269CDFF6330>, <src.task.FarmEchoTask.FarmEchoTask object at 0x00000269CED11520>, <src.task.NightmareNestTask.NightmareNestTask object at 0x00000269CE2F7470>, <src.task.TacetTask.TacetTask object at 0x00000269CECFC860>, <src.task.ForgeryTask.ForgeryTask object at 0x00000269CE401D60>, <src.task.SimulationTask.SimulationTask object at 0x00000269CD7AED80>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x00000269CE45EF60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x00000269CED3EF90>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x00000269CEE22C00>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x00000269CEE22D20>, <src.task.GardenTask.GardenTask object at 0x00000269CEE9A6C0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x00000269CE45F980>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x00000269CE496BD0>, <src.task.AutoPickTask.AutoPickTask object at 0x00000269CE50A0C0>, <src.task.AutoLoginTask.AutoLoginTask object at 0x00000269CECAF8C0>, <src.task.SkipDialogTask.AutoDialogTask object at 0x00000269CECE5370>, <src.task.FastTravelTask.FastTravelTask object at 0x00000269CE45F770>, <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>]
+2026-10-18 23:35:10,588 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:10,589 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:11,110 DEBUG TaskExecutor TaskExecutor:found result True 0.011
+2026-10-18 23:35:11,434 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:11,435 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:11,435 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:11,627 INFO TaskExecutor Farm3CEchoTask:Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候
+2026-10-18 23:35:11,639 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:11,717 DEBUG TaskExecutor FeatureSet:loaded arrow resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:11,755 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:11,856 DEBUG TaskExecutor FeatureSet:loaded star resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:11,857 DEBUG TaskExecutor FeatureSet:loaded box_minimap resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:11,857 DEBUG TaskExecutor FeatureSet:loaded box_arrow resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:11,857 DEBUG TaskExecutor FeatureSet:loaded con_havoc resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:12,098 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:12,171 DEBUG TaskExecutor FeatureSet:loaded custom_teleport_hcenter_vcenter resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:12,172 DEBUG TaskExecutor FeatureSet:loaded gray_teleport resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:12,248 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:12,330 DEBUG TaskExecutor FeatureSet:loaded wheel_levitator resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:12,390 DEBUG TaskExecutor BaseCombatTask:set_key best match Echo Key: Box(name='q', x=2281, y=1343, width=21, height=21, confidence=78)
+2026-10-18 23:35:12,391 DEBUG TaskExecutor BaseCombatTask:set_key best match Liberation Key: Box(name='r', x=2408, y=1342, width=21, height=20, confidence=92)
+2026-10-18 23:35:12,392 INFO TaskExecutor Farm3CEchoTask:info_set Liberation Key r
+2026-10-18 23:35:12,392 INFO TaskExecutor Farm3CEchoTask:info_set Echo Key q
+2026-10-18 23:35:12,493 INFO TaskExecutor Farm3CEchoTask:info_set Chars 弗洛洛, Qingxiao, 维里奈
+2026-10-18 23:35:12,493 INFO TaskExecutor Farm3CEchoTask:loaded chars success Phrolova 0.9873657822608948
+2026-10-18 23:35:12,493 INFO TaskExecutor Farm3CEchoTask:loaded chars success Qingxiao 0.9419456124305725
+2026-10-18 23:35:12,493 INFO TaskExecutor Farm3CEchoTask:loaded chars success Verina 0.9374035000801086
+2026-10-18 23:35:12,494 INFO TaskExecutor globals:yolo_model Using OpenVinoYolo8Detect
+2026-10-18 23:35:13,223 INFO TaskExecutor OpenVinoYolo8Detect:OpenVINO model compiled successfully for CPU 640x640.
+2026-10-18 23:35:13,264 INFO TaskExecutor Farm3CEchoTask:3C vision ready / 3C识别准备完成
+2026-10-18 23:35:13,264 INFO TaskExecutor Farm3CEchoTask:info_set Queued Routes 1
+2026-10-18 23:35:13,266 INFO TaskExecutor Farm3CEchoTask:info_set Current Route 1
+2026-10-18 23:35:13,266 INFO TaskExecutor Farm3CEchoTask:info_set Route Local 3C Route1
+2026-10-18 23:35:13,266 INFO TaskExecutor Farm3CEchoTask:3C route 1/1: routes/3c/local-route5.json
+2026-10-18 23:35:17,920 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:17,920 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:17,922 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:18,614 INFO TaskExecutor TaskExecutor:wait_until timeout <bound method Farm3CEchoTask.locate of <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>> 5 seconds
+2026-10-18 23:35:18,632 INFO TaskExecutor Farm3CEchoTask:info_set 3C Stage Relocalizing from Map / 停步打开大地图重新定位
+2026-10-18 23:35:18,632 DEBUG TaskExecutor base:Sending key m
+2026-10-18 23:35:19,080 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:19,136 DEBUG TaskExecutor FeatureSet:loaded map_my_location resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:19,137 DEBUG TaskExecutor FeatureSet:loaded boss_check_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:19,137 DEBUG TaskExecutor FeatureSet:loaded boss_no_check_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:19,806 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:19,806 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:19,808 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:21,066 INFO TaskExecutor TaskExecutor:wait_until timeout <function FindFeature.wait_feature.<locals>.<lambda> at 0x000002698B7A05E0> 2 seconds
+2026-10-18 23:35:21,066 WARNING TaskExecutor Farm3CEchoTask:Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:35:21,067 INFO TaskExecutor Farm3CEchoTask:info_set Warning Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:35:21,068 DEBUG TaskExecutor base:Sending key esc
+2026-10-18 23:35:21,708 DEBUG TaskExecutor TaskExecutor:found result True 0.620
+2026-10-18 23:35:22,227 WARNING TaskExecutor Farm3CEchoTask:3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 4, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 274, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:35:22,227 INFO TaskExecutor Farm3CEchoTask:info_set Warning 3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 4, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 274, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:35:22,232 INFO TaskExecutor Farm3CEchoTask:info_set 错误 Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+2026-10-18 23:35:22,236 ERROR TaskExecutor TaskExecutor:🗺️ Farm 3C Echo by Route exception stopped Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\task\TaskExecutor.py", line 584, in execute
+    task.run()
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 126, in run
+    raise RuntimeError('Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置')
+RuntimeError: Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+
+2026-10-18 23:35:22,270 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:35:22,281 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:22,281 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:25,271 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:25,272 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:25,272 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:27,732 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:27,736 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:27,754 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:29,023 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:29,086 DEBUG TaskExecutor FeatureSet:loaded skip_dialog resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:29,089 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:29,158 DEBUG TaskExecutor FeatureSet:loaded skip_dialog_new resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-18 23:35:29,161 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-18 23:35:29,177 DEBUG TaskExecutor FeatureSet:loaded message resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:35:29,177 DEBUG TaskExecutor FeatureSet:loaded message_dialog resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-18 23:35:32,282 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:32,282 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:36,239 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:35:36,239 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:35:36,239 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:35:42,295 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:42,297 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:35:48,072 INFO ok.task.task MouseResetTask:move mouse back (1505, 450)
+2026-10-18 23:35:52,302 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:35:52,302 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:02,313 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:02,314 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:12,317 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:12,317 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:22,328 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:22,328 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:32,339 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:32,339 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:42,351 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:42,351 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:36:52,357 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:36:52,358 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:02,368 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:02,368 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:07,799 INFO ok.core.start_controller start_controller:queue task while another task is running <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:37:07,799 INFO ok.core.start_controller TaskExecutor:queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:07,800 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:37:07,834 INFO TaskExecutor TaskExecutor:get queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:07,850 DEBUG TaskExecutor TaskExecutor:start running onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:07,897 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x00000269CDFF6330>, <src.task.FarmEchoTask.FarmEchoTask object at 0x00000269CED11520>, <src.task.NightmareNestTask.NightmareNestTask object at 0x00000269CE2F7470>, <src.task.TacetTask.TacetTask object at 0x00000269CECFC860>, <src.task.ForgeryTask.ForgeryTask object at 0x00000269CE401D60>, <src.task.SimulationTask.SimulationTask object at 0x00000269CD7AED80>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x00000269CE45EF60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x00000269CED3EF90>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x00000269CEE22C00>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x00000269CEE22D20>, <src.task.GardenTask.GardenTask object at 0x00000269CEE9A6C0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x00000269CE45F980>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x00000269CE496BD0>, <src.task.AutoPickTask.AutoPickTask object at 0x00000269CE50A0C0>, <src.task.AutoLoginTask.AutoLoginTask object at 0x00000269CECAF8C0>, <src.task.SkipDialogTask.AutoDialogTask object at 0x00000269CECE5370>, <src.task.FastTravelTask.FastTravelTask object at 0x00000269CE45F770>, <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>]
+2026-10-18 23:37:07,898 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:07,899 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:08,420 DEBUG TaskExecutor TaskExecutor:found result True 0.019
+2026-10-18 23:37:08,538 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:08,538 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:08,539 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:08,922 INFO TaskExecutor Farm3CEchoTask:Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候
+2026-10-18 23:37:09,406 INFO TaskExecutor Farm3CEchoTask:3C vision ready / 3C识别准备完成
+2026-10-18 23:37:09,407 INFO TaskExecutor Farm3CEchoTask:info_set Queued Routes 1
+2026-10-18 23:37:09,408 INFO TaskExecutor Farm3CEchoTask:info_set Current Route 1
+2026-10-18 23:37:09,408 INFO TaskExecutor Farm3CEchoTask:info_set Route Local 3C Route1
+2026-10-18 23:37:09,409 INFO TaskExecutor Farm3CEchoTask:3C route 1/1: routes/3c/local-route5.json
+2026-10-18 23:37:14,781 INFO TaskExecutor TaskExecutor:wait_until timeout <bound method Farm3CEchoTask.locate of <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>> 5 seconds
+2026-10-18 23:37:14,798 INFO TaskExecutor Farm3CEchoTask:info_set 3C Stage Relocalizing from Map / 停步打开大地图重新定位
+2026-10-18 23:37:14,798 DEBUG TaskExecutor base:Sending key m
+2026-10-18 23:37:17,235 INFO TaskExecutor TaskExecutor:wait_until timeout <function FindFeature.wait_feature.<locals>.<lambda> at 0x000002698B846F20> 2 seconds
+2026-10-18 23:37:17,235 WARNING TaskExecutor Farm3CEchoTask:Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:37:17,235 INFO TaskExecutor Farm3CEchoTask:info_set Warning Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:37:17,238 DEBUG TaskExecutor base:Sending key esc
+2026-10-18 23:37:17,902 DEBUG TaskExecutor TaskExecutor:found result True 0.644
+2026-10-18 23:37:18,423 WARNING TaskExecutor Farm3CEchoTask:3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 0, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 410, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:37:18,423 INFO TaskExecutor Farm3CEchoTask:info_set Warning 3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 0, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 410, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:37:18,428 INFO TaskExecutor Farm3CEchoTask:info_set 错误 Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+2026-10-18 23:37:18,428 ERROR TaskExecutor TaskExecutor:🗺️ Farm 3C Echo by Route exception stopped Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\task\TaskExecutor.py", line 584, in execute
+    task.run()
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 126, in run
+    raise RuntimeError('Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置')
+RuntimeError: Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+
+2026-10-18 23:37:18,460 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:37:18,466 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:18,466 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:19,072 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:19,072 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:19,073 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:21,090 INFO ok.task.task MouseResetTask:move mouse back (1582, 754)
+2026-10-18 23:37:21,098 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:21,098 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:21,098 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:25,341 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:25,342 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:25,342 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:28,495 INFO TaskExecutor AutoCombatTask:could not find char 1 {'cls': <class 'src.char.Qingxiao.Qingxiao'>, 'char_type': <CharType.MAIN_DPS: 'MainDps'>, 'ring_index': <Elements.WIND: 4>, 'buff_time': 14, 'canonical_name': <Labels.char_qingxiao: 'char_qingxiao'>, 'template_names': (<Labels.char_qingxiao: 'char_qingxiao'>,)} 0
+2026-10-18 23:37:28,537 INFO TaskExecutor AutoCombatTask:could not find char 2 {'cls': <class 'src.char.Verina.Verina'>, 'char_type': <CharType.HEALER: 'Healer'>, 'ring_index': <Elements.SPECTRO: 0>, 'buff_time': 28, 'canonical_name': <Labels.char_verina: 'char_verina'>, 'template_names': (<Labels.char_verina: 'char_verina'>,)} 0
+2026-10-18 23:37:28,565 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:28,565 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:30,560 INFO ok.core.start_controller start_controller:queue task while another task is running <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:37:30,560 INFO ok.core.start_controller TaskExecutor:queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:30,561 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>
+2026-10-18 23:37:30,589 INFO TaskExecutor TaskExecutor:get queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:30,619 DEBUG TaskExecutor TaskExecutor:start running onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-18 23:37:30,663 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x00000269CDFF6330>, <src.task.FarmEchoTask.FarmEchoTask object at 0x00000269CED11520>, <src.task.NightmareNestTask.NightmareNestTask object at 0x00000269CE2F7470>, <src.task.TacetTask.TacetTask object at 0x00000269CECFC860>, <src.task.ForgeryTask.ForgeryTask object at 0x00000269CE401D60>, <src.task.SimulationTask.SimulationTask object at 0x00000269CD7AED80>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x00000269CE45EF60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x00000269CED3EF90>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x00000269CEE22C00>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x00000269CEE22D20>, <src.task.GardenTask.GardenTask object at 0x00000269CEE9A6C0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x00000269CE45F980>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x00000269CE496BD0>, <src.task.AutoPickTask.AutoPickTask object at 0x00000269CE50A0C0>, <src.task.AutoLoginTask.AutoLoginTask object at 0x00000269CECAF8C0>, <src.task.SkipDialogTask.AutoDialogTask object at 0x00000269CECE5370>, <src.task.FastTravelTask.FastTravelTask object at 0x00000269CE45F770>, <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>]
+2026-10-18 23:37:30,664 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:30,666 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:31,194 DEBUG TaskExecutor TaskExecutor:found result True 0.018
+2026-10-18 23:37:31,281 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:31,281 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:31,281 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:31,705 INFO TaskExecutor Farm3CEchoTask:Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候
+2026-10-18 23:37:32,224 INFO TaskExecutor Farm3CEchoTask:3C vision ready / 3C识别准备完成
+2026-10-18 23:37:32,225 INFO TaskExecutor Farm3CEchoTask:info_set Queued Routes 1
+2026-10-18 23:37:32,227 INFO TaskExecutor Farm3CEchoTask:info_set Current Route 1
+2026-10-18 23:37:32,227 INFO TaskExecutor Farm3CEchoTask:info_set Route Local 3C Route1
+2026-10-18 23:37:32,228 INFO TaskExecutor Farm3CEchoTask:3C route 1/1: routes/3c/local-route5.json
+2026-10-18 23:37:37,637 INFO TaskExecutor TaskExecutor:wait_until timeout <bound method Farm3CEchoTask.locate of <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x00000269CE3289B0>> 5 seconds
+2026-10-18 23:37:37,654 INFO TaskExecutor Farm3CEchoTask:info_set 3C Stage Relocalizing from Map / 停步打开大地图重新定位
+2026-10-18 23:37:37,655 DEBUG TaskExecutor base:Sending key m
+2026-10-18 23:37:40,091 INFO TaskExecutor TaskExecutor:wait_until timeout <function FindFeature.wait_feature.<locals>.<lambda> at 0x000002698B845F80> 2 seconds
+2026-10-18 23:37:40,092 WARNING TaskExecutor Farm3CEchoTask:Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:37:40,092 INFO TaskExecutor Farm3CEchoTask:info_set Warning Map relocalization was not confirmed / 大地图重定位未通过校验，停止盲走
+2026-10-18 23:37:40,094 DEBUG TaskExecutor base:Sending key esc
+2026-10-18 23:37:40,746 DEBUG TaskExecutor TaskExecutor:found result True 0.631
+2026-10-18 23:37:41,268 WARNING TaskExecutor Farm3CEchoTask:3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 0, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 294, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:37:41,269 INFO TaskExecutor Farm3CEchoTask:info_set Warning 3C localization failed: stage=start, capture=2560x1440, expected_start=(1340.0, 752.0, 50.0), last_position=None, diagnostic={'mode': 'minimap', 'minimap_size': [248, 247], 'map_features': 3577, 'attempts': [{'candidate_features': 3577, 'matches': 0, 'reason': 'too_few_matches'}], 'tracking': {'age': None, 'reason': 'no_tracking_anchor'}, 'minimap_features': 294, 'status': 'rejected', 'reason': 'too_few_matches'}
+2026-10-18 23:37:41,270 INFO TaskExecutor Farm3CEchoTask:info_set 错误 Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+2026-10-18 23:37:41,273 ERROR TaskExecutor TaskExecutor:🗺️ Farm 3C Echo by Route exception stopped Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\task\TaskExecutor.py", line 584, in execute
+    task.run()
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 126, in run
+    raise RuntimeError('Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置')
+RuntimeError: Cannot confirm route start / 无法确认路线起点，请检查信标落点、地图楼层和北向固定设置
+
+2026-10-18 23:37:41,302 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:37:41,307 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:41,308 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:37:43,807 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-18 23:37:43,808 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:37:43,808 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:37:51,309 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:37:51,310 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:01,313 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:01,313 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:11,330 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:11,330 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:21,345 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:21,345 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:31,347 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:31,347 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:41,361 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:41,361 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:38:51,363 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:38:51,364 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:39:01,374 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:39:01,374 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:39:11,387 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-18 23:39:11,387 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x00000269CECE5D90>>
+2026-10-18 23:39:20,764 INFO update_window_size hwnd_window:hwnd changed,connected:0
+2026-10-18 23:39:20,766 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:0 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-18 23:39:20,795 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-18 23:39:20,797 DEBUG MainThread StartTab:update_capture
+2026-10-18 23:39:24,045 INFO MainThread MainWindow:Window closed exit_event.is not set False
+2026-10-18 23:39:24,045 DEBUG MainThread handler:ExitEvent set event empty queues (<queue.Queue object at 0x00000269CA965640>,) to_stops: (<ok.notification.pipeline.NotificationPipeline object at 0x00000269CD5F4410>, <ok.util.handler.Handler object at 0x00000269D4F87440>, <ok.util.handler.Handler object at 0x00000269CC175A90>, <ok.util.handler.Handler object at 0x00000269C9D98CE0>, <ok.util.handler.Handler object at 0x00000269D509BEF0>, <ok.util.handler.Handler object at 0x00000269CE496330>, <ok.util.handler.Handler object at 0x00000269CF03E390>)
+2026-10-18 23:39:24,046 INFO MainThread handler:handler stopping ok.task.task
+2026-10-18 23:39:24,046 DEBUG screenshot screenshot:Task queue get is None quit
+2026-10-18 23:39:24,046 INFO MainThread handler:handler stopping global
+2026-10-18 23:39:24,046 DEBUG ok.task.task handler:handler ok.task.task processing loop finished due to exit event.
+2026-10-18 23:39:24,047 INFO MainThread handler:handler stopping RefreshAdb
+2026-10-18 23:39:24,047 DEBUG global handler:handler global processing loop finished due to exit event.
+2026-10-18 23:39:24,047 INFO MainThread handler:handler stopping DebugTab
+2026-10-18 23:39:24,047 DEBUG RefreshAdb handler:handler RefreshAdb processing loop finished due to exit event.
+2026-10-18 23:39:24,047 INFO MainThread handler:handler stopping ok.core.start_controller
+2026-10-18 23:39:24,047 DEBUG DebugTab handler:handler DebugTab processing loop finished due to exit event.
+2026-10-18 23:39:24,047 INFO MainThread handler:handler stopping StartCard
+2026-10-18 23:39:24,047 DEBUG ok.core.start_controller handler:handler ok.core.start_controller processing loop finished due to exit event.
+2026-10-18 23:39:24,048 DEBUG StartCard handler:handler StartCard processing loop finished due to exit event.
+2026-10-18 23:39:24,070 INFO TaskExecutor TaskExecutor:sleep Exit event set. Exiting early.
+2026-10-18 23:39:24,225 INFO MainThread windows_graphics:destroy windows capture
+2026-10-18 23:39:24,238 DEBUG MainThread DebugTab:Unregister the hotkeys
+2026-10-18 23:39:24,279 INFO MainThread ok:quit app

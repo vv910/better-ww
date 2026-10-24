@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "echo_cost": 3,
+  "name": "Local 3C Route1",
+  "map_image": "assets/map-00.png",
+  "map_region": [
+    717,
+    173,
+    2227,
+    1296
+  ],
+  "start": {
+    "x": 1508,
+    "y": 748,
+    "tolerance": 50
+  },
+  "waypoints": [
+    {
+      "x": 1474,
+      "y": 684,
+      "action": "combat"
+    },
+    {
+      "x": 1300,
+      "y": 946,
+      "action": "combat"
+    },
+    {
+      "x": 950,
+      "y": 888,
+      "action": "combat"
+    }
+  ],
+  "teleport": {
+    "anchor": "",
+    "x": 1508,
+    "y": 748,
+    "views": [
+      {
+        "map_image": "assets/map-00.png",
+        "x": 1508,
+        "y": 748,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-02.png",
+        "x": 1507.9924876195728,
+        "y": 747.992663010819,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-03.png",
+        "x": 1507.983461486569,
+        "y": 747.9836906929164,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-04.png",
+        "x": 1507.9802314900328,
+        "y": 747.97503735334,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-05.png",
+        "x": 1507.9657372556437,
+        "y": 747.9689786636513,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-06.png",
+        "x": 1507.9599359966442,
+        "y": 747.9637650662571,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-07.png",
+        "x": 1507.950084864496,
+        "y": 747.9492834359837,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      }
+    ]
+  },
+  "map_context": {
+    "selection_path": [
+      "瑝珑",
+      "梦州",
+      "落渊南丘"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+Stack for thread 132816 (Name: Dummy-6):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\__init__.py", line 1113, in console_handler
+    dump_threads()
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\capture\windows\dump.py", line 22, in dump_threads
+    thread_dump += "".join(traceback.format_stack(frame))
+
+
+Stack for thread 123984 (Name: ExitWatchdogFallback):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1032, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\util\process.py", line 118, in force_without_diagnostics
+    time.sleep(grace_period + 1.0)
+
+
+Stack for thread 95936 (Name: ExitWatchdog):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1032, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\util\process.py", line 91, in watch
+    time.sleep(grace_period)
+
+
+Stack for thread 67064 (Name: Thread-1 (_monitor)):
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1032, in _bootstrap
+    self._bootstrap_inner()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1075, in _bootstrap_inner
+    self.run()
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 1012, in run
+    self._target(*self._args, **self._kwargs)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\logging\handlers.py", line 1593, in _monitor
+    record = self.dequeue(True)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\logging\handlers.py", line 1542, in dequeue
+    return self.queue.get(block)
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\queue.py", line 165, in get
+    with self.not_empty:
+  File "C:\Users\Administrator\AppData\Local\Programs\Python\Python312\Lib\threading.py", line 365, in wait
+    if not gotit:

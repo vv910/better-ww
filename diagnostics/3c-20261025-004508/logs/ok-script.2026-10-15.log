@@ -1,0 +1,279 @@
+2026-10-15 00:28:29,274 INFO MainThread ok:ok-script init dev, ['main_debug.py'], pid=119816 config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x000001D77E0BD800>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x000001D764D3B4A0>, <ok.util.config.ConfigOption object at 0x000001D764F3F2C0>, <ok.util.config.ConfigOption object at 0x000001D767263EC0>, <ok.util.config.ConfigOption object at 0x000001D76739D730>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x000001D767257240>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x000001D77E0BD760>, 'launch_arguments': <function get_game_launch_arguments at 0x000001D767277880>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-15 00:28:29,275 DEBUG MainThread ok:environment contains 44 entries
+2026-10-15 00:28:29,275 INFO MainThread ok:pyappify  app_version:None, app_profile:None, pyappify_version:None pyappify_upgradeable:False, pyappify_executable:None
+2026-10-15 00:28:29,278 DEBUG MainThread Config:reset_to_default self.config = {'Auto Start Game When App Starts': False, 'Minimize Window to System Tray when Closing': False, 'Mute Game while in Background': False, 'Auto Resize Game Window': True, 'Exit App when Game Exits': False, 'Use DirectML': 'Yes', 'Trigger Interval': 1, 'Start/Stop': 'F9', 'Kill Launcher After Start': True, 'Launch with DX11': False, 'Enable Blur': False, 'Blur Algorithm': 'Inpaint', 'Blur Interval': 1, 'Game Package': 'hd'}
+2026-10-15 00:28:29,278 DEBUG MainThread Config:init self.config = {'Auto Start Game When App Starts': False, 'Minimize Window to System Tray when Closing': False, 'Mute Game while in Background': False, 'Auto Resize Game Window': True, 'Exit App when Game Exits': False, 'Use DirectML': 'Yes', 'Trigger Interval': 1, 'Start/Stop': 'F9', 'Kill Launcher After Start': True, 'Launch with DX11': False, 'Enable Blur': False, 'Blur Algorithm': 'Inpaint', 'Blur Interval': 1, 'Game Package': 'hd'}
+2026-10-15 00:28:29,281 DEBUG MainThread Config:reset_to_default self.config = {'Echo Key': 'q', 'Liberation Key': 'r', 'Resonance Key': 'e', 'Tool Key': 't', 'Jump Key': 'space', 'Dodge Key': 'lshift', 'Wheel Key': 'tab', 'Guidebook Key': 'f2', 'Bag Key': 'b'}
+2026-10-15 00:28:29,281 DEBUG MainThread Config:init self.config = {'Echo Key': 'q', 'Liberation Key': 'r', 'Resonance Key': 'e', 'Tool Key': 't', 'Jump Key': 'space', 'Dodge Key': 'lshift', 'Wheel Key': 'tab', 'Guidebook Key': 'f2', 'Bag Key': 'b'}
+2026-10-15 00:28:29,283 DEBUG MainThread Config:reset_to_default self.config = {'Iuno C6': False, 'Chisa DPS': False}
+2026-10-15 00:28:29,284 DEBUG MainThread Config:init self.config = {'Iuno C6': False, 'Chisa DPS': False}
+2026-10-15 00:28:29,286 DEBUG MainThread Config:reset_to_default self.config = {'Check Monthly Card': True, 'Monthly Card Time': 4}
+2026-10-15 00:28:29,286 DEBUG MainThread Config:init self.config = {'Check Monthly Card': True, 'Monthly Card Time': 4}
+2026-10-15 00:28:29,286 INFO MainThread capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-15 00:28:29,394 DEBUG MainThread Config:reset_to_default self.config = {'System Notification': True, 'Discord Notification': False, 'Discord Webhook': '', 'Telegram Notification': False, 'Telegram Bot Token': '', 'Telegram Chat ID': '', 'Enterprise WeChat Webhook Notification': False, 'Enterprise WeChat Webhook URL': '', 'QQ Bot API Notification': False, 'QQ Bot API App ID': '', 'QQ Bot API Token': '', 'QQ Bot API Channel ID': '', 'SMTP Notification': False, 'SMTP Host': '', 'SMTP Port': 587, 'SMTP Username': '', 'SMTP Password': '', 'SMTP Use TLS': True, 'SMTP Default Sender': '', 'SMTP Default Recipient': '', 'QQ Desktop Notification (Not Reliable)': False, 'QQ Desktop Nickname': '', 'WeChat Desktop Notification (Not Reliable)': False, 'WeChat Desktop Nickname': ''}
+2026-10-15 00:28:29,394 DEBUG MainThread Config:init self.config = {'System Notification': True, 'Discord Notification': False, 'Discord Webhook': '', 'Telegram Notification': False, 'Telegram Bot Token': '', 'Telegram Chat ID': '', 'Enterprise WeChat Webhook Notification': False, 'Enterprise WeChat Webhook URL': '', 'QQ Bot API Notification': False, 'QQ Bot API App ID': '', 'QQ Bot API Token': '', 'QQ Bot API Channel ID': '', 'SMTP Notification': False, 'SMTP Host': '', 'SMTP Port': 587, 'SMTP Username': '', 'SMTP Password': '', 'SMTP Use TLS': True, 'SMTP Default Sender': '', 'SMTP Default Recipient': '', 'QQ Desktop Notification (Not Reliable)': False, 'QQ Desktop Nickname': '', 'WeChat Desktop Notification (Not Reliable)': False, 'WeChat Desktop Nickname': ''}
+2026-10-15 00:28:29,394 INFO MainThread ok:use_dml result is True
+2026-10-15 00:28:29,395 INFO MainThread ok:SetProcessDpiAwareness 0
+2026-10-15 00:28:29,397 INFO MainThread ok:do_init, config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x000001D77E0BD800>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x000001D764D3B4A0>, <ok.util.config.ConfigOption object at 0x000001D764F3F2C0>, <ok.util.config.ConfigOption object at 0x000001D767263EC0>, <ok.util.config.ConfigOption object at 0x000001D76739D730>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x000001D767257240>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x000001D77E0BD760>, 'launch_arguments': <function get_game_launch_arguments at 0x000001D767277880>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False, 'start_exe': True, 'start_method': 'start'}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-15 00:28:29,540 INFO MainThread DeviceManager:__init__ start
+2026-10-15 00:28:29,544 DEBUG MainThread Config:reset_to_default self.config = {'preferred': '', 'pc_full_path': '', 'capture': 'windows', 'selected_exe': '', 'selected_hwnd': 0, 'interaction': ''}
+2026-10-15 00:28:29,544 DEBUG MainThread Config:init self.config = {'preferred': '', 'pc_full_path': '', 'capture': 'windows', 'selected_exe': '', 'selected_hwnd': 0, 'interaction': ''}
+2026-10-15 00:28:29,545 INFO MainThread hwnd_window:HwndWindow init title:None player_id:-1 exe_name:['Client-Win64-Shipping.exe'] hwnd_class:UnrealWindow top_hwnd_class:[re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button']
+2026-10-15 00:28:29,545 DEBUG MainThread hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-15 00:28:29,547 INFO MainThread DeviceManager:__init__ end
+2026-10-15 00:28:29,569 DEBUG MainThread screenshot:init Screenshot E:\Better_ww\screenshots None
+2026-10-15 00:28:29,570 DEBUG MainThread screenshot:load font C:\Windows\Fonts\msyh.ttc
+2026-10-15 00:28:29,571 INFO screenshot screenshot:clear E:\Better_ww\screenshots
+2026-10-15 00:28:29,571 DEBUG MainThread FeatureSet:Loading features from E:\Better_ww\assets\coco_annotations.json
+2026-10-15 00:28:29,573 INFO MainThread TaskExecutor:install ocr translations error for en_US
+2026-10-15 00:28:29,574 INFO DefaultOCRInit TaskExecutor:start init default ocr
+2026-10-15 00:28:29,966 INFO DefaultOCRInit TaskExecutor:init onnxocr {'use_openvino': True, 'use_npu': True}
+2026-10-15 00:28:29,989 INFO DefaultOCRInit TaskExecutor:use_openvino: True
+2026-10-15 00:28:29,989 INFO DefaultOCRInit TaskExecutor:use_npu: True
+2026-10-15 00:28:29,989 INFO DefaultOCRInit TaskExecutor:use_angle_cls: False
+2026-10-15 00:28:29,990 INFO DefaultOCRInit TaskExecutor:det_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\det\det.onnx
+2026-10-15 00:28:29,990 INFO DefaultOCRInit TaskExecutor:rec_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\rec\rec.onnx
+2026-10-15 00:28:29,990 INFO DefaultOCRInit TaskExecutor:rec_image_shape: 3, 48, 320
+2026-10-15 00:28:30,585 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-15 00:28:30,611 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-15 00:28:30,653 DEBUG MainThread app:resources.qt_resource_name b'\x00\x03\x00\x00x\xa3\x00q\x00s\x00s\x00\x04\x00\x06\xc4\xee\x00i\x001\x008\x00n\x00\x08\t:h\xfd\x00e\x00s\x00_\x00E\x00S\x00.\x00q\x00m\x00\x08\x0eI\xb5}\x00z\x00h\x00_\x00T\x00W\x00.\x00q\x00m\x00\x08\x05@[=\x00k\x00o\x00_\x00K\x00R\x00.\x00q\x00m\x00\x08\x0e8\x05}\x00z\x00h\x00_\x00C\x00N\x00.\x00q\x00m\x00\x08\x07?;}\x00j\x00a\x00_\x00J\x00P\x00.\x00q\x00m\x00\x04\x00\x06\xa8\x8b\x00d\x00a\x00r\x00k\x00\x05\x00r\xfd\xf4\x00l\x00i\x00g\x00h\x00t\x00\x12\x0c\xf9E\xe3\x00m\x00e\x00s\x00s\x00a\x00g\x00e\x00_\x00w\x00i\x00n\x00d\x00o\x00w\x00.\x00q\x00s\x00s\x00\x0b\x06QI\x87\x00d\x00i\x00s\x00c\x00o\x00r\x00d\x00.\x00s\x00v\x00g\x00\x0e\r\x92\xd4\xa3\x00s\x00t\x00a\x00t\x00u\x00s\x00_\x00b\x00a\x00r\x00.\x00q\x00s\x00s\x00\x08\x08\x87U\x83\x00c\x00a\x00r\x00d\x00.\x00q\x00s\x00s\x00\t\x08\x97\x87\xa7\x00h\x00e\x00a\x00r\x00t\x00.\x00s\x00v\x00g\x00\x08\x0bcU\x87\x00s\x00t\x00o\x00p\x00.\x00s\x00v\x00g\x00\x07\nuXC\x00t\x00a\x00b\x00.\x00q\x00s\x00s' cfg.themeMode
+2026-10-15 00:28:30,778 INFO MainThread app:translator install success <PySide6.QtCore.QLocale()/* Chinese, Simplified Han, China */ at 0x000001D702F3F840>, 开发工具
+2026-10-15 00:28:30,781 INFO MainThread TaskExecutor:install ocr translations error for zh_CN
+2026-10-15 00:28:30,784 DEBUG MainThread Config:reset_to_default self.config = {'window_x': -1, 'window_y': -1, 'window_width': -1, 'window_height': -1, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-15 00:28:30,784 DEBUG MainThread Config:init self.config = {'window_x': -1, 'window_y': -1, 'window_width': -1, 'window_height': -1, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-15 00:28:30,784 DEBUG MainThread ok:locale name zh_CN
+2026-10-15 00:28:31,013 DEBUG MainThread ok:init app end
+2026-10-15 00:28:31,181 DEBUG MainThread Config:reset_to_default self.config = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
+2026-10-15 00:28:31,181 DEBUG MainThread Config:init self.config = {'0': 0, '1': 0, '2': 0, '3': 0, '4': 0, '5': 0}
+2026-10-15 00:28:31,182 DEBUG MainThread AutoCombatTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,185 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True, 'Auto Target': True, 'Use Liberation': True, 'Check Levitator': True, 'Switch to Healer before and after Combat': True}
+2026-10-15 00:28:31,185 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Auto Target': True, 'Use Liberation': True, 'Check Levitator': True, 'Switch to Healer before and after Combat': True}
+2026-10-15 00:28:31,187 DEBUG MainThread AutoPickTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,190 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True, 'Pick Up White List': ['吸收', 'Absorb'], 'Pick Up Black List': ['开始合成', '领取奖励', 'Claim', '合成台', '开始烹饪']}
+2026-10-15 00:28:31,190 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Pick Up White List': ['吸收', 'Absorb'], 'Pick Up Black List': ['开始合成', '领取奖励', 'Claim', '合成台', '开始烹饪']}
+2026-10-15 00:28:31,192 DEBUG MainThread AutoLoginTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,194 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True}
+2026-10-15 00:28:31,194 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-15 00:28:31,198 DEBUG MainThread AutoDialogTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,200 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True}
+2026-10-15 00:28:31,201 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-15 00:28:31,203 DEBUG MainThread FastTravelTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,206 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': False}
+2026-10-15 00:28:31,206 DEBUG MainThread Config:init self.config = {'_enabled': False}
+2026-10-15 00:28:31,208 DEBUG MainThread MouseResetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,211 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True}
+2026-10-15 00:28:31,211 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-15 00:28:31,241 DEBUG MainThread DailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,243 DEBUG MainThread Config:reset_to_default self.config = {'Which to Farm': 'Tacet Suppression', 'Which Tacet Suppression to Farm': 1, 'Which Forgery Challenge to Farm': 1, 'Material Selection': 'Shell Credit', 'Farm Nightmare Nest for Daily Echo': True, 'Additional Tasks to Run After Daily Task': ['Check Weekly Garden'], 'Exit After Task': False}
+2026-10-15 00:28:31,243 DEBUG MainThread Config:init self.config = {'Which to Farm': 'Tacet Suppression', 'Which Tacet Suppression to Farm': 1, 'Which Forgery Challenge to Farm': 1, 'Material Selection': 'Shell Credit', 'Farm Nightmare Nest for Daily Echo': True, 'Additional Tasks to Run After Daily Task': ['Check Weekly Garden'], 'Exit After Task': False}
+2026-10-15 00:28:31,243 DEBUG MainThread FarmEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,246 DEBUG MainThread Config:reset_to_default self.config = {'Teleport to Boss': 'No', 'Boss Level': '80', 'Boss': 'Other', 'Repeat Farm Count': 10000, 'Combat Wait Time': 0, 'Echo Pickup Method': 'Walk', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Which Weekly Boss to Teleport': 1, 'Which Boss Challenge to Teleport': 1, 'Which Special Nightmare to Teleport': 1, 'Exit After Task': False}
+2026-10-15 00:28:31,246 DEBUG MainThread Config:init self.config = {'Teleport to Boss': 'No', 'Boss Level': '80', 'Boss': 'Other', 'Repeat Farm Count': 10000, 'Combat Wait Time': 0, 'Echo Pickup Method': 'Walk', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Which Weekly Boss to Teleport': 1, 'Which Boss Challenge to Teleport': 1, 'Which Special Nightmare to Teleport': 1, 'Exit After Task': False}
+2026-10-15 00:28:31,246 DEBUG MainThread NightmareNestTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,249 DEBUG MainThread Config:reset_to_default self.config = {'_enabled': True, 'Which to Farm': ['Nightmare Purification', 'Tacet Discord Nest']}
+2026-10-15 00:28:31,249 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Which to Farm': ['Nightmare Purification', 'Tacet Discord Nest']}
+2026-10-15 00:28:31,249 DEBUG MainThread TacetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,251 DEBUG MainThread Config:reset_to_default self.config = {'Which Tacet Suppression to Farm': 1}
+2026-10-15 00:28:31,251 DEBUG MainThread Config:init self.config = {'Which Tacet Suppression to Farm': 1}
+2026-10-15 00:28:31,252 DEBUG MainThread ForgeryTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,256 DEBUG MainThread Config:reset_to_default self.config = {'Which Forgery Challenge to Farm': 1}
+2026-10-15 00:28:31,256 DEBUG MainThread Config:init self.config = {'Which Forgery Challenge to Farm': 1}
+2026-10-15 00:28:31,257 DEBUG MainThread SimulationTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,259 DEBUG MainThread Config:reset_to_default self.config = {'Material Selection': 'Shell Credit'}
+2026-10-15 00:28:31,259 DEBUG MainThread Config:init self.config = {'Material Selection': 'Shell Credit'}
+2026-10-15 00:28:31,263 DEBUG MainThread MultiAccountDailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,265 DEBUG MainThread Config:reset_to_default self.config = {'Exit After Task': False}
+2026-10-15 00:28:31,265 DEBUG MainThread Config:init self.config = {'Exit After Task': False}
+2026-10-15 00:28:31,265 DEBUG MainThread MergeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,268 DEBUG MainThread Config:reset_to_default self.config = {}
+2026-10-15 00:28:31,268 DEBUG MainThread Config:init self.config = {}
+2026-10-15 00:28:31,274 DEBUG MainThread EnhanceEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,276 DEBUG MainThread Config:reset_to_default self.config = {'必须有双爆': True, '双爆出现之前必须全有效词条': True, '双爆总计>=': 13.8, '首条双爆>=': 6.9, '有效词条>=': 3, '第一条必须为有效词条': True, '有效词条': ['暴击', '暴击伤害', '攻击百分比'], 'Pause after Success': True}
+2026-10-15 00:28:31,277 DEBUG MainThread Config:init self.config = {'必须有双爆': True, '双爆出现之前必须全有效词条': True, '双爆总计>=': 13.8, '首条双爆>=': 6.9, '有效词条>=': 3, '第一条必须为有效词条': True, '有效词条': ['暴击', '暴击伤害', '攻击百分比'], 'Pause after Success': True}
+2026-10-15 00:28:31,280 DEBUG MainThread ChangeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,283 DEBUG MainThread Config:reset_to_default self.config = {'目标属性': '攻击'}
+2026-10-15 00:28:31,283 DEBUG MainThread Config:init self.config = {'目标属性': '攻击'}
+2026-10-15 00:28:31,283 DEBUG MainThread GardenTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,287 DEBUG MainThread Config:reset_to_default self.config = {}
+2026-10-15 00:28:31,288 DEBUG MainThread Config:init self.config = {}
+2026-10-15 00:28:31,308 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-15 00:28:31,312 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-15 00:28:31,314 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-15 00:28:31,314 DEBUG MainThread Farm3CEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,317 DEBUG MainThread Config:reset_to_default self.config = {'Route File': 'routes/3c/local-route.json', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Combat Timeout': 180, 'Pickup Timeout': 20}
+2026-10-15 00:28:31,317 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-route.json', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Combat Timeout': 180, 'Pickup Timeout': 20}
+2026-10-15 00:28:31,317 DEBUG MainThread Record3CEchoRouteTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001D702A47FE0>
+2026-10-15 00:28:31,320 DEBUG MainThread Config:reset_to_default self.config = {'Route File': 'routes/3c/local-route.json', 'Route Name': 'Local 3C Route'}
+2026-10-15 00:28:31,320 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-route.json', 'Route Name': 'Local 3C Route'}
+2026-10-15 00:28:31,320 INFO MainThread task_manager:Found tasks: []
+2026-10-15 00:28:31,322 INFO MainThread task_manager:Built-in task file map: 18 files
+2026-10-15 00:28:31,323 INFO MainThread task_manager:Debug file watcher initialized, watching dirs ['E:\\Better_ww\\ok_tasks', 'E:\\Better_ww\\src\\task']
+2026-10-15 00:28:31,323 INFO MainThread ok:do_init, end
+2026-10-15 00:28:31,323 INFO MainThread ok:OK start id:2024623092368 pid:119816
+2026-10-15 00:28:31,413 INFO MainThread MainWindow:main window __init__
+2026-10-15 00:28:31,417 INFO MainThread MainWindow:Refresh primary button color: #0067c0
+2026-10-15 00:28:31,421 DEBUG MainThread Config:reset_to_default self.config = {'last_version': 'v0.0.0'}
+2026-10-15 00:28:31,422 DEBUG MainThread Config:init self.config = {'last_version': 'v0.0.0'}
+2026-10-15 00:28:31,728 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-15 00:28:31,736 DEBUG MainThread StartCard:basic_options.start/stop: F9
+2026-10-15 00:28:31,795 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:28:31,862 INFO DefaultOCRInit TaskExecutor:onnxocr init finished, result: use_npu=True, test_ocr=[[[[[17.0, 40.0], [326.0, 44.0], [325.0, 133.0], [16.0, 129.0]], ('okscript', 0.9991297721862793)]]], cost: 1.87s
+2026-10-15 00:28:31,865 INFO DefaultOCRInit TaskExecutor:ocr_lib init <onnxocr.onnx_paddleocr.ONNXPaddleOcr object at 0x000001D77EF229F0> onnxocr
+2026-10-15 00:28:31,866 INFO DefaultOCRInit TaskExecutor:default ocr init end, cost: 2.29s
+2026-10-15 00:28:31,867 INFO MainThread ok:translation installed for zh_CN
+2026-10-15 00:28:32,071 DEBUG TaskEnable MouseResetTask:schedule mouse reset
+2026-10-15 00:28:32,667 DEBUG MainThread MainWindow:add default onetime_tab len 13
+2026-10-15 00:28:32,857 DEBUG MainThread Config:reset_to_default self.config = {'target_task': '', 'target_images': [], 'target_function': ''}
+2026-10-15 00:28:32,858 DEBUG MainThread Config:init self.config = {'target_task': '', 'target_images': [], 'target_function': ''}
+2026-10-15 00:28:32,897 DEBUG DebugTab DebugTab:bind_hot_keys
+2026-10-15 00:28:32,916 DEBUG MainThread Config:reset_to_default self.config = {'code': ''}
+2026-10-15 00:28:32,916 DEBUG MainThread Config:init self.config = {'code': ''}
+2026-10-15 00:28:33,052 DEBUG MainThread Config:reset_to_default self.config = {'generate_label_enum': False, 'label_enum_relative_path': 'ok_tasks/LabelEnum.py'}
+2026-10-15 00:28:33,052 DEBUG MainThread Config:init self.config = {'generate_label_enum': False, 'label_enum_relative_path': 'ok_tasks/LabelEnum.py'}
+2026-10-15 00:28:33,091 INFO ScheduleRefresh schedule_index_sync:schedule index sync start: 13 onetime_tasks, root=\OK-WW
+2026-10-15 00:28:33,097 INFO ScheduleRefresh schedule_index_sync:schedule index sync skipped: cache file not found
+2026-10-15 00:28:33,142 INFO ScheduleRefresh Initializing Windows Task Scheduler COM service, root=\OK-WW
+2026-10-15 00:28:33,254 INFO ScheduleRefresh Windows Task Scheduler COM service initialized, root=\OK-WW
+2026-10-15 00:28:33,256 DEBUG ScheduleRefresh Failed to query schedule folder \OK-WW: (-2147352567, '发生意外。', (0, None, None, None, 0, -2147024894), None)
+2026-10-15 00:28:33,262 INFO ScheduleRefresh Saved 0 tasks to cache
+2026-10-15 00:28:33,832 INFO MainThread UpdateCard:using v0.0.0 for nonnumeric test version 'dev'
+2026-10-15 00:28:33,832 INFO MainThread UpdateCard:initialized current_version='v0.0.0', pyappify_module='E:\\Better_ww\\.venv\\Lib\\site-packages\\pyappify\\__init__.py', pyappify_app_version=None, test_mode=True
+2026-10-15 00:28:33,857 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-15 00:28:34,197 INFO MainThread MainWindow:main window __init__ done
+2026-10-15 00:28:34,197 DEBUG MainThread ok:dpi_scaling: 1.0
+2026-10-15 00:28:34,243 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1d7020298b0) at 0x000001D702FE5D00>>
+2026-10-15 00:28:34,254 INFO MainThread ok:pyappify no need to upgrade False 1.2.3 447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a ['https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip']
+2026-10-15 00:28:34,255 INFO MainThread MainWindow:Window has fully displayed
+2026-10-15 00:28:34,255 DEBUG MainThread DeviceManager:calling refresh
+2026-10-15 00:28:34,255 INFO MainThread MainWindow:MainWindow showEvent Kill Launcher After Start
+2026-10-15 00:28:34,256 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-15 00:28:34,257 INFO RefreshAdb DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,257 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-15 00:28:34,258 DEBUG RefreshAdb DeviceManager:set_preferred_device None -1
+2026-10-15 00:28:34,258 INFO RefreshAdb DeviceManager:first start use first or connected device {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,258 INFO RefreshAdb DeviceManager:preferred device did change pc
+2026-10-15 00:28:34,261 INFO MainThread MainWindow:update success, show copyright
+2026-10-15 00:28:34,262 INFO MainThread MainWindow:schedule pyappify update check in 10000ms
+2026-10-15 00:28:34,285 DEBUG RefreshAdb DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,288 DEBUG RefreshAdb DeviceManager:refresh {'pc': {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}}
+2026-10-15 00:28:34,296 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-15 00:28:34,300 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-15 00:28:34,329 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-15 00:28:34,330 DEBUG MainThread ok:show_main_window end
+2026-10-15 00:28:34,331 DEBUG MainThread ok:start app.exec()
+2026-10-15 00:28:34,331 INFO MainThread ok:app.exec()
+2026-10-15 00:28:34,332 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-15 00:28:34,332 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,332 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,333 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,333 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,333 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,334 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,334 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,334 INFO RefreshAdb update:use BitBlt_RenderFull capture render_full: True
+2026-10-15 00:28:34,334 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.bitblt.BitBltCaptureMethod'>
+2026-10-15 00:28:34,488 INFO MainThread ScheduleTaskTab:Loaded 0 tasks
+2026-10-15 00:28:34,526 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-15 00:28:34,526 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:28:34,529 DEBUG MainThread StartTab:device_index_changed 0
+2026-10-15 00:28:34,529 DEBUG MainThread DeviceManager:set_preferred_device None 0
+2026-10-15 00:28:34,529 DEBUG MainThread DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,532 DEBUG MainThread StartTab:capture_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,542 DEBUG MainThread StartTab:interaction_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': '', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-15 00:28:34,542 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-15 00:28:34,543 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-15 00:28:34,544 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-15 00:28:34,544 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,544 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,544 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,545 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,545 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,545 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,545 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,545 INFO RefreshAdb update:use BitBlt_RenderFull capture render_full: True
+2026-10-15 00:28:34,545 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.bitblt.BitBltCaptureMethod'>
+2026-10-15 00:28:34,547 DEBUG MainThread StartTab:device_index_changed done 0
+2026-10-15 00:28:34,547 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-15 00:28:34,547 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-15 00:28:34,572 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-15 00:28:34,573 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,575 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,575 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,575 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,575 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-15 00:28:34,575 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,575 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-15 00:28:34,576 INFO RefreshAdb update:use BitBlt_RenderFull capture render_full: True
+2026-10-15 00:28:34,576 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.bitblt.BitBltCaptureMethod'>
+2026-10-15 00:28:34,577 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-15 00:28:34,577 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:28:34,581 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:28:34,583 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:28:35,263 INFO global MainWindow:Window geometry updated in ok_config {'window_x': 680, 'window_y': 296, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-15 00:28:44,258 INFO pyappify-update UpdateCard:calling pyappify.get_version_list(release_only=True)
+2026-10-15 00:28:44,261 ERROR pyappify-update UpdateCard:pyappify.get_version_list(release_only=True) failed: PyAppify does not support checking for updates for pyappify_version: None Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 167, in run
+    result = operation()
+             ^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 142, in <lambda>
+    lambda: get_versions(release_only=release_only, exit_event=self.exit_event),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\pyappify\__init__.py", line 416, in get_version_list
+    raise RuntimeError(
+RuntimeError: PyAppify does not support checking for updates for pyappify_version: None
+
+2026-10-15 00:47:15,951 INFO update_window_size hwnd_window:do_update_window_size hwnd changed from 0 to 329690 top 329690 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-15 00:47:15,951 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:47:15,951 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:47:15,952 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:47:16,356 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:47:16,357 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:47:16,357 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:47:16,962 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:47:16,962 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:47:16,962 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:47:55,915 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:47:55,915 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:47:55,915 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:47:56,529 INFO update_window_size hwnd_window:hwnd changed,connected:0
+2026-10-15 00:47:56,532 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:0 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:47:56,600 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-15 00:47:56,602 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:48:16,915 INFO update_window_size hwnd_window:do_update_window_size hwnd changed from 0 to 329668 top 329668 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-15 00:48:16,916 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:48:16,916 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:48:16,916 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:48:43,738 INFO ok.task.task MouseResetTask:move mouse back (1333, 418)
+2026-10-15 00:48:44,812 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:48:44,813 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:48:44,813 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:49:12,389 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:49:12,389 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:49:12,390 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:49:34,381 INFO ok.task.task MouseResetTask:move mouse back (849, 1256)
+2026-10-15 00:49:34,417 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:49:34,417 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:49:34,417 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:49:49,244 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-15 00:49:49,244 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:49:49,244 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:49:50,855 INFO update_window_size hwnd_window:hwnd changed,connected:0
+2026-10-15 00:49:50,858 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:0 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-15 00:49:50,883 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-15 00:49:50,885 DEBUG MainThread StartTab:update_capture
+2026-10-15 00:50:00,006 INFO Dummy-2 ok:CTRL+C event dump threads
+2026-10-15 00:50:00,064 INFO Dummy-2 ok:quit app
+2026-10-15 00:50:00,064 DEBUG Dummy-2 handler:ExitEvent set event empty queues (<queue.Queue object at 0x000001D77E331BB0>,) to_stops: (<ok.notification.pipeline.NotificationPipeline object at 0x000001D73D435A00>, <ok.util.handler.Handler object at 0x000001D702F72030>, <ok.util.handler.Handler object at 0x000001D77F42C230>, <ok.util.handler.Handler object at 0x000001D706C3F6B0>, <ok.util.handler.Handler object at 0x000001D702F45CD0>, <ok.util.handler.Handler object at 0x000001D706C758E0>, <ok.util.handler.Handler object at 0x000001D77E57C8F0>)
+2026-10-15 00:50:00,064 INFO Dummy-2 handler:handler stopping StartCard
+2026-10-15 00:50:00,064 DEBUG screenshot screenshot:Task queue get is None quit
+2026-10-15 00:50:00,064 INFO Dummy-2 handler:handler stopping global
+2026-10-15 00:50:00,065 DEBUG StartCard handler:handler StartCard processing loop finished due to exit event.
+2026-10-15 00:50:00,065 DEBUG ok.task.task handler:handler ok.task.task processing loop finished due to exit event.
+2026-10-15 00:50:00,065 INFO Dummy-2 handler:handler stopping DebugTab
+2026-10-15 00:50:00,065 DEBUG global handler:handler global processing loop finished due to exit event.
+2026-10-15 00:50:00,065 INFO Dummy-2 handler:handler stopping ok.core.start_controller
+2026-10-15 00:50:00,065 DEBUG DebugTab handler:handler DebugTab processing loop finished due to exit event.
+2026-10-15 00:50:00,065 INFO Dummy-2 handler:handler stopping ok.task.task
+2026-10-15 00:50:00,066 DEBUG ok.core.start_controller handler:handler ok.core.start_controller processing loop finished due to exit event.
+2026-10-15 00:50:00,066 INFO Dummy-2 handler:handler stopping RefreshAdb
+2026-10-15 00:50:00,066 DEBUG RefreshAdb handler:handler RefreshAdb processing loop finished due to exit event.
