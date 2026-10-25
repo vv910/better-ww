@@ -314,5 +314,17 @@ class Test3CRouteImages(TaskTestCase):
             self.assertTrue(path.with_suffix('.view-1.png').exists())
 
 
+    def test_actual_failed_marker_panel_is_not_map_ui_or_a_registered_route_view(self):
+        self.set_image('tests/images/3c-map-marker-popup.png')
+        self.addCleanup(setattr, self.task, '_last_map_ui_frame', None)
+        with patch.object(self.task, 'sleep'):
+            self.assertIsNone(self.task.wait_route_map_ui(time_out=.2))
+        frame = self.task.frame
+        reference = cv2.imread('tests/images/3c-terrain-map.png')
+        localizer = MapLocalizer(reference, (717, 173, 2227, 1296))
+        self.assertIsNone(localizer.register_map_view(frame, (1322, 691), (717, 173, 2227, 1296)),
+                          localizer.last_diagnostic)
+
+
 if __name__ == '__main__':
     unittest.main()

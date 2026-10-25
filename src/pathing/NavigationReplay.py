@@ -183,10 +183,10 @@ class NavigationReplay:
                      capture_size=capture_size or self.capture_size)
 
     def record_map_ui(self, frame, stage, diagnostic=None, timestamp=None):
-        """Retain a failed map check's actual full frame within the same ring budget.
+        """Retain a map observation's actual full frame within the same ring budget.
 
-        A map UI observation is never a minimap localization input. Only error
-        paths call this, after movement has stopped.
+        A map UI observation is never a minimap localization input. Map checks
+        and bookmark-search observations call this while route movement is stopped.
         """
         frame_id = self._frame(frame)
         if frame_id is not None:

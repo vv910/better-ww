@@ -1,6 +1,6 @@
 import math
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import cv2
 import numpy as np
@@ -23,6 +23,57 @@ class MapPosition:
     @property
     def xy(self):
         return self.x, self.y
+
+
+@dataclass(frozen=True)
+class MapViewRegistration:
+    """Strong map-view geometry; an off-screen projection is never a click target.
+
+    Scale and rotation describe screen-to-reference coordinates. The matrices
+    own immutable byte-backed copies, independent of OpenCV's working arrays.
+    """
+
+    screen_to_reference: np.ndarray = field(repr=False, compare=False)
+    reference_to_screen: np.ndarray = field(repr=False, compare=False)
+    xy: tuple[float, float]
+    confidence: float
+    inliers: int
+    screen_region: tuple[int, int, int, int]
+    observed_at: float
+    scale: float
+    rotation: float
+    inside_view: bool
+
+    def __post_init__(self):
+        for name in ('screen_to_reference', 'reference_to_screen'):
+            matrix = np.asarray(getattr(self, name), dtype=np.float64)
+            if matrix.shape != (2, 3) or not np.isfinite(matrix).all():
+                raise ValueError('Map registration transforms must be finite 2x3 matrices')
+            immutable = np.frombuffer(matrix.tobytes(), dtype=np.float64).reshape((2, 3))
+            object.__setattr__(self, name, immutable)
+        object.__setattr__(self, 'xy', tuple(map(float, self.xy)))
+        object.__setattr__(self, 'screen_region', tuple(self.screen_region))
+
+    @property
+    def x(self):
+        return self.xy[0]
+
+    @property
+    def y(self):
+        return self.xy[1]
+
+
+@dataclass(frozen=True)
+class _MapViewFeatures:
+    """One observation shared by references, never a cross-frame feature cache."""
+
+    frame: np.ndarray = field(repr=False, compare=False)
+    shape: tuple[int, ...]
+    screen_region: tuple[int, int, int, int]
+    observed_at: float
+    keypoints: tuple = field(repr=False, compare=False)
+    descriptors: np.ndarray | None = field(repr=False, compare=False)
+    pixels: np.ndarray = field(repr=False, compare=False)
 
 
 class MapLocalizer:
@@ -320,12 +371,70 @@ class MapLocalizer:
         self._candidate_transform = transform
         return MapPosition(float(x), float(y), confidence, inliers)
 
-    def project_map_point(self, frame, point, screen_region):
-        """Project a recorded beacon into the currently opened map, without a world atlas."""
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        self.last_diagnostic = {'mode': 'map_projection', 'attempts': []}
-        left, top, right, bottom = screen_region
-        keypoints, descriptors = self._region_features(gray, screen_region, source_image=frame)
+    @staticmethod
+    def _map_view_region(frame, screen_region):
+        if (not isinstance(frame, np.ndarray) or frame.ndim not in (2, 3)
+                or (frame.ndim == 3 and frame.shape[2] not in (3, 4))):
+            raise ValueError('Map view frame must be a grayscale or BGR image')
+        try:
+            region = tuple(screen_region)
+        except TypeError:
+            raise ValueError('Map feature region must contain four integer pixel coordinates') from None
+        if (len(region) != 4 or any(not isinstance(value, (int, np.integer))
+                                   or isinstance(value, (bool, np.bool_)) for value in region)):
+            raise ValueError('Map feature region must contain four integer pixel coordinates')
+        left, top, right, bottom = map(int, region)
+        height, width = frame.shape[:2]
+        if not (0 <= left < right <= width and 0 <= top < bottom <= height):
+            raise ValueError('Map feature region must be a non-empty rectangle inside the image')
+        return left, top, right, bottom
+
+    def prepare_map_features(self, frame, screen_region):
+        """Extract one fresh map observation for matching against several references.
+
+        Keep the actual frame alive, rather than its recyclable object id. A
+        region snapshot also detects capture buffers overwritten in place.
+        """
+        observed_at = time.monotonic()
+        region = self._map_view_region(frame, screen_region)
+        left, top, right, bottom = region
+        pixels = frame[top:bottom, left:right].copy()
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if frame.ndim == 3 else frame
+        keypoints, descriptors = self._region_features(gray, region, source_image=frame)
+        if not np.array_equal(pixels, frame[top:bottom, left:right]):
+            raise ValueError('Map frame changed while extracting features')
+        pixels.setflags(write=False)
+        if descriptors is not None:
+            descriptors.setflags(write=False)
+        return _MapViewFeatures(frame, tuple(frame.shape), region, observed_at,
+                                tuple(keypoints), descriptors, pixels)
+
+    def register_map_view(self, frame, point, screen_region, features=None):
+        """Retain verified geometry even when the recorded beacon is off screen.
+
+        Optional features belong to this exact frame and region. They may be
+        reused across references during one observation, never across captures.
+        """
+        region = self._map_view_region(frame, screen_region)
+        if features is None:
+            features = self.prepare_map_features(frame, region)
+        left, top, right, bottom = region
+        if (not isinstance(features, _MapViewFeatures) or features.frame is not frame
+                or features.shape != tuple(frame.shape) or features.screen_region != region
+                or features.pixels.dtype != frame.dtype):
+            raise ValueError('Map features must belong to the same frame, shape and region')
+        if not np.array_equal(features.pixels, frame[top:bottom, left:right]):
+            raise ValueError('Map frame changed after extracting features')
+        self.last_diagnostic = {'mode': 'map_registration', 'attempts': [],
+                                'screen_region': list(region), 'map_features': len(self.locations),
+                                'screen_features': len(features.keypoints), 'observed_at': features.observed_at}
+        try:
+            point_x, point_y = map(float, point)
+        except (TypeError, ValueError):
+            return self._reject('invalid_map_point')
+        if not math.isfinite(point_x) or not math.isfinite(point_y):
+            return self._reject('invalid_map_point')
+        keypoints, descriptors = features.keypoints, features.descriptors
         if descriptors is None:
             return self._reject('too_few_map_features')
         matched = self._transform(keypoints, descriptors, np.arange(len(self.locations)),
@@ -335,11 +444,29 @@ class MapLocalizer:
         transform, confidence, inliers = matched
         if inliers < 12 or confidence < 0.6:
             return self._reject('weak_map_projection')
-        x, y = cv2.invertAffineTransform(transform) @ np.array([*point, 1])
-        if not (left <= x < right and top <= y < bottom):
+        inverse = cv2.invertAffineTransform(transform)
+        x, y = inverse @ np.array([point_x, point_y, 1.0])
+        if not math.isfinite(x) or not math.isfinite(y):
+            return self._reject('invalid_map_projection')
+        inside_view = left <= x < right and top <= y < bottom
+        scale = math.hypot(transform[0, 0], transform[1, 0])
+        rotation = math.degrees(math.atan2(transform[1, 0], transform[0, 0]))
+        self.last_diagnostic.update(status='matched', reason='matched', position=[float(x), float(y)],
+                                    inside_view=bool(inside_view), inliers=inliers,
+                                    confidence=round(confidence, 3), scale=round(scale, 3),
+                                    rotation=round(rotation, 2))
+        return MapViewRegistration(transform, inverse, (float(x), float(y)), confidence, inliers,
+                                   region, features.observed_at, scale, rotation, bool(inside_view))
+
+    def project_map_point(self, frame, point, screen_region):
+        """Project only visible beacons; preserve the legacy out-of-view rejection."""
+        registered = self.register_map_view(frame, point, screen_region)
+        self.last_diagnostic['mode'] = 'map_projection'
+        if registered is None:
+            return None
+        if not registered.inside_view:
             return self._reject('projected_beacon_outside_view')
-        self.last_diagnostic.update(status='matched', reason='matched')
-        return MapPosition(float(x), float(y), confidence, inliers)
+        return MapPosition(registered.x, registered.y, registered.confidence, registered.inliers)
 
     def locate_map_player(self, frame, player_xy, screen_region):
         """Map a detected player marker from the open map view to recorded coords."""

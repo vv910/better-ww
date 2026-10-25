@@ -2,6 +2,7 @@
 
 import math
 import time
+from copy import deepcopy
 
 import cv2
 import numpy as np
@@ -9,6 +10,7 @@ from ok import Box
 
 from src.pathing.EchoRoute import read_map_image
 from src.pathing.MapLocalizer import MapLocalizer
+from src.pathing.RouteMapDrag import drag_route_map
 
 
 _MAP_STABLE_TIMEOUT = 3.0
@@ -137,6 +139,11 @@ class RouteMapNavigator:
     def __init__(self, task, route):
         self.task = task
         self.references = []
+        self.reference_names = []
+        self.last_diagnostic = {}
+        self.last_frame = None
+        self._history = []
+        self._popup_recoveries = 0
         seen = set()
 
         def add_reference(image_path, region, point):
@@ -145,6 +152,7 @@ class RouteMapNavigator:
                 return
             seen.add(key)
             self.references.append((MapLocalizer(read_map_image(image_path), region), point))
+            self.reference_names.append(str(image_path))
 
         if route.teleport.waypoint is not None:
             add_reference(route.map_image, route.map_region, route.teleport.waypoint)
@@ -152,12 +160,179 @@ class RouteMapNavigator:
             add_reference(view.image, view.region, view.point)
 
     def project(self):
-        # Fine view first; coarse views can still locate a beacon after opening a distant map.
-        for localizer, point in self.references:
-            projected = localizer.project_map_point(self.task.frame, (point.x, point.y), map_region(self.task.frame))
+        """Recognize a view even when the target is offscreen, as in BetterGI TpTask.
+
+        Share only this observation's SIFT extraction. A second matching reference
+        must agree with the first; no prediction becomes permission to click.
+        """
+        frame = self.task.frame
+        self.last_frame = frame.copy()
+        region = map_region(frame)
+        features = self.references[0][0].prepare_map_features(frame, region)
+        accepted = []
+        attempts = []
+        for index, (localizer, point) in enumerate(self.references):
+            projected = localizer.register_map_view(frame, (point.x, point.y), region, features=features)
+            attempt = deepcopy(localizer.last_diagnostic)
+            attempt['reference'] = self.reference_names[index]
+            attempts.append(attempt)
             if projected is not None:
-                return projected
-        return None
+                if accepted and math.dist(accepted[0].xy, projected.xy) > max(12, map_point_tolerance(frame) * 2):
+                    self._trace('registration', reason='reference_disagreement', attempts=attempts)
+                    return None
+                accepted.append(projected)
+                if len(accepted) >= 2:
+                    break
+        result = max(accepted, key=lambda value: value.inliers * value.confidence, default=None)
+        self._trace('registration', reason='matched' if result else 'registration_failed', attempts=attempts,
+                    target=None if result is None else list(result.xy),
+                    scale=None if result is None else result.scale)
+        return result
+
+    def _trace(self, stage, **details):
+        entry = {'stage': stage, **details}
+        self._history = (getattr(self, '_history', []) + [entry])[-48:]
+        self.last_diagnostic = {**entry, 'history': deepcopy(self._history)}
+        frame = getattr(self.task, '_last_map_ui_frame', None)
+        if not isinstance(frame, np.ndarray):
+            storage = getattr(getattr(self.task, '_executor', None), '__dict__', {})
+            frame = storage.get('_frame', storage.get('frame'))
+        if not isinstance(frame, np.ndarray):
+            frame = getattr(self.task, '__dict__', {}).get('frame')
+        if not isinstance(frame, np.ndarray):
+            frame = getattr(self, 'last_frame', None)
+        if isinstance(frame, np.ndarray):
+            self.last_frame = frame.copy()
+            record = getattr(self.task, '_record_navigation', None)
+            if callable(record):
+                record('record_map_ui', frame, 'bookmark:' + stage, diagnostic=entry)
+        self.task.log_info(f'3C map search: {entry}')
+
+    def _in_budget(self, deadline):
+        if time.monotonic() < deadline:
+            return True
+        self._trace('stopped', reason='budget_exhausted')
+        return False
+
+    def _ready(self, stage, deadline):
+        """Restore a known map UI once; a popup is never terrain to search over."""
+        if not self._in_budget(deadline):
+            return False
+        button = self.task.wait_route_map_ui(time_out=min(.8, max(0, deadline - time.monotonic())))
+        if not button:
+            self._trace('map-ui', reason='map_controls_not_visible', operation=stage,
+                        diagnostic=deepcopy(getattr(self.task, '_last_map_ui_diagnostic', {})))
+            if getattr(self, '_popup_recoveries', 0) >= 1 or not self._in_budget(deadline):
+                return False
+            self._popup_recoveries = getattr(self, '_popup_recoveries', 0) + 1
+            self.task.send_key('esc', after_sleep=.2)
+            button = self.task.wait_route_map_ui(time_out=min(1.5, max(0, deadline - time.monotonic())))
+            if not button:
+                self._trace('stopped', reason='map_ui_not_recovered', operation=stage)
+                return False
+            self._trace('map-ui', reason='map_controls_recovered', operation=stage)
+        if not self._in_budget(deadline):
+            return False
+        if not self._wait_for_map_stable(deadline):
+            self._stability_failure(stage)
+            return False
+        return self._in_budget(deadline)
+
+    def _safe_region(self):
+        left, top, right, bottom = map_region(self.task.frame)
+        margin = max(12, self.task.frame.shape[0] * .025)
+        return left + margin, top + margin, right - margin, bottom - margin
+
+    def _safe_target(self, projected):
+        left, top, right, bottom = self._safe_region()
+        return left <= projected.x < right and top <= projected.y < bottom
+
+    def _measure_change(self, before, deadline):
+        """Measure actual adjacent-view geometry, never infer it from wheel counts."""
+        if not self._in_budget(deadline):
+            return None
+        region = map_region(before)
+        point = ((region[0] + region[2]) / 2, (region[1] + region[3]) / 2)
+        try:
+            meter = MapLocalizer(before, region)
+            changed = meter.register_map_view(self.task.frame, point, map_region(self.task.frame))
+        except ValueError:
+            changed = None
+        if not self._in_budget(deadline):
+            return None
+        if changed is None:
+            self._trace('stopped', reason='unverified_view_change')
+        return changed
+
+    def _zoom(self, amount, deadline, target=None):
+        if not self._in_budget(deadline):
+            return None, 'stopped'
+        before = self.task.frame.copy()
+        region = map_region(before)
+        x, y = target.xy if target is not None else ((region[0] + region[2]) / 2,
+                                                     (region[1] + region[3]) / 2)
+        self._trace('zoom', wheel_notches=amount)
+        if not self._in_budget(deadline):
+            return None, 'stopped'
+        self.task.scroll(round(x), round(y), amount)
+        self.task.sleep(.25)
+        if not self._ready('zoom-view', deadline):
+            return None, 'stopped'
+        signature_before, signature_after = map_signature(before), map_signature(self.task.frame)
+        if (signature_before is not None and signature_after is not None
+                and same_map_signature(signature_before, signature_after)):
+            self._trace('zoom-result', reason='zoom_no_progress')
+            return None, 'no_progress'
+        change = self._measure_change(before, deadline)
+        if change is None:
+            return None, 'stopped'
+        scale = change.scale
+        if abs(scale - 1) < .005:
+            self._trace('zoom-result', reason='zoom_no_progress', observed_scale=scale)
+            return None, 'no_progress'
+        if (amount < 0 and scale <= 1) or (amount > 0 and scale >= 1):
+            self._trace('stopped', reason='unexpected_zoom_direction', observed_scale=scale)
+            return None, 'stopped'
+        self._trace('zoom-result', reason='zoom_verified', observed_scale=scale)
+        result = self.project()
+        if self.last_diagnostic.get('reason') == 'reference_disagreement':
+            return None, 'stopped'
+        return (result, 'changed') if self._in_budget(deadline) else (None, 'stopped')
+
+    def _recenter(self, projected, deadline):
+        """Move toward a recognized target, then measure the new view again."""
+        if not self._in_budget(deadline):
+            return None
+        left, top, right, bottom = self._safe_region()
+        center = np.array([(left + right) / 2, (top + bottom) / 2])
+        delta = center - np.array(projected.xy)
+        limit = min(1, (right - left) * .3 / max(abs(delta[0]), 1),
+                    (bottom - top) * .3 / max(abs(delta[1]), 1))
+        delta *= limit
+        start, end = tuple(np.rint(center).astype(int)), tuple(np.rint(center + delta).astype(int))
+        self._trace('directed-drag', target=list(projected.xy), delta=delta.tolist())
+        if not self._in_budget(deadline):
+            return None
+        if deadline - time.monotonic() < .3:
+            self._trace('stopped', reason='insufficient_drag_budget')
+            return None
+        drag_route_map(self.task, start, end, duration=.3)
+        self.task.sleep(.2)
+        if not self._ready('map-drag', deadline):
+            return None
+        result = self.project()
+        if not self._in_budget(deadline):
+            return None
+        if result is None:
+            self._trace('stopped', reason='registration_lost_after_drag')
+            return None
+        movement = np.array(result.xy) - np.array(projected.xy)
+        if (np.dot(movement, delta) <= 0 or np.linalg.norm(movement) < 2
+                or np.linalg.norm(np.array(result.xy) - center) >= np.linalg.norm(np.array(projected.xy) - center) - 2):
+            self._trace('stopped', reason='drag_no_progress', observed_delta=movement.tolist())
+            return None
+        self._trace('drag-result', reason='drag_verified', observed_delta=movement.tolist())
+        return result
 
     _map_signature = staticmethod(map_signature)
     _same_map_signature = staticmethod(same_map_signature)
@@ -172,6 +347,7 @@ class RouteMapNavigator:
         log_warning = getattr(self.task, 'log_warning', None)
         if callable(log_warning):
             log_warning(f'Map view did not stabilize during {stage}; stopping beacon search')
+        self._trace('stopped', reason='map_view_unstable', operation=stage)
 
     def _confirm_beacon(self, initial_projection, initial_beacon, deadline):
         """Reproject and re-detect the same beacon on two fresh settled frames."""
@@ -179,14 +355,17 @@ class RouteMapNavigator:
         previous_projection = initial_projection
         previous_beacon = initial_beacon
         for _ in range(2):
-            if time.monotonic() >= deadline or not self._wait_for_map_stable(deadline):
+            if time.monotonic() >= deadline or not self._ready('beacon-confirmation', deadline):
                 self._stability_failure('beacon-confirmation')
                 return None
             projection = self.project()
-            if projection is None or math.dist(projection.xy, previous_projection.xy) > tolerance:
+            if (not self._in_budget(deadline) or projection is None or not self._safe_target(projection)
+                    or math.dist(projection.xy, previous_projection.xy) > tolerance):
                 self.task.screenshot('3c-map-search-beacon-projection-drift', frame=self.task.frame)
                 return None
             beacon = self.beacon_at(projection)
+            if not self._in_budget(deadline):
+                return None
             if (beacon is None
                     or math.dist(beacon.center(), previous_beacon.center()) > tolerance):
                 self.task.screenshot('3c-map-search-beacon-drift', frame=self.task.frame)
@@ -203,57 +382,62 @@ class RouteMapNavigator:
         matches = self.task.find_feature(['map_way_point', 'map_way_point_big'],
                                           box=Box(x1, y1, x2 - x1, y2 - y1), threshold=.65)
         nearby = [box for box in matches if math.dist(box.center(), projected.xy) <= radius]
-        return min(nearby, key=lambda box: math.dist(box.center(), projected.xy), default=None)
+        # The small and large templates may both detect the same icon.
+        unique = []
+        for box in sorted(nearby, key=lambda value: math.dist(value.center(), projected.xy)):
+            if all(math.dist(box.center(), other.center()) > max(4, height * .003) for other in unique):
+                unique.append(box)
+        if len(unique) > 1:
+            self._trace('beacon', reason='ambiguous_beacon_candidates', count=len(unique))
+            return None
+        return next(iter(unique), None)
 
     def find(self, search=False):
         deadline = time.monotonic() + 40
-        if not self._wait_for_map_stable(deadline):
-            self._stability_failure('initial-view')
+        self._history = []
+        self._popup_recoveries = 0
+        if not self._ready('initial-view', deadline):
             return None
         projected = self.project()
+        if not self._in_budget(deadline):
+            return None
+        if getattr(self, 'last_diagnostic', {}).get('reason') == 'reference_disagreement':
+            return None
         if projected is None and search:
-            # Runtime zoom changes are deliberate; the recorded route image remains untouched.
-            left, top, right, bottom = map_region(self.task.frame)
-            self.task.scroll(round((left + right) / 2), round((top + bottom) / 2), -16)
-            self.task.sleep(.5)
-            if not self._wait_for_map_stable(deadline):
-                self._stability_failure('overview-zoom')
-                return None
-            previous = (0, 0)
-            for index, cell in enumerate(spiral_steps()):
-                if time.monotonic() >= deadline:
-                    break
-                if index:
-                    dx, dy = cell[0] - previous[0], cell[1] - previous[1]
-                    cx, cy = (left + right) / 2, (top + bottom) / 2
-                    try:
-                        self.task.swipe(round(cx), round(cy), round(cx - dx * (right - left) * .42),
-                                        round(cy - dy * (bottom - top) * .42), duration=.3, after_sleep=.25)
-                    finally:
-                        self.task.mouse_up()
-                    if not self._wait_for_map_stable(deadline):
-                        self._stability_failure('map-drag')
+            # BetterGI observes every zoom step and stops on lack of progress.
+            # Without an atlas, an unregistered view cannot justify a drag direction.
+            for direction, count in ((-2, 6), (2, 12)):
+                stalled = 0
+                for _ in range(count):
+                    projected, state = self._zoom(direction, deadline)
+                    if state == 'stopped':
                         return None
-                previous = cell
-                self.task.info_set('Map Search Views', index + 1)
-                projected = self.project()
+                    if projected is not None:
+                        break
+                    stalled = stalled + 1 if state == 'no_progress' else 0
+                    if stalled >= 2:
+                        break
                 if projected is not None:
                     break
         if projected is None:
+            self._trace('stopped', reason='registration_failed')
             return None
-        for _ in range(7):
+        for _ in range(10):
+            if not self._in_budget(deadline):
+                return None
+            if not self._safe_target(projected):
+                projected = self._recenter(projected, deadline)
+                if projected is None:
+                    return None
+                continue
             beacon = self.beacon_at(projected)
+            if not self._in_budget(deadline):
+                return None
             if beacon is not None:
                 return self._confirm_beacon(projected, beacon, deadline)
-            if time.monotonic() >= deadline:
-                break
-            # Zoom at the verified target, then re-align; never assume the cursor is the zoom centre.
-            self.task.scroll(round(projected.x), round(projected.y), 2)
-            self.task.sleep(.35)
-            if not self._wait_for_map_stable(deadline):
-                self._stability_failure('beacon-zoom')
+            projected, state = self._zoom(2, deadline, target=projected)
+            if state != 'changed' or projected is None:
+                self._trace('stopped', reason='beacon_not_visible')
                 return None
-            projected = self.project()
-            if projected is None:
-                break
+        self._trace('stopped', reason='operation_limit')
         return None

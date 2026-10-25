@@ -111,6 +111,25 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 真实按钮素材的 1080p、1440p、2160p 与 JPEG 变体通过；普通世界、战斗、缺少按钮、交换加减按钮及地图地形负例会被拒绝。失败检查现在明确保存实际检测画面和控件得分，防止入口失败发生在首次小地图采样前时只留下空事件包。这是根据测试机材料完成的离线修复，仍需更新后重新实测地图入口。
 
+## 2026-10-25 按 BetterGI 视图闭环改造信标搜索
+
+这轮先核对 BetterGI 固定提交 `887548a11ef183d8cd92c6ddf596776cebffb436` 的 [MoveMapToCore](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L1328)、[AdjustMapZoomLevel](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L1687) 和 `MouseMoveMap`。其流程由当前视图的位置、缩放和目标是否可点击驱动：操作后重新识别，测量实际进展，有限处理面板和失败。鸣潮仍使用自己的录制素材、地图控件与输入后端，未照搬原神的标准地图坐标、缩放常数或预测中心盲拖。
+
+本次用户上传的是源码 `ee1b986` 下的两条路线失败记录。地图菜单已完成，随后各搜索约 40 秒；两张失败图都显示“自定义标记”面板和几乎无地形的深色区域。14 张参考对两张失败图均无法得到强变换，仅有 2–9 个匹配；对正常录制图全部能强配准，内点为 1664–6384。录制概览的缩放真实有效，最粗图相对主图尺度约为 0.714、0.733。现有证据能确认搜索未处理异常界面，不能确定第几次操作打开了面板，也不能证明首次搜索时的视图内容。
+
+| BetterGI 做法 | 本项目迁移 |
+| --- | --- |
+| 识别地图视图，区分目标在外与视图未知 | `MapViewRegistration` 保留强配准矩阵及出屏投影；旧 `project_map_point()` 仍只返回屏内目标。出屏坐标只指导移动，不能直接点击。 |
+| 根据目标和视野定向拖图，拖后重新识别 | 仅对已强配准的目标执行有界拖动；重新配准后须观察到目标同向移动并更接近安全区域，否则停止。 |
+| 分批滚轮后测量缩放，连续无进展停止 | 每次最多两格滚轮，以相邻视图的强配准比例测量实际缩放；反向、无法验证的视图变化或连续无进展时停止该分支。无配准时不推定拖图方向。 |
+| 操作前后确认地图与面板状态 | 搜索每阶段检查普通地图控件，界面消失最多尝试一次 Esc 恢复；未恢复不再滚轮或拖动。稳定视图、真实信标和后续可传送面板确认继续保留。 |
+
+本地 `ok-script 2.0.8` 的 `PostMessageInteraction.swipe()` 另有可直接核实的输入问题：传入 300ms 时只生成三个移动消息、约 30ms，且不包含终点；其 `mouse_up()` 使用的坐标字段未随拖动更新。地图专用 `RouteMapDrag` 以秒调度连续带左键移动，在准确坐标释放，并在所有异常与取消路径清理。按住鼠标期间使用保留取消检查的 executor 等待，暂停后台视觉检查，避免在短手势中插入月卡或战斗识别；退出时恢复原设置。这些问题已修正，但不据此认定某一次手势就是本次弹窗的唯一原因。
+
+同一地图观察只提取一次 SIFT，多个参考共用该帧、区域与像素快照，不跨帧缓存。实际失败图七参考扫描由约 3.09/2.71 秒降到 0.54/0.57 秒；新生产路径在正常录图上用两个一致参考定位到 `(1486.0005, 710.0006)`，6384 内点，约 1.22 秒，失败图七参考约 0.55 秒并正确拒绝。搜索阶段、每个参考的匹配原因、操作和实际变化进入日志及 `map_ui` 事件；全图仍受既有图像环预算和淘汰限制，不代表每一步画面都永久保留。
+
+回归包含用户真实“自定义标记”失败图、新旧地图 UI、强配准出屏、共享特征、多参考冲突、缩放及拖动无进展、慢识别和记录耗尽预算、按键取消及准确松键。仍需在测试机验证完整的地图入口与路线；没有完整底图时，有限缩放后仍无法配准的未知区域会停止，不能保证任意地图位置都能自动找到信标。
+
 ## 后续结构性改造
 
 1. **标准比例下的全局重定位**：在本轮受限恢复基础上，使用标定底图与独立负例集继续研究无需大地图提示的定位，不能直接扩大全局搜索范围或放宽阈值。
@@ -122,6 +141,8 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 直接对大地图图片执行 A* 需要可信的通行区域、层间连接和高度信息；当前并没有这些输入。仅凭平面地图颜色推断可通行性，无法可靠处理鸣潮中的高低差、建筑和悬崖。
 
 ## 复核命令
+
+2026-10-25 信标视图闭环改造最终回归：276 项逻辑测试、18 项截图测试通过，文档严格构建通过。覆盖真实弹窗失败图、强配准出屏、同帧特征复用、输入实际时长与释放坐标、操作后进展、参考冲突、记录耗时越过截止时间及取消。未运行测试机内的完整路线验收。
 
 2026-10-25 定向回归：147 项逻辑测试与 17 项截图测试通过，覆盖新旧地图入口、取消、超时、真实控件、新失败画面事件及既有移动/回放逻辑；文档严格构建通过。新增截图用例经实际任务和 FeatureSet 确认旧图钉缺失时可以识别新控件。未运行游戏内整条路线验收。
 
@@ -135,6 +156,7 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMapHintSearch tests.TestTerrainSearch tests.TestMinimapTracker tests.TestTerrainMatcher tests.TestMapFeatureRegions tests.TestEchoRoute tests.Test3CRouteRuntime tests.TestRouteMapNavigation tests.TestFarm3CEchoTask
 .\.venv\Scripts\python.exe -u run_test.py tests.TestLocalizationFreshness tests.TestContinuousTerrainTracking tests.TestTrackingVerifier tests.TestRouteCapture tests.TestRouteSteering tests.TestNavigationReplay tests.TestNavigationReplayTask
 .\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapUI tests.Test3CMapEntry
+.\.venv\Scripts\python.exe -u run_test.py tests.TestMapViewRegistration tests.TestRouteMapDrag tests.TestClosedMapSearch tests.TestRouteMapNavigation
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -m mkdocs build --strict
 ```

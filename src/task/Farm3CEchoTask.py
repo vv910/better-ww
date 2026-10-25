@@ -213,7 +213,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             fingerprints = {}
             for relative in ('task/Farm3CEchoTask.py', 'pathing/MapLocalizer.py',
                              'pathing/TrackingVerifier.py', 'pathing/RouteApproach.py',
-                             'pathing/RouteMapUI.py'):
+                             'pathing/RouteMapUI.py', 'pathing/RouteMapNavigation.py',
+                             'pathing/RouteMapDrag.py'):
                 source = source_root / relative
                 if source.is_file():
                     try:
@@ -354,9 +355,18 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 self.save_map_ui_diagnostic('map-context', '3c-map-context-not-closed')
                 raise RuntimeError('Map selector did not return to map / 地图选择未完成，停止传送')
         if route.teleport.views:
-            beacon = RouteMapNavigator(self, route).find(search=True)
+            self.info_set('3C Stage', 'Searching Route Beacon / 搜索路线入口信标')
+            navigator = RouteMapNavigator(self, route)
+            beacon = navigator.find(search=True)
             if beacon is None:
-                self.screenshot('3c-teleport-bookmark-mismatch')
+                self.log_warning(f'3C bookmark search failed: {navigator.last_diagnostic}')
+                frame = navigator.last_frame
+                if isinstance(frame, np.ndarray):
+                    self._record_navigation('record_map_ui', frame, 'bookmark-search-failed',
+                                            diagnostic=navigator.last_diagnostic)
+                    self.screenshot('3c-teleport-bookmark-mismatch', frame=frame)
+                else:
+                    self.screenshot('3c-teleport-bookmark-mismatch')
                 raise RuntimeError('Cannot find route map bookmark / 未找到路线地图书签，请检查所在区域、楼层或重新录制概览')
         else:
             beacon = self.find_legacy_route_beacon(route)
