@@ -42,6 +42,7 @@ class TestRouteBookmarks(unittest.TestCase):
         self.assertEqual('Boss Anchor', route.teleport.anchor)
         self.assertEqual(50, route.teleport.waypoint.x)
         self.assertEqual((), route.teleport.views)
+        self.assertIsNone(route.teleport.location)
         self.assertEqual('', route.map_layer)
 
     def test_views_can_replace_anchor_and_support_unicode_relative_paths(self):
@@ -139,6 +140,24 @@ class TestRouteBookmarks(unittest.TestCase):
             with self.subTest(value=value):
                 self.data['map_context'] = value
                 with self.assertRaises(ValueError):
+                    self.load()
+
+    def test_beacon_location_is_preserved_separately_from_the_menu_path(self):
+        self.data['teleport'] = {'anchor': 'Boss Anchor', 'x': 50, 'y': 50,
+                                 'location': '瑝珑－梦枢天罗－相心域'}
+        self.data['map_context'] = {'selection_path': ['瑝珑', '梦州', '梦枢天罗']}
+        route = self.load()
+        self.assertEqual(('瑝珑', '梦枢天罗', '相心域'), route.teleport.location.parts)
+        self.assertEqual('瑝珑－梦枢天罗－相心域', route.teleport.location.raw)
+        self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), route.map_context.selection_path)
+        self.assertEqual((50, 50), (route.start.x, route.start.y))
+
+    def test_invalid_beacon_locations_fail_during_preflight(self):
+        for location in (None, 123, ['瑝珑', '梦枢天罗', '相心域'],
+                         '瑝珑-相心域', '瑝珑-梦枢天罗-相心域-其他', '瑝珑-梦枢天罗-相心域\n'):
+            with self.subTest(location=location):
+                self.data['teleport'] = {'anchor': 'Boss Anchor', 'x': 50, 'y': 50, 'location': location}
+                with self.assertRaisesRegex(ValueError, 'teleport.location'):
                     self.load()
 
 

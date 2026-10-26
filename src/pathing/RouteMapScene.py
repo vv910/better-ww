@@ -37,6 +37,13 @@ class RouteMapSceneDetector:
     SCENE_NAME = '梦枢天罗'
     CONTEXT = RouteMapContext(('瑝珑', '梦州', '梦枢天罗'))
 
+    @classmethod
+    def from_beacon_location(cls, location):
+        """Map a confirmed location to known menu labels, never its local area."""
+        if (getattr(location, 'world', None), getattr(location, 'map_name', None)) == ('瑝珑', cls.SCENE_NAME):
+            return RouteMapSceneIdentity(cls.SCENE_NAME, cls.CONTEXT, 1.0)
+        return None
+
     def __init__(self):
         relative = Path('assets/pathing/map-scene-dreamweave-label.png')
         path = Path(get_path_relative_to_exe(str(relative)))

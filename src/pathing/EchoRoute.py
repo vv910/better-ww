@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 
 from src.pathing.RouteMapContext import RouteMapContext
+from src.pathing.RouteBeaconLocation import RouteBeaconLocation, parse_beacon_location
 
 
 def read_map_image(path):
@@ -127,7 +128,13 @@ class EchoRoute:
                     raise ValueError('Route start must be within its tolerance of the teleport waypoint')
             elif not views:
                 raise ValueError('teleport waypoint is required when no map views are supplied')
-            teleport = RouteTeleport(anchor, waypoint, views)
+            location_value = spec.get('location', '')
+            if not isinstance(location_value, str):
+                raise ValueError('teleport.location must be a location string')
+            location = parse_beacon_location(location_value) if location_value else None
+            if location_value and location is None:
+                raise ValueError('teleport.location must contain world, map and area from beacon details')
+            teleport = RouteTeleport(anchor, waypoint, views, location)
         context = None
         if 'map_context' in data:
             context = RouteMapContext.from_dict(data['map_context'])
@@ -164,6 +171,7 @@ class RouteTeleport:
     anchor: str = ''
     waypoint: RoutePoint | None = None
     views: tuple[RouteMapView, ...] = ()
+    location: RouteBeaconLocation | None = None
 
 
 def route_files(single, queue):

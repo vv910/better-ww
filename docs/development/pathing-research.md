@@ -148,6 +148,18 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 `recorded-map-scene` 是录制参考身份的 `map_ui` 证据，区别于实时搜索画面，不能送入小地图定位或当作游戏当前状态。原始完整图仍受现有环形内存预算淘汰。这轮未扩大拖图覆盖、未放宽地形门槛，也未实机验收完整路线。
 
+## 2026-10-26 信标详情归属与旧入口纠正
+
+补充实图通过点击真实信标明确显示 `瑝珑-梦枢天罗-相心域`。这消除了此前菜单高亮与用户口述区域的歧义：要保留的是同一组录制星标，错误入口应纠正到 `瑝珑 → 梦州 → 梦枢天罗`。左上玩家地区和打开菜单后的默认高亮不用于确定该信标归属。
+
+再次核对 BetterGI 的 [GetMapChooseCandidates](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L3328) 与 [WaitForTeleportPanelAndConfirm](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L954)：其可迁移原则是图标定位后限定区域 OCR、操作后重新截图确认。其地域信息主要来自 `tp.json` 和 `mapName`，并非已有的“点开详情自动读区域链”功能；本项目依据鸣潮实际界面补上这条证据来源，不照搬候选不足时选第一项的回退。
+
+`RouteBeaconLocation` 仅从明确传入帧的详情标题和位置行读取唯一、可信、完整的三段文字，保留原串与结构化字段，拒绝缺字段、多个候选及其他面板。录制先封存原图和概览，再以最后成功参考重新配准当前稳定地图，重检安全范围内唯一信标，只点击图标一次。两张新帧归属一致才接受。点击未生效且仍为普通地图时不按 Esc；已确认详情才关闭，并以独立短预算确认地图恢复。未知候选列表不点第一项，恢复失败不保存；取消优先透传。详情可能自动居中，所以此后不再用原坐标缩放，也不修改已封存地图和星标。
+
+新可选字段 `teleport.location` 保存 `瑝珑-梦枢天罗-相心域` 这样的原始位置串，保持 schema 1 与旧路线兼容。该三段链不是菜单路径：只有已证实映射才用于选择独立场景，“相心域”保留为区域信息。未知地图仍须以原有菜单重选和强配准验证。对于已有梦枢天罗原图或已记录详情，运行时可在内存中纠正旧错误菜单，不重写用户 JSON。新位置记录在旅行前要求两新帧一致且与记录完全相同，并在这次帧中重检旅行按钮；不确认则关闭详情、停止旅行，避免把旧按钮框用于新状态。
+
+截图 fixture 只保留信标标题和位置区域，去掉 UID 与系统水印；真实 OCR 已覆盖 1080p、1440p、2160p 和 JPEG。读取归属不会点击旅行、删除标记或修改后台触发配置；普通触发任务与录制任务串行调度，详情清理是防止录制退出后自动旅行的必要步骤。尚未实机验收完整路线。
+
 ## 后续结构性改造
 
 1. **标准比例下的全局重定位**：在本轮受限恢复基础上，使用标定底图与独立负例集继续研究无需大地图提示的定位，不能直接扩大全局搜索范围或放宽阈值。
@@ -160,7 +172,9 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 ## 复核命令
 
-2026-10-26 最终回归：349 项逻辑测试、19 项路线截图测试、7 项地图菜单截图测试通过，两个截图模块各自独立运行，文档严格构建通过。覆盖实际按钮背景污染、错误地图拒绝、已知场景、菜单重选配准、旧弹窗帧失效、当前视图优先、取消和预算。未运行测试机完整路线验收；已有录图与用户目标菜单的冲突需核对后再修正旧路线入口。
+2026-10-26 信标归属补充回归：416 项逻辑测试、19 项路线截图、7 项地图菜单截图和 3 项信标详情 OCR 截图测试通过，各截图模块独立进程运行，文档严格构建通过。覆盖实际位置行、末个有效概览投影、唯一信标、两帧归属、误点击不关图、取消/恢复失败、旧入口内存纠正、归属互斥、传送前重新检测按钮及旧路线兼容。用户补图已确认梦枢天罗目标，无需为旧入口错误重录；完整路线仍待测试机验收。
+
+2026-10-26 最终回归：349 项逻辑测试、19 项路线截图测试、7 项地图菜单截图测试通过，两个截图模块各自独立运行，文档严格构建通过。覆盖实际按钮背景污染、错误地图拒绝、已知场景、菜单重选配准、旧弹窗帧失效、当前视图优先、取消和预算。未运行测试机完整路线验收；此后补充的信标详情实图已确认目标归属，见信标详情归属一节。
 
 2026-10-25 信标视图闭环改造最终回归：276 项逻辑测试、18 项截图测试通过，文档严格构建通过。覆盖真实弹窗失败图、强配准出屏、同帧特征复用、输入实际时长与释放坐标、操作后进展、参考冲突、记录耗时越过截止时间及取消。未运行测试机内的完整路线验收。
 
@@ -178,8 +192,10 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 .\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapUI tests.Test3CMapEntry
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMapViewRegistration tests.TestRouteMapDrag tests.TestClosedMapSearch tests.TestRouteMapNavigation
 .\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapContext tests.TestRecordedMapContext tests.TestRouteMapScene
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteBeaconLocation tests.TestRouteBeaconCapture
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMapContextImages
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteBeaconLocationImages
 .\.venv\Scripts\python.exe -m mkdocs build --strict
 ```
 

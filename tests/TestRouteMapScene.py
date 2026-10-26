@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 
 from src.pathing.RouteMapContext import RouteMapContext
+from src.pathing.RouteBeaconLocation import parse_beacon_location
 from src.pathing.RouteMapScene import RouteMapSceneDetector
 from src.pathing.RouteMarkers import white_marker_mask
 
@@ -41,6 +42,15 @@ class TestRouteMapScene(unittest.TestCase):
         configured = RouteMapContext(('瑝珑', '梦州', '落渊南丘'))
         self.assertNotEqual(configured, result.context)
         self.assertEqual(('瑝珑', '梦州', '落渊南丘'), configured.selection_path)
+
+    def test_confirmed_beacon_location_maps_scene_without_using_local_area_as_menu_label(self):
+        location = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+        result = self.detector.from_beacon_location(location)
+        self.assertEqual('梦枢天罗', result.name)
+        self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), result.context.selection_path)
+        for raw in ('黎那汐塔-梦枢天罗-相心域', '瑝珑-其他地图-相心域'):
+            self.assertIsNone(self.detector.from_beacon_location(parse_beacon_location(raw)))
+        self.assertIsNone(self.detector.from_beacon_location(None))
 
     def test_cue_is_right_anchored_and_does_not_depend_on_the_players_region_label(self):
         wider = np.zeros((1440, 3440, 3), np.uint8)

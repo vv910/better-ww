@@ -16,6 +16,7 @@ from src.pathing.MinimapHeading import HeadingEstimate
 from src.pathing.FallGuard import FallGuard
 from src.pathing.RouteSteering import DIRECTIONS, RouteSteering
 from src.pathing.RouteMapContext import RouteMapContext
+from src.pathing.RouteBeaconLocation import parse_beacon_location
 from src.task.BaseCombatTask import BaseCombatTask, CharDeadException
 from src.combat.CombatCheck import CombatCheck
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
@@ -792,12 +793,12 @@ class TestFarm3CEchoTask(unittest.TestCase):
         context = self.task.route_map_context(route)
         self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), context.selection_path)
 
-    def test_conflicting_recorded_scene_is_reported_without_silently_overwriting_context(self):
+    def test_known_recorded_scene_corrects_the_legacy_menu_without_mutating_the_route(self):
         context = RouteMapContext(('瑝珑', '梦州', '落渊南丘'))
         route = replace(self.prepare_teleport_task(), map_context=context,
                         map_image=Path('tests/images/3c-map-selector-closed.png'))
-        with self.assertRaisesRegex(RuntimeError, 'Recorded map scene conflicts'):
-            self.task.route_map_context(route)
+        resolved = self.task.route_map_context(route)
+        self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), resolved.selection_path)
         self.assertIs(context, route.map_context)
         self.task.click_box.assert_not_called()
 
@@ -808,6 +809,86 @@ class TestFarm3CEchoTask(unittest.TestCase):
                             map_image=Path('tests/images/3c-map-selector-closed.png'))
             with self.subTest(labels=labels):
                 self.assertIs(context, self.task.route_map_context(route))
+
+    def test_beacon_detail_identity_resolves_old_player_region_without_visual_cue(self):
+        route = self.prepare_teleport_task()
+        old_context = RouteMapContext(('黎那汐塔', '拉古那', '黎乔利群岛'))
+        route = replace(route, map_context=old_context,
+                        teleport=replace(route.teleport, location=parse_beacon_location('瑝珑-梦枢天罗-相心域')))
+        resolved = self.task.route_map_context(route)
+        self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), resolved.selection_path)
+        self.assertIs(old_context, route.map_context)
+        self.assertEqual((600, 450), (route.start.x, route.start.y))
+
+    def test_conflicting_detail_and_visual_scene_are_not_silently_combined(self):
+        route = self.prepare_teleport_task()
+        wrong = parse_beacon_location('黎那汐塔-拉古那-黎乔利群岛')
+        route = replace(route, map_image=Path('tests/images/3c-map-selector-closed.png'),
+                        teleport=replace(route.teleport, location=wrong))
+        with self.assertRaisesRegex(RuntimeError, 'Beacon location conflicts'):
+            self.task.route_map_context(route)
+        self.task.click_box.assert_not_called()
+
+    def test_travel_checks_two_fresh_detail_locations_before_clicking_the_button(self):
+        route = self.prepare_teleport_task()
+        expected = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+        self.task._active_route = replace(route, teleport=replace(route.teleport, location=expected))
+        latest_button = Box(1600, 900, 60, 20)
+        self.task.find_one.return_value = latest_button
+        with patch('src.task.Farm3CEchoTask.read_beacon_location', return_value=expected) as read:
+            self.task.travel_to_route_beacon(Box(590, 440, 20, 20))
+        self.assertEqual(2, read.call_count)
+        self.task.click_box.assert_called_once_with(latest_button, relative_x=1.5, after_sleep=0.5)
+
+    def test_matching_location_without_a_fresh_travel_button_cannot_reuse_the_old_button(self):
+        route = self.prepare_teleport_task()
+        expected = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+        self.task._active_route = replace(route, teleport=replace(route.teleport, location=expected))
+        self.task.find_one.return_value = None
+        with patch('src.task.Farm3CEchoTask.read_beacon_location', return_value=expected), \
+                patch('src.task.Farm3CEchoTask.close_beacon_details') as close:
+            with self.assertRaisesRegex(RuntimeError, 'has no travel button'):
+                self.task.travel_to_route_beacon(Box(590, 440, 20, 20))
+        self.task.click_box.assert_not_called()
+        close.assert_called_once_with(self.task)
+
+    def test_wrong_detail_location_prevents_travel_and_closes_the_panel(self):
+        route = self.prepare_teleport_task()
+        expected = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+        wrong = parse_beacon_location('黎那汐塔-拉古那-黎乔利群岛')
+        self.task._active_route = replace(route, teleport=replace(route.teleport, location=expected))
+        with patch('src.task.Farm3CEchoTask.read_beacon_location', return_value=wrong), \
+                patch('src.task.Farm3CEchoTask.close_beacon_details') as close:
+            with self.assertRaisesRegex(RuntimeError, 'differs from route'):
+                self.task.travel_to_route_beacon(Box(590, 440, 20, 20))
+        close.assert_called_once_with(self.task)
+        self.task.click_box.assert_not_called()
+        self.task.wait_in_team_and_world.assert_not_called()
+
+    def test_slow_detail_ocr_does_not_authorize_travel_after_budget(self):
+        route = self.prepare_teleport_task()
+        expected = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+        self.task._active_route = replace(route, teleport=replace(route.teleport, location=expected))
+        self.task.sleep.side_effect = lambda duration: setattr(self, 'clock', self.clock + duration)
+
+        def read(*args):
+            self.clock += 2.1
+            return expected
+
+        with patch('src.task.Farm3CEchoTask.time.monotonic', side_effect=lambda: self.clock), \
+                patch('src.task.Farm3CEchoTask.read_beacon_location', side_effect=read), \
+                patch('src.task.Farm3CEchoTask.close_beacon_details'):
+            with self.assertRaisesRegex(RuntimeError, 'Cannot confirm recorded beacon'):
+                self.task.travel_to_route_beacon(Box(590, 440, 20, 20))
+        self.task.click_box.assert_not_called()
+
+    def test_cancellation_during_identity_cleanup_is_not_swallowed(self):
+        self.prepare_teleport_task()
+        self.task.confirm_route_beacon_location = Mock(side_effect=RuntimeError('identity unavailable'))
+        with patch('src.task.Farm3CEchoTask.close_beacon_details', side_effect=TaskDisabledException()):
+            with self.assertRaises(TaskDisabledException):
+                self.task.travel_to_route_beacon(Box(590, 440, 20, 20))
+        self.task.click_box.assert_not_called()
 
     def test_locked_beacon_stops_without_assuming_teleport_succeeded(self):
         route = self.prepare_teleport_task()
@@ -983,6 +1064,7 @@ class TestFarm3CEchoTask(unittest.TestCase):
         task._record_map_open = True
         task.load_stars = task.info_set = task.log_info = Mock()
         task.send_key = Mock()
+        task.read_recorded_beacon_location = Mock(return_value=None)
         return task
 
     def test_recorder_automatically_saves_map_context_without_changing_coordinates(self):
@@ -1057,6 +1139,45 @@ class TestFarm3CEchoTask(unittest.TestCase):
                 task.run()
             selector.assert_not_called()
             self.assertEqual(context, EchoRoute.load(path).map_context)
+
+    def test_recorder_reads_the_last_overview_beacon_and_preserves_original_points(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            task.config['Capture Teleport Overview'] = True
+            original = task.big_map_frame.copy()
+            region = tuple(task.recording_region(original))
+            overview = (np.roll(original, 10, axis=1), (1210, 470), region)
+            task.read_recorded_beacon_location.return_value = parse_beacon_location('瑝珑-梦枢天罗-相心域')
+            events = Mock()
+            events.attach_mock(task.read_recorded_beacon_location, 'details')
+            with patch.object(WWOneTimeTask, 'run'), \
+                    patch('src.task.Farm3CEchoTask.capture_map_views', return_value=[overview]) as capture, \
+                    patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                events.attach_mock(capture, 'overview')
+                task.run()
+            selector.assert_not_called()
+            self.assertEqual('overview', events.mock_calls[0][0])
+            self.assertEqual('details', events.mock_calls[1][0])
+            call_args = task.read_recorded_beacon_location.call_args.args
+            self.assertIs(overview[0], call_args[0])
+            self.assertEqual(overview[1:], call_args[1:])
+            route = EchoRoute.load(path)
+            self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), route.map_context.selection_path)
+            self.assertEqual(('瑝珑', '梦枢天罗', '相心域'), route.teleport.location.parts)
+            self.assertEqual((1200, 470), (route.start.x, route.start.y))
+            np.testing.assert_array_equal(original, cv2.imread(str(route.map_image)))
+
+    def test_recorder_rejects_detail_and_visual_scene_conflict_before_writing(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            task.big_map_frame = cv2.imread('tests/images/3c-map-selector-closed.png')
+            task.read_recorded_beacon_location.return_value = parse_beacon_location('黎那汐塔-拉古那-黎乔利群岛')
+            with patch.object(WWOneTimeTask, 'run'):
+                with self.assertRaisesRegex(ValueError, 'Beacon location conflicts'):
+                    task.run()
+            self.assertEqual([], list(Path(directory).iterdir()))
 
     def test_conflicting_manual_map_path_is_reported_before_writing_a_route(self):
         with tempfile.TemporaryDirectory() as directory:
