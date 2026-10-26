@@ -22,6 +22,7 @@ from src.pathing.RouteApproach import RouteApproach
 from src.pathing.RouteMarkers import RouteMarkerDetector
 from src.pathing.RouteMapContext import RouteMapSelector, parse_selection_path
 from src.pathing.RouteMapUI import RouteMapUI
+from src.pathing.RouteMapScene import RouteMapSceneDetector
 from src.pathing.RouteSteering import RouteSteering
 from src.pathing.RouteMapNavigation import (RouteMapNavigator, capture_map_views, map_point_tolerance,
                                             map_region, wait_for_map_stable)
@@ -213,7 +214,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
             fingerprints = {}
             for relative in ('task/Farm3CEchoTask.py', 'pathing/MapLocalizer.py',
                              'pathing/TrackingVerifier.py', 'pathing/RouteApproach.py',
-                             'pathing/RouteMapUI.py', 'pathing/RouteMapNavigation.py',
+                             'pathing/RouteMapUI.py', 'pathing/RouteMapScene.py', 'pathing/RouteMapContext.py',
+                             'pathing/RouteMapNavigation.py',
                              'pathing/RouteMapDrag.py'):
                 source = source_root / relative
                 if source.is_file():
@@ -331,20 +333,32 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
 
     def teleport_to_route(self, route):
         """Align map bookmarks (or a legacy Boss anchor) before selecting the beacon."""
+        context = route.map_context
         self.stop_route_movement()
         self.reset_to_false('3C route teleport')
         self.log_info(f'Teleport to 3C route / 传送到3C路线: {route.name}, anchor={route.teleport.anchor}')
-        if route.teleport.anchor and route.map_context is None:
+        if route.teleport.anchor and context is None:
             self.open_anchor_map(route.teleport.anchor)
         else:
             self.send_key(self.key_config.get('Map Key', 'm'), after_sleep=.5)
             if not self.wait_route_map_ui(time_out=3):
                 self.save_map_ui_diagnostic('route-entry', '3c-map-entry-failed')
                 raise RuntimeError('Cannot open map for route entry / 无法打开路线传送地图')
-        if route.map_context is not None:
+        navigator = None
+        if route.teleport.views:
+            self.info_set('3C Stage', 'Checking Current Route Map / 正在核对当前路线地图')
+            navigator = RouteMapNavigator(self, route)
+            beacon = navigator.find(current_view_only=True)
+            if beacon is not None:
+                # A verified visible bookmark is stronger than a remembered
+                # player-region menu selection. Do not switch away from it.
+                self.travel_to_route_beacon(beacon)
+                return
+        context = self.route_map_context(route)
+        if context is not None:
             self.info_set('3C Stage', 'Selecting Route Map / 正在选择路线地图')
             try:
-                RouteMapSelector(self).select(route.map_context)
+                RouteMapSelector(self).select(context)
             except TaskDisabledException:
                 raise
             except Exception:
@@ -356,7 +370,8 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
                 raise RuntimeError('Map selector did not return to map / 地图选择未完成，停止传送')
         if route.teleport.views:
             self.info_set('3C Stage', 'Searching Route Beacon / 搜索路线入口信标')
-            navigator = RouteMapNavigator(self, route)
+            if navigator is None:
+                navigator = RouteMapNavigator(self, route)
             beacon = navigator.find(search=True)
             if beacon is None:
                 self.log_warning(f'3C bookmark search failed: {navigator.last_diagnostic}')
@@ -371,6 +386,27 @@ class Farm3CEchoTask(WWOneTimeTask, BaseCombatTask):
         else:
             beacon = self.find_legacy_route_beacon(route)
         self.travel_to_route_beacon(beacon)
+
+    def route_map_context(self, route):
+        """Resolve independent-map evidence from the recording, not the player's region."""
+        context = route.map_context
+        image_path = getattr(route, 'map_image', None)
+        if image_path is None:
+            return context
+        detector = RouteMapSceneDetector()
+        frame = read_map_image(image_path)
+        scene = detector.detect(frame)
+        if scene is None:
+            return context
+        diagnostic = {**detector.last_diagnostic,
+                      'recorded_selection_path': [] if context is None else list(context.selection_path)}
+        self.log_info('3C recorded map scene / 录制地图身份: ' + json.dumps(diagnostic, ensure_ascii=False))
+        self._record_navigation('record_map_ui', frame, 'recorded-map-scene', diagnostic=diagnostic)
+        if (context is not None
+                and context.selection_path != scene.context.selection_path[-len(context.selection_path):]):
+            raise RuntimeError('Recorded map scene conflicts with menu path / 录制地形与地图入口不一致: '
+                               f'{scene.name}; menu={" → ".join(context.selection_path)}')
+        return context if context is not None else scene.context
 
     def wait_route_map_ui(self, time_out=3):
         """Confirm a map control on two fresh frames; never retry the map toggle."""
@@ -1082,9 +1118,9 @@ class Record3CEchoRouteTask(BigMap):
             'Route Name': 'Name of this local route.',
             'Start Method': 'Nearest Beacon needs no diamond. Center the desired star group on the map; check the selected beacon and point order in the preview.',
             'Star Selection': 'Connected Group uses the distance filters. All Visible Stars includes every detected star inside the central recording area and ignores distance filters; move other routes outside that area.',
-            'Map Selection Path': 'Optional: exact map-menu labels, one per line from parent to child. Saved with this route for automatic map selection before teleporting.',
+            'Map Selection Path': 'Optional: exact map-menu labels, one per line from parent to child. They must describe the recorded map, including any independent scene. / 可选：每行一个地图菜单标签，须对应录制图中的独立地图。',
             'Capture Teleport Overview': 'After reading stars, zoom out and save verified map views for automatic beacon search. Original route coordinates stay unchanged.',
-            'Capture Map Context': 'After recording map views, read the selected map-menu labels and save them with the route. A manual Map Selection Path overrides this. If automatic reading fails, no route files are written.',
+            'Capture Map Context': 'Use a confirmed independent scene, or replay and visually verify the selected menu before saving. A manual Map Selection Path overrides automatic capture; conflicting scenes stop recording. / 自动确认独立地图，或实际重选菜单并配准验证；入口未验证时不保存路线。',
             'Teleport Anchor': 'Optional: nearby fixed Boss name in your game language. Keep the start within 50 map pixels of an unlocked beacon.',
             'Maximum Marker Gap': 'Maximum distance between consecutive stars, in 1080p pixels. Distant groups are excluded. Reduce this to separate nearby routes.',
             'Recording Radius': 'Only include stars within this radius of the start, in 1080p pixels. Check the saved preview before farming.',
@@ -1264,6 +1300,7 @@ class Record3CEchoRouteTask(BigMap):
                 raise ValueError('Keep the diamond and all stars in the central visible map area')
         anchor = self.config.get('Teleport Anchor', '').strip()
         view_images = []
+        views = []
         try:
             if getattr(self, '_entry_beacon', None) is not None:
                 data['teleport'] = {'anchor': anchor, 'x': x, 'y': y,
@@ -1288,7 +1325,24 @@ class Record3CEchoRouteTask(BigMap):
                 data['teleport'] = {'anchor': anchor, 'x': beacon.center()[0], 'y': beacon.center()[1]}
             if 'teleport' in data and not selection_path and self.config.get('Capture Map Context', True):
                 self.info_set('3C Stage', 'Recording Map Context / 正在记录地图菜单')
-                selection_path = RouteMapSelector(self).capture().selection_path
+                scene_detector = RouteMapSceneDetector()
+                scene = scene_detector.detect(self.big_map_frame)
+                if scene is not None:
+                    # A remembered player's menu selection can describe another
+                    # scene. Use the independent map's own confirmed control.
+                    selection_path = scene.context.selection_path
+                    self.log_info('3C recorded map scene / 录制地图身份: '
+                                  + json.dumps(scene_detector.last_diagnostic, ensure_ascii=False))
+                else:
+                    selector = RouteMapSelector(self)
+                    candidate = selector.capture()
+                    selector.verify_context(candidate, [(self.big_map_frame, (x, y), tuple(region)), *views])
+                    selection_path = candidate.selection_path
+            elif 'teleport' in data and selection_path:
+                scene = RouteMapSceneDetector().detect(self.big_map_frame)
+                if scene is not None and selection_path != scene.context.selection_path[-len(selection_path):]:
+                    raise ValueError('Recorded map scene conflicts with manual Map Selection Path / '
+                                     f'录制地形属于{scene.name}，与手填地图选择路径不一致，请核对当前地图后再录制')
         finally:
             if getattr(self, '_record_map_open', False):
                 self.send_key('esc')

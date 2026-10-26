@@ -25,6 +25,7 @@ _MAX_LABEL_LENGTH = 80
 _POLL_SECONDS = 3.0
 _POLL_INTERVAL = .12
 _MIN_OCR_CONFIDENCE = .6
+_VERIFY_SECONDS = 20.0
 
 
 @dataclass(frozen=True)
@@ -109,6 +110,24 @@ class RouteMapSelector:
     def __init__(self, task):
         self.task = task
 
+    def _check_verification_budget(self):
+        deadline = getattr(self, '_verification_deadline', None)
+        if deadline is not None and time.monotonic() >= deadline:
+            raise TimeoutError('map-context-verification-budget-exhausted')
+
+    def _poll_deadline(self, timeout):
+        deadline = time.monotonic() + timeout
+        total_deadline = getattr(self, '_verification_deadline', None)
+        return deadline if total_deadline is None else min(deadline, total_deadline)
+
+    def _poll_next_frame(self):
+        self._check_verification_budget()
+        self.task.next_frame()
+        self._check_verification_budget()
+        deadline = getattr(self, '_verification_deadline', None)
+        delay = _POLL_INTERVAL if deadline is None else min(_POLL_INTERVAL, max(0, deadline - time.monotonic()))
+        self.task.sleep(delay)
+
     @staticmethod
     def _confidence(box):
         try:
@@ -143,11 +162,14 @@ class RouteMapSelector:
         return abs(ax - bx) <= tolerance and abs(ay - by) <= tolerance
 
     def _ocr(self, region):
-        return list(self.task.ocr(*region))
+        self._check_verification_budget()
+        boxes = list(self.task.ocr(*region))
+        self._check_verification_budget()
+        return boxes
 
     def _stable_unique(self, label, region, timeout=_POLL_SECONDS, excluded=()):
         """Require exactly one exact OCR hit at a stable location in two frames."""
-        deadline = time.monotonic() + timeout
+        deadline = self._poll_deadline(timeout)
         previous = None
         while time.monotonic() <= deadline:
             boxes = [box for box in self._ocr(region)
@@ -159,11 +181,11 @@ class RouteMapSelector:
             if current is not None and previous is not None and self._same_place(current, previous):
                 return current
             previous = current
-            self.task.next_frame()
-            self.task.sleep(_POLL_INTERVAL)
+            self._poll_next_frame()
         return None
 
     def _failure(self, reason, label=None):
+        self._check_verification_budget()
         self.task.screenshot(f"3c-map-context-{reason}")
         detail = '' if label is None else f', label={label!r}'
         raise RuntimeError(f"Map context selection failed / 地图选择失败，请核对菜单文字与截图: {reason}{detail}")
@@ -176,15 +198,14 @@ class RouteMapSelector:
 
     def _wait_state(self, predicate, timeout=_POLL_SECONDS):
         """Require two fresh observations; tolerate brief transitions/OCR misses."""
-        deadline = time.monotonic() + timeout
+        deadline = self._poll_deadline(timeout)
         previous = False
         while time.monotonic() <= deadline:
             current = bool(predicate())
             if current and previous:
                 return True
             previous = current
-            self.task.next_frame()
-            self.task.sleep(_POLL_INTERVAL)
+            self._poll_next_frame()
         return False
 
     def _choices(self, label, include_areas):
@@ -199,7 +220,7 @@ class RouteMapSelector:
         return menu_choice_selected(getattr(self.task, 'frame', None), box, pane)
 
     def _stable_choice(self, label, include_areas):
-        deadline = time.monotonic() + _POLL_SECONDS
+        deadline = self._poll_deadline(_POLL_SECONDS)
         previous = None
         previous_selected = None
         while time.monotonic() <= deadline:
@@ -217,8 +238,7 @@ class RouteMapSelector:
                 previous_selected = selected
             else:
                 previous = None
-            self.task.next_frame()
-            self.task.sleep(_POLL_INTERVAL)
+            self._poll_next_frame()
         self._failure('label-not-uniquely-found', label)
 
     def _choice_applied(self, label, pane, last):
@@ -234,6 +254,7 @@ class RouteMapSelector:
         # Dismiss that picker before beacon search, and avoid an extra Esc if
         # it has already closed. The location button exists behind the panel.
         if self._menu_open():
+            self._check_verification_budget()
             self.task.send_key('esc')
         if not self._wait_state(lambda: not self._menu_open() and self._has_switch_label(_OPEN_REGION)):
             self._failure('picker-not-closed')
@@ -249,6 +270,7 @@ class RouteMapSelector:
             button = self._stable_unique(button_hits[0].name.strip(), _OPEN_REGION)
             if button is None:
                 self._failure('unstable-switch-button')
+            self._check_verification_budget()
             self.task.click(button)
         if not self._wait_state(self._menu_open):
             self._failure('picker-not-confirmed')
@@ -277,11 +299,12 @@ class RouteMapSelector:
             return None
 
     def capture(self):
-        """Read only selected menu rows; opening/closing never chooses an area.
+        """Read a candidate from selected rows; opening/closing chooses no area.
 
         Called after stars and bookmarks have been captured, so UI changes
-        cannot alter their pixel coordinates. Missing or ambiguous selection
-        stops recording instead of silently saving a route for another map.
+        cannot alter their pixel coordinates. A stable menu selection can still
+        belong to a previous map: verify_context must replay and validate it
+        before a caller treats this candidate as a recorded entry point.
         """
         try:
             self._open_picker()
@@ -313,6 +336,7 @@ class RouteMapSelector:
                 # Still click a final area to request centring even if its radio
                 # is already selected. No unrelated OCR change counts as success.
                 if not self._selected(choice) or choice[1] == 'area':
+                    self._check_verification_budget()
                     self.task.click(choice[0])
                 if not self._wait_state(lambda: self._choice_applied(label, choice[1], last)):
                     self._failure('selection-state-not-confirmed', label)
@@ -323,3 +347,100 @@ class RouteMapSelector:
             raise
         finally:
             self.task.mouse_up()
+
+    def verify_context(self, context, references):
+        """Replay a candidate, then require strong geometry in a fresh map view.
+
+        References are in-memory (BGR image, recorded point, feature region)
+        tuples. A disjoint view is unverified, not proof of a wrong map. This
+        method writes diagnostics on failure, never route files or coordinates.
+        """
+        from src.pathing.MapLocalizer import MapLocalizer
+        from src.pathing.RouteMapNavigation import map_region, wait_for_map_stable
+
+        if not isinstance(context, RouteMapContext):
+            raise TypeError('context must be a RouteMapContext')
+        if not isinstance(references, (list, tuple)) or not 1 <= len(references) <= 9:
+            raise ValueError('Map context verification requires 1 to 9 recorded references')
+        for reference in references:
+            if (not isinstance(reference, (list, tuple)) or len(reference) != 3
+                    or not isinstance(reference[0], np.ndarray) or reference[0].ndim != 3
+                    or reference[0].shape[2] != 3):
+                raise ValueError('Each map reference must contain a BGR image, point and region')
+
+        old_deadline = getattr(self, '_verification_deadline', None)
+        deadline = time.monotonic() + _VERIFY_SECONDS
+        self._verification_deadline = deadline if old_deadline is None else min(deadline, old_deadline)
+        actual = None
+        self.last_verification_diagnostic = {'status': 'unverified', 'selection_path': list(context.selection_path),
+                                             'attempts': []}
+        try:
+            self._check_verification_budget()
+            self.select(context)
+            self._check_verification_budget()
+            stable = wait_for_map_stable(self.task, self._verification_deadline)
+            actual = self.task.frame.copy()
+            self._check_verification_budget()
+            if not stable:
+                raise RuntimeError('map-view-not-stable-after-context-selection')
+            screen_region = map_region(actual)
+            features = None
+            for index, (image, point, region) in enumerate(references):
+                self._check_verification_budget()
+                try:
+                    localizer = MapLocalizer(image, region)
+                except ValueError as error:
+                    self._check_verification_budget()
+                    self.last_verification_diagnostic['attempts'].append(
+                        {'reference': index, 'reason': 'unusable-reference', 'error': str(error)})
+                    continue
+                self._check_verification_budget()
+                if features is None:
+                    features = localizer.prepare_map_features(actual, screen_region)
+                    self._check_verification_budget()
+                registered = localizer.register_map_view(actual, point, screen_region, features=features)
+                self._check_verification_budget()
+                self.last_verification_diagnostic['attempts'].append(
+                    {'reference': index, **localizer.last_diagnostic})
+                if registered is not None:
+                    self.last_verification_diagnostic.update(status='matched', reason='entry-view-verified',
+                                                            reference=index, inside_view=registered.inside_view)
+                    return context
+            self._check_verification_budget()
+            raise RuntimeError('no-strong-reference-match-after-context-selection')
+        except TaskDisabledException:
+            raise
+        except Exception as error:
+            self.last_verification_diagnostic.update(status='unverified', reason=str(error))
+            if actual is None:
+                try:
+                    current = self.task.frame
+                    actual = current.copy() if isinstance(current, np.ndarray) else None
+                except TaskDisabledException:
+                    raise
+                except Exception:
+                    pass
+            self._save_verification_frames(references[0][0], actual)
+            raise RuntimeError(
+                'Recorded map entry view is unverified / 录制入口视图未验证；'
+                '所选入口可能与录图不重叠，请核对 Map Selection Path 和已保存截图。'
+                f' Detail: {error}') from error
+        finally:
+            self._verification_deadline = old_deadline
+
+    def _save_verification_frames(self, reference, actual):
+        for name, frame in (('reference', reference), ('actual', actual)):
+            if not isinstance(frame, np.ndarray):
+                continue
+            try:
+                self.task.screenshot(f'3c-map-context-unverified-{name}', frame=frame.copy())
+            except TaskDisabledException:
+                raise
+            except Exception as error:
+                # Diagnostic I/O must not replace the selection/matching error.
+                try:
+                    self.task.log_warning(f'Cannot save map context {name} diagnostic: {error}')
+                except TaskDisabledException:
+                    raise
+                except Exception:
+                    pass

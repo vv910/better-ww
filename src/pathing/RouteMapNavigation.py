@@ -6,7 +6,7 @@ from copy import deepcopy
 
 import cv2
 import numpy as np
-from ok import Box
+from ok import Box, TaskDisabledException
 
 from src.pathing.EchoRoute import read_map_image
 from src.pathing.MapLocalizer import MapLocalizer
@@ -215,28 +215,66 @@ class RouteMapNavigator:
         return False
 
     def _ready(self, stage, deadline):
-        """Restore a known map UI once; a popup is never terrain to search over."""
+        """Only dismiss a positively identified popup; a missed control is not one."""
         if not self._in_budget(deadline):
             return False
         button = self.task.wait_route_map_ui(time_out=min(.8, max(0, deadline - time.monotonic())))
         if not button:
             self._trace('map-ui', reason='map_controls_not_visible', operation=stage,
                         diagnostic=deepcopy(getattr(self.task, '_last_map_ui_diagnostic', {})))
-            if getattr(self, '_popup_recoveries', 0) >= 1 or not self._in_budget(deadline):
+            popup = self._known_popup_visible()
+            if not self._in_budget(deadline):
                 return False
-            self._popup_recoveries = getattr(self, '_popup_recoveries', 0) + 1
-            self.task.send_key('esc', after_sleep=.2)
+            if popup:
+                if getattr(self, '_popup_recoveries', 0) >= 1:
+                    return False
+                self._popup_recoveries = getattr(self, '_popup_recoveries', 0) + 1
+                self._trace('map-ui', reason='known_popup_confirmed', operation=stage)
+                if not self._in_budget(deadline):
+                    return False
+                self.task.send_key('esc', after_sleep=.2)
             button = self.task.wait_route_map_ui(time_out=min(1.5, max(0, deadline - time.monotonic())))
             if not button:
-                self._trace('stopped', reason='map_ui_not_recovered', operation=stage)
+                self._trace('stopped', reason='map_ui_not_recovered' if popup else 'map_controls_not_confirmed',
+                            operation=stage)
                 return False
-            self._trace('map-ui', reason='map_controls_recovered', operation=stage)
+            self._trace('map-ui', reason='map_controls_recovered' if popup else 'map_controls_reconfirmed',
+                        operation=stage)
         if not self._in_budget(deadline):
             return False
         if not self._wait_for_map_stable(deadline):
             self._stability_failure(stage)
             return False
         return self._in_budget(deadline)
+
+    def _known_popup_visible(self):
+        """Read the actual inspected frame; never infer a popup from low scores."""
+        ocr = getattr(self.task, 'ocr', None)
+        if not callable(ocr):
+            return False
+        frame = getattr(self.task, '_last_map_ui_frame', None)
+        if not isinstance(frame, np.ndarray):
+            return False
+        try:
+            hits = ocr(.68, .02, .97, .11, frame=frame, threshold=.8)
+        except TaskDisabledException:
+            raise
+        except Exception as error:
+            self._trace('map-ui', reason='popup_check_failed', error=str(error))
+            return False
+        if not isinstance(hits, (list, tuple)):
+            return False
+        labels = {'自定义标记', '自訂標記', '自定義標記', 'custom marker', 'custom mark'}
+        for hit in hits:
+            if not isinstance(getattr(hit, 'name', None), str) or hit.name.strip().casefold() not in labels:
+                continue
+            try:
+                confidence = float(hit.confidence)
+            except (AttributeError, TypeError, ValueError):
+                continue
+            if math.isfinite(confidence) and confidence >= .8:
+                return True
+        return False
 
     def _safe_region(self):
         left, top, right, bottom = map_region(self.task.frame)
@@ -392,8 +430,8 @@ class RouteMapNavigator:
             return None
         return next(iter(unique), None)
 
-    def find(self, search=False):
-        deadline = time.monotonic() + 40
+    def find(self, search=False, *, current_view_only=False):
+        deadline = time.monotonic() + (6 if current_view_only else 40)
         self._history = []
         self._popup_recoveries = 0
         if not self._ready('initial-view', deadline):
@@ -402,6 +440,9 @@ class RouteMapNavigator:
         if not self._in_budget(deadline):
             return None
         if getattr(self, 'last_diagnostic', {}).get('reason') == 'reference_disagreement':
+            return None
+        if current_view_only and (projected is None or not self._safe_target(projected)):
+            self._trace('current-view', reason='no_visible_route_bookmark')
             return None
         if projected is None and search:
             # BetterGI observes every zoom step and stops on lack of progress.
@@ -435,6 +476,9 @@ class RouteMapNavigator:
                 return None
             if beacon is not None:
                 return self._confirm_beacon(projected, beacon, deadline)
+            if current_view_only:
+                self._trace('current-view', reason='beacon_not_visible')
+                return None
             projected, state = self._zoom(2, deadline, target=projected)
             if state != 'changed' or projected is None:
                 self._trace('stopped', reason='beacon_not_visible')

@@ -42,6 +42,7 @@ class TestClosedMapSearch(unittest.TestCase):
 
     def test_popup_is_dismissed_once_then_normal_controls_and_fresh_stability_are_required(self):
         self.task.wait_route_map_ui.side_effect = [None, Box(570, 10, 20, 20)]
+        self.navigator._known_popup_visible = Mock(return_value=True)
         self.assertTrue(self.navigator._ready('initial-view', 40))
         self.task.send_key.assert_called_once_with('esc', after_sleep=.2)
         self.assertGreaterEqual(self.task.next_frame.call_count, 3)
@@ -56,6 +57,7 @@ class TestClosedMapSearch(unittest.TestCase):
 
     def test_unrecoverable_popup_stops_before_projection_scroll_or_drag(self):
         self.task.wait_route_map_ui.return_value = None
+        self.navigator._known_popup_visible = Mock(return_value=True)
         with patch.object(self.navigator, 'project') as project, \
                 patch('src.pathing.RouteMapNavigation.drag_route_map') as drag:
             self.assertIsNone(self.navigator.find(search=True))
@@ -64,6 +66,64 @@ class TestClosedMapSearch(unittest.TestCase):
         self.task.scroll.assert_not_called()
         drag.assert_not_called()
         self.assertEqual('map_ui_not_recovered', self.navigator.last_diagnostic['reason'])
+
+    def test_missing_controls_without_popup_never_closes_a_normal_map(self):
+        self.task.wait_route_map_ui.return_value = None
+        self.navigator._known_popup_visible = Mock(return_value=False)
+        with patch.object(self.navigator, 'project') as project:
+            self.assertIsNone(self.navigator.find(search=True))
+        self.task.send_key.assert_not_called()
+        self.task.scroll.assert_not_called()
+        project.assert_not_called()
+        self.assertEqual('map_controls_not_confirmed', self.navigator.last_diagnostic['reason'])
+
+    def test_transient_control_miss_is_rechecked_without_escape(self):
+        self.task.wait_route_map_ui.side_effect = [None, Box(570, 10, 20, 20)]
+        self.navigator._known_popup_visible = Mock(return_value=False)
+        self.assertTrue(self.navigator._ready('zoom-view', 40))
+        self.task.send_key.assert_not_called()
+        self.assertEqual('map_controls_reconfirmed', self.navigator.last_diagnostic['reason'])
+
+    def test_current_view_probe_never_pans_or_zooms_unknown_offscreen_or_missing_beacons(self):
+        for projected in (None, registration(900, 180), registration()):
+            with self.subTest(projected=projected), \
+                    patch.object(self.navigator, 'project', return_value=projected), \
+                    patch.object(self.navigator, 'beacon_at', return_value=None), \
+                    patch('src.pathing.RouteMapNavigation.drag_route_map') as drag:
+                self.assertIsNone(self.navigator.find(current_view_only=True))
+                self.task.scroll.assert_not_called()
+                drag.assert_not_called()
+
+    def test_current_view_probe_has_a_six_second_budget(self):
+        def slow_project():
+            self.clock = 6.1
+            return registration()
+
+        with patch.object(self.navigator, 'project', side_effect=slow_project), \
+                patch.object(self.navigator, 'beacon_at') as beacon:
+            self.assertIsNone(self.navigator.find(current_view_only=True))
+        beacon.assert_not_called()
+        self.task.scroll.assert_not_called()
+
+    def test_popup_detection_uses_the_last_inspected_frame_and_exact_header(self):
+        frame = self.task.frame.copy()
+        self.task._last_map_ui_frame = frame
+        for label, confidence, expected in [('自定义标记', .99, True), ('Custom Marker', .9, True),
+                                             ('自定义标记说明', .99, False), ('自定义标记', .79, False),
+                                             ('自定义标记', float('nan'), False)]:
+            with self.subTest(label=label, confidence=confidence):
+                self.task.ocr.return_value = [Box(450, 10, 90, 20, name=label, confidence=confidence)]
+                self.assertEqual(expected, self.navigator._known_popup_visible())
+                self.assertIs(frame, self.task.ocr.call_args.kwargs['frame'])
+
+    def test_old_popup_frame_cannot_authorize_escape_after_a_new_capture_failure(self):
+        self.navigator.last_frame = self.task.frame.copy()
+        self.task._last_map_ui_frame = None
+        self.task.ocr.return_value = [Box(450, 10, 90, 20, name='自定义标记', confidence=.99)]
+        self.task.wait_route_map_ui.return_value = None
+        self.assertFalse(self.navigator._ready('zoom-view', 40))
+        self.task.ocr.assert_not_called()
+        self.task.send_key.assert_not_called()
 
     def test_no_registration_never_causes_extreme_zoom_or_blind_drag(self):
         self.change_frame_on_scroll()

@@ -130,6 +130,24 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 
 回归包含用户真实“自定义标记”失败图、新旧地图 UI、强配准出屏、共享特征、多参考冲突、缩放及拖动无进展、慢识别和记录耗尽预算、按键取消及准确松键。仍需在测试机验证完整的地图入口与路线；没有完整底图时，有限缩放后仍无法配准的未知区域会停止，不能保证任意地图位置都能自动找到信标。
 
+## 2026-10-26 独立地图身份与控件背景修复
+
+诊断分支 `codex/3c-diagnostics-20261026-110738` 的测试源码为 `afc6953`。两次运行都有地图视图，但失败机制不同：11:01 的正常地图缩放后，蓝色信标进入减号按钮背景，整矩形匹配得分降至 0.8645；回中、加号仍分别为 0.9958、0.9947。错误恢复发送 Esc 后退出地图。11:02 的 18 次缩放均通过相邻帧几何验证，但 19 轮路线配准始终没有得到有效变换；不能由这些缩放成功推断目标地图已出现。
+
+录制参考有“万相空间”控件和梦玄溪山、心域地形。实际第一次搜索图为普通梦州地表的洗羽潭、雀回苑等，第二次为黎乔利群岛的舵盘村、沉静湾。两条路线共 14 个参考对录制图全部强配准，内点为 1231–6017；对实际搜索图全部拒绝，最多 4 个几何内点。扩展搜索 ROI 的排除实验也未建立配准。新录 ff5 的菜单上下文却为 `黎那汐塔 → 拉古那 → 黎乔利群岛`：当前菜单高亮并不等于录图的独立地图身份。
+
+本轮重新对照 BetterGI 的 [PathRecorder.GetMapName/Save](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoPathing/PathRecorder.cs#L47)：录制显式地图名称并写入路线 `Info.MapName`；[SwitchToTeleportTargetMap](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L522) 和 [ForceJumpToTargetArea](https://github.com/babalae/better-genshin-impact/blob/887548a11ef183d8cd92c6ddf596776cebffb436/BetterGenshinImpact/GameTask/AutoTrackPath/TpTask.cs#L2288) 按该名称恢复独立地图，而非用玩家地区推断或在另一底图盲扫。鸣潮菜单现有真实素材也已确认 `瑝珑 → 梦州 → 梦枢天罗` 对应独立场景。
+
+迁移后的录制不再直接把稳定菜单高亮当作已验证入口：
+
+- `RouteMapSceneDetector` 对录图自身“万相空间”四字做固定区域、全字及逐字前景匹配，当前仅覆盖这一确证独立场景。未知、文字不完整或已脱敏去掉控件的图返回未知，不读左上玩家地区。其身份只用于入口解析，不能授权信标点击。
+- 普通自动菜单结果必须由 `verify_context()` 实际重选，再以新稳定视图通过原强配准门槛；当前帧的特征共用，允许目标出屏。20 秒总预算包含菜单、OCR、截图和匹配；失败保留参考与实际图，且不写路线文件。手填路径与已确证场景冲突时明确报告。
+- 执行先用最多 6 秒核对当前视图，不缩放或拖图。若强配准及连续真实信标检查通过，直接使用实际录制路线，不应用旧上下文将正确地图切走。需要切图时，场景可以补全缺失入口；与已有明确路径冲突则报告，不代改用户 JSON。
+
+`RouteMapUI` 保留 0.88 阈值和三个独立控件、加减同列要求。加减按钮改为比较两种图形前景的并集与边缘，排除移动背景，又保留“减号不应有竖笔”的负证据；真实失败图减号得分恢复为 0.9588，交换加减、缺字形、世界和标记面板仍被拒绝。无控件并不等于有弹窗：先被动复查，只有本次实际检查帧 OCR 确认已知标记面板标题才允许一次 Esc；旧缓存帧不能授权该操作。
+
+`recorded-map-scene` 是录制参考身份的 `map_ui` 证据，区别于实时搜索画面，不能送入小地图定位或当作游戏当前状态。原始完整图仍受现有环形内存预算淘汰。这轮未扩大拖图覆盖、未放宽地形门槛，也未实机验收完整路线。
+
 ## 后续结构性改造
 
 1. **标准比例下的全局重定位**：在本轮受限恢复基础上，使用标定底图与独立负例集继续研究无需大地图提示的定位，不能直接扩大全局搜索范围或放宽阈值。
@@ -141,6 +159,8 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 直接对大地图图片执行 A* 需要可信的通行区域、层间连接和高度信息；当前并没有这些输入。仅凭平面地图颜色推断可通行性，无法可靠处理鸣潮中的高低差、建筑和悬崖。
 
 ## 复核命令
+
+2026-10-26 最终回归：349 项逻辑测试、19 项路线截图测试、7 项地图菜单截图测试通过，两个截图模块各自独立运行，文档严格构建通过。覆盖实际按钮背景污染、错误地图拒绝、已知场景、菜单重选配准、旧弹窗帧失效、当前视图优先、取消和预算。未运行测试机完整路线验收；已有录图与用户目标菜单的冲突需核对后再修正旧路线入口。
 
 2026-10-25 信标视图闭环改造最终回归：276 项逻辑测试、18 项截图测试通过，文档严格构建通过。覆盖真实弹窗失败图、强配准出屏、同帧特征复用、输入实际时长与释放坐标、操作后进展、参考冲突、记录耗时越过截止时间及取消。未运行测试机内的完整路线验收。
 
@@ -157,7 +177,9 @@ BetterGI 的普通移动与目标精确接近分开处理：移动期间持续�
 .\.venv\Scripts\python.exe -u run_test.py tests.TestLocalizationFreshness tests.TestContinuousTerrainTracking tests.TestTrackingVerifier tests.TestRouteCapture tests.TestRouteSteering tests.TestNavigationReplay tests.TestNavigationReplayTask
 .\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapUI tests.Test3CMapEntry
 .\.venv\Scripts\python.exe -u run_test.py tests.TestMapViewRegistration tests.TestRouteMapDrag tests.TestClosedMapSearch tests.TestRouteMapNavigation
+.\.venv\Scripts\python.exe -u run_test.py tests.TestRouteMapContext tests.TestRecordedMapContext tests.TestRouteMapScene
 .\.venv\Scripts\python.exe -u run_test.py tests.Test3CRouteImages
+.\.venv\Scripts\python.exe -u run_test.py tests.TestMapContextImages
 .\.venv\Scripts\python.exe -m mkdocs build --strict
 ```
 

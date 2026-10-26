@@ -13,6 +13,7 @@ from config import config
 from src.pathing.EchoRoute import EchoRoute
 from src.pathing.MapLocalizer import MapLocalizer
 from src.pathing.RouteMarkers import MarkerMatch
+from src.pathing.RouteMapNavigation import RouteMapNavigator
 from src.task.Farm3CEchoTask import Farm3CEchoTask, Record3CEchoRouteTask
 from src.task.WWOneTimeTask import WWOneTimeTask
 
@@ -324,6 +325,19 @@ class Test3CRouteImages(TaskTestCase):
         localizer = MapLocalizer(reference, (717, 173, 2227, 1296))
         self.assertIsNone(localizer.register_map_view(frame, (1322, 691), (717, 173, 2227, 1296)),
                           localizer.last_diagnostic)
+
+    def test_popup_recovery_requires_the_actual_exact_ocr_header(self):
+        navigator = RouteMapNavigator.__new__(RouteMapNavigator)
+        navigator.task = self.task
+        for path, expected in [('tests/images/3c-map-marker-popup.png', True),
+                               ('tests/images/3c-map-selector-closed.png', False),
+                               ('tests/images/mini_map.png', False)]:
+            with self.subTest(path=path):
+                self.set_image(path)
+                navigator.last_frame = self.task.frame.copy()
+                self.task._last_map_ui_frame = navigator.last_frame
+                self.assertEqual(expected, navigator._known_popup_visible())
+        self.task._last_map_ui_frame = None
 
 
 if __name__ == '__main__':

@@ -754,6 +754,61 @@ class TestFarm3CEchoTask(unittest.TestCase):
         self.task.click_box.assert_not_called()
         self.task.wait_in_team_and_world.assert_not_called()
 
+    def test_already_verified_bookmark_is_used_before_applying_old_context(self):
+        route = replace(self.prepare_teleport_task(),
+                        map_context=RouteMapContext(('Old player region',)),
+                        teleport=RouteTeleport('', RoutePoint(600, 450), (object(),)))
+        self.task.travel_to_route_beacon = Mock()
+        beacon = Box(590, 440, 20, 20)
+        with patch('src.task.Farm3CEchoTask.RouteMapNavigator') as navigator, \
+                patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector, \
+                patch.object(self.task, 'route_map_context') as resolve:
+            navigator.return_value.find.return_value = beacon
+            self.task.teleport_to_route(route)
+        navigator.return_value.find.assert_called_once_with(current_view_only=True)
+        selector.assert_not_called()
+        resolve.assert_not_called()
+        self.task.travel_to_route_beacon.assert_called_once_with(beacon)
+
+    def test_unknown_initial_view_selects_context_then_reuses_the_navigator(self):
+        context = RouteMapContext(('World', 'Area'))
+        route = replace(self.prepare_teleport_task(), map_context=context,
+                        teleport=RouteTeleport('', RoutePoint(600, 450), (object(),)))
+        self.task.travel_to_route_beacon = Mock()
+        beacon = Box(590, 440, 20, 20)
+        events = Mock()
+        with patch('src.task.Farm3CEchoTask.RouteMapNavigator') as navigator, \
+                patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+            navigator.return_value.find.side_effect = [None, beacon]
+            events.attach_mock(navigator.return_value.find, 'find')
+            events.attach_mock(selector.return_value.select, 'select')
+            self.task.teleport_to_route(route)
+        self.assertEqual([call.find(current_view_only=True), call.select(context), call.find(search=True)], events.mock_calls)
+        navigator.assert_called_once_with(self.task, route)
+        self.task.travel_to_route_beacon.assert_called_once_with(beacon)
+
+    def test_recorded_scene_can_supply_a_missing_context_without_using_player_region(self):
+        route = replace(self.prepare_teleport_task(), map_image=Path('tests/images/3c-map-selector-closed.png'))
+        context = self.task.route_map_context(route)
+        self.assertEqual(('瑝珑', '梦州', '梦枢天罗'), context.selection_path)
+
+    def test_conflicting_recorded_scene_is_reported_without_silently_overwriting_context(self):
+        context = RouteMapContext(('瑝珑', '梦州', '落渊南丘'))
+        route = replace(self.prepare_teleport_task(), map_context=context,
+                        map_image=Path('tests/images/3c-map-selector-closed.png'))
+        with self.assertRaisesRegex(RuntimeError, 'Recorded map scene conflicts'):
+            self.task.route_map_context(route)
+        self.assertIs(context, route.map_context)
+        self.task.click_box.assert_not_called()
+
+    def test_matching_short_scene_paths_remain_valid_and_are_not_replaced(self):
+        for labels in [('梦枢天罗',), ('梦州', '梦枢天罗'), ('瑝珑', '梦州', '梦枢天罗')]:
+            context = RouteMapContext(labels)
+            route = replace(self.prepare_teleport_task(), map_context=context,
+                            map_image=Path('tests/images/3c-map-selector-closed.png'))
+            with self.subTest(labels=labels):
+                self.assertIs(context, self.task.route_map_context(route))
+
     def test_locked_beacon_stops_without_assuming_teleport_succeeded(self):
         route = self.prepare_teleport_task()
         self.task.wait_feature.return_value = None
@@ -945,6 +1000,10 @@ class TestFarm3CEchoTask(unittest.TestCase):
             np.testing.assert_array_equal(original, cv2.imread(str(route.map_image)))
             selector.return_value.capture.assert_called_once_with()
             selector.return_value.select.assert_not_called()
+            selector.return_value.verify_context.assert_called_once()
+            self.assertEqual(context, selector.return_value.verify_context.call_args.args[0])
+            references = selector.return_value.verify_context.call_args.args[1]
+            np.testing.assert_array_equal(original, references[0][0])
             task.send_key.assert_called_once_with('esc')
 
     def test_recorder_keeps_manual_path_as_override_and_can_disable_capture(self):
@@ -971,6 +1030,58 @@ class TestFarm3CEchoTask(unittest.TestCase):
                     task.run()
             self.assertEqual([], list(Path(directory).iterdir()))
             task.send_key.assert_called_once_with('esc')
+
+    def test_unverified_automatic_context_cannot_be_saved_as_a_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            with patch.object(WWOneTimeTask, 'run'), patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                selector.return_value.capture.return_value = RouteMapContext(('World', 'Area'))
+                selector.return_value.verify_context.side_effect = RuntimeError('entry view is unverified')
+                with self.assertRaisesRegex(RuntimeError, 'entry view is unverified'):
+                    task.run()
+            self.assertEqual([], list(Path(directory).iterdir()))
+            task.send_key.assert_called_once_with('esc')
+
+    def test_confirmed_independent_scene_does_not_save_the_players_unrelated_menu(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            context = RouteMapContext(('瑝珑', '梦州', '梦枢天罗'))
+            scene = SimpleNamespace(name='梦枢天罗', context=context)
+            with patch.object(WWOneTimeTask, 'run'), \
+                    patch('src.task.Farm3CEchoTask.RouteMapSceneDetector') as detector, \
+                    patch('src.task.Farm3CEchoTask.RouteMapSelector') as selector:
+                detector.return_value.detect.return_value = scene
+                detector.return_value.last_diagnostic = {'name': scene.name}
+                task.run()
+            selector.assert_not_called()
+            self.assertEqual(context, EchoRoute.load(path).map_context)
+
+    def test_conflicting_manual_map_path_is_reported_before_writing_a_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            task.config['Map Selection Path'] = '瑝珑\n梦州\n落渊南丘'
+            scene = SimpleNamespace(name='梦枢天罗', context=RouteMapContext(('瑝珑', '梦州', '梦枢天罗')))
+            with patch.object(WWOneTimeTask, 'run'), \
+                    patch('src.task.Farm3CEchoTask.RouteMapSceneDetector') as detector:
+                detector.return_value.detect.return_value = scene
+                with self.assertRaisesRegex(ValueError, 'conflicts with manual'):
+                    task.run()
+            self.assertEqual([], list(Path(directory).iterdir()))
+
+    def test_manual_short_path_to_the_same_scene_can_still_be_saved(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'route.json'
+            task = self.make_bookmark_recorder(path)
+            task.config['Map Selection Path'] = '梦枢天罗'
+            scene = SimpleNamespace(name='梦枢天罗', context=RouteMapContext(('瑝珑', '梦州', '梦枢天罗')))
+            with patch.object(WWOneTimeTask, 'run'), \
+                    patch('src.task.Farm3CEchoTask.RouteMapSceneDetector') as detector:
+                detector.return_value.detect.return_value = scene
+                task.run()
+            self.assertEqual(RouteMapContext(('梦枢天罗',)), EchoRoute.load(path).map_context)
 
     def test_diamond_with_anchor_also_records_context_before_closing_map(self):
         with tempfile.TemporaryDirectory() as directory:
