@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-24T15:02:55.112562+00:00",
+  "reason": "RuntimeError: Cannot open map for route entry / 无法打开路线传送地图",
+  "route": "route.json",
+  "events": "events.jsonl",
+  "arrow_template": "assets/arrow.png",
+  "frames": {},
+  "assets": [
+    {
+      "path": "assets/map-00.png",
+      "sha256": "13795b6a4e8a144d39fcd3a4f3f4eb68fc1ebb0fdd030d33f8202defb69b8d0b"
+    },
+    {
+      "path": "assets/map-02.png",
+      "sha256": "db25a0957f14a551ba1e1d08fc3eb4ae433bba73337461775964a857498a7ba1"
+    },
+    {
+      "path": "assets/map-03.png",
+      "sha256": "77a8f2ebba2beeb6ecb72ee8637f11c575ac69ffe5c55cf6f81a43a246c797ea"
+    },
+    {
+      "path": "assets/map-04.png",
+      "sha256": "3192c97168873112f7ae61235e17e3f714cf98a3e2bc1501a799bdeb471fe3ae"
+    },
+    {
+      "path": "assets/map-05.png",
+      "sha256": "fd677f6978f8ee2235c4eb47d7ebef88a8f2793a3510b4187be4efdc5af9973a"
+    },
+    {
+      "path": "assets/map-06.png",
+      "sha256": "5ae064c9713e944f5674fd0431266b44a33615e05b81d09244eb8060a52fc131"
+    },
+    {
+      "path": "assets/map-07.png",
+      "sha256": "c763cc5578452217181be100fc28d6861ce4e9533a3df3739b33384170609abe"
+    }
+  ],
+  "capture_size": null,
+  "events_total": 0,
+  "events_retained": 0,
+  "frames_total": 0,
+  "frames_evicted": 0,
+  "raw_frame_bytes": 0,
+  "truncated": false,
+  "errors": [],
+  "extra": {
+    "navigation_interval": 0.2,
+    "opencv_version": "5.0.0",
+    "runtime_sources_sha256": {
+      "task/Farm3CEchoTask.py": "1dba60b9f0f5e0da26b876ddf973d5b08ac013d95275f43d8a687d264a93e154",
+      "pathing/MapLocalizer.py": "c19ebe9979896943ff44ea24b3e4f7b57ff341fe0efdc56a807d898d6441ac8c",
+      "pathing/TrackingVerifier.py": "34ac193c08b6e0df9c0d717edaee1acf3aaaf994602d9b3abcb2dfc08429a1da",
+      "pathing/RouteApproach.py": "4ea71c87daf7d8517aa352a712cd77868d928033cedf7ea59abf3ae4f1e31c26"
+    }
+  },
+  "timing_note": "Recorded monotonic event times preserve gaps and anchor/hint ages. Replay uses each recorded locate duration as a conservative completion time after its first clock read; intermediate clock readings and CPU execution cannot be reproduced exactly. It cannot certify live freshness."
+}

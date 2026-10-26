@@ -1,0 +1,1021 @@
+2026-10-24 23:01:22,063 INFO MainThread ok:ok-script init dev, ['main_debug.py'], pid=135548 config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x000001C6BE7C5300>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x000001C6A563C770>, <ok.util.config.ConfigOption object at 0x000001C6A563C7A0>, <ok.util.config.ConfigOption object at 0x000001C6BDD2E6F0>, <ok.util.config.ConfigOption object at 0x000001C6BDD2E630>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x000001C6A7903100>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x000001C6BE7C5260>, 'launch_arguments': <function get_game_launch_arguments at 0x000001C6A7927600>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-24 23:01:22,064 DEBUG MainThread ok:environment contains 44 entries
+2026-10-24 23:01:22,064 INFO MainThread ok:pyappify  app_version:None, app_profile:None, pyappify_version:None pyappify_upgradeable:False, pyappify_executable:None
+2026-10-24 23:01:22,074 DEBUG MainThread Config:init self.config = {'Auto Start Game When App Starts': False, 'Minimize Window to System Tray when Closing': False, 'Mute Game while in Background': False, 'Auto Resize Game Window': True, 'Exit App when Game Exits': False, 'Use DirectML': 'Yes', 'Trigger Interval': 1, 'Start/Stop': 'F9', 'Kill Launcher After Start': True, 'Launch with DX11': False, 'Enable Blur': False, 'Blur Algorithm': 'Inpaint', 'Blur Interval': 1, 'Game Package': 'hd'}
+2026-10-24 23:01:22,081 DEBUG MainThread Config:init self.config = {'Echo Key': 'q', 'Liberation Key': 'r', 'Resonance Key': 'e', 'Tool Key': 't', 'Jump Key': 'space', 'Dodge Key': 'lshift', 'Wheel Key': 'tab', 'Guidebook Key': 'f2', 'Bag Key': 'b'}
+2026-10-24 23:01:22,088 DEBUG MainThread Config:init self.config = {'Iuno C6': False, 'Chisa DPS': False}
+2026-10-24 23:01:22,095 DEBUG MainThread Config:init self.config = {'Check Monthly Card': True, 'Monthly Card Time': 4}
+2026-10-24 23:01:22,095 INFO MainThread capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-24 23:01:22,217 DEBUG MainThread Config:init self.config = {'System Notification': True, 'Discord Notification': False, 'Discord Webhook': '', 'Telegram Notification': False, 'Telegram Bot Token': '', 'Telegram Chat ID': '', 'Enterprise WeChat Webhook Notification': False, 'Enterprise WeChat Webhook URL': '', 'QQ Bot API Notification': False, 'QQ Bot API App ID': '', 'QQ Bot API Token': '', 'QQ Bot API Channel ID': '', 'SMTP Notification': False, 'SMTP Host': '', 'SMTP Port': 587, 'SMTP Username': '', 'SMTP Password': '', 'SMTP Use TLS': True, 'SMTP Default Sender': '', 'SMTP Default Recipient': '', 'QQ Desktop Notification (Not Reliable)': False, 'QQ Desktop Nickname': '', 'WeChat Desktop Notification (Not Reliable)': False, 'WeChat Desktop Nickname': ''}
+2026-10-24 23:01:22,217 INFO MainThread ok:use_dml result is True
+2026-10-24 23:01:22,218 INFO MainThread ok:SetProcessDpiAwareness 0
+2026-10-24 23:01:22,221 INFO MainThread ok:do_init, config: {'debug': True, 'custom_tasks': True, 'gui': {'type': 'qt'}, 'config_folder': 'configs', 'blur_area': <function blur_area at 0x000001C6BE7C5300>, 'gui_icon': 'icons/icon.png', 'global_configs': [<ok.util.config.ConfigOption object at 0x000001C6A563C770>, <ok.util.config.ConfigOption object at 0x000001C6A563C7A0>, <ok.util.config.ConfigOption object at 0x000001C6BDD2E6F0>, <ok.util.config.ConfigOption object at 0x000001C6BDD2E630>], 'custom_tabs': [['src.gui.CharacterCodeTab', 'CharacterCodeTab']], 'ocr': {'lib': 'onnxocr', 'auto_simplify': True, 'params': {'use_openvino': True, 'use_npu': True}}, 'my_app': ['src.globals', 'Globals'], 'start_timeout': 120, 'wait_until_settle_time': 0, 'template_matching': {'coco_feature_json': 'assets\\coco_annotations.json', 'default_horizontal_variance': 0.002, 'default_vertical_variance': 0.002, 'default_threshold': 0.8, 'feature_processor': <function process_feature at 0x000001C6A7903100>, 'vcenter_features': ['monthly_card', 'skip_dialog_check'], 'hcenter_features': ['monthly_card', 'suisui_forte3', 'message_dialog', 'claim_stamina_sign', 'skip_dialog_check', 'login_close', 'garden_confirm', 'garden_continue_game', 'garden_unpause', 'garden_get_gold', 'garden_get_purple', 'garden_get_skip', 'garden_not_interested_confirm', 'garden_not_interested', 'a_garden_back', 'garden_get_confirm_gray', 'the_garden_max', 'garden_shop_close', 'garden_new_stage', 'a_garden_restart', 'suisui_forte2', 'suisui_e1', 'e_forte', 'f_break_full']}, 'windows': {'top_hwnd_class': [re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button'], 'calculate_pc_exe_path': <function calculate_pc_exe_path at 0x000001C6BE7C5260>, 'launch_arguments': <function get_game_launch_arguments at 0x000001C6A7927600>, 'exe': 'Client-Win64-Shipping.exe', 'hwnd_class': 'UnrealWindow', 'interaction': 'PostMessage', 'capture_method': ['WGC', 'BitBlt_RenderFull'], 'check_hdr': False, 'force_no_hdr': False, 'check_night_light': True, 'force_no_night_light': False, 'start_exe': True, 'start_method': 'start'}, 'window_size': {'width': 1200, 'height': 800, 'min_width': 1200, 'min_height': 800}, 'supported_resolution': {'ratio': '16:9', 'resize_to': [(2560, 1440), (1920, 1080), (1600, 900), (1280, 720)], 'min_size': (1280, 720)}, 'links': {'default': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'download': 'https://ok-script.com/ok-ww', 'sponsor': 'https://patreon.com/ok_oldking', 'share': 'Download OK-WW from https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww/'}, 'zh_CN': {'github': 'https://github.com/ok-oldking/ok-wuthering-waves', 'discord': 'https://discord.gg/vVyCatEBgA', 'sponsor': 'https://afdian.com/a/ok-oldking', 'share': '下载okww https://ok-script.com/ok-ww', 'faq': 'https://ok-script.com/ok-ww', 'qq_group': 'https://qm.qq.com/q/jw2NltIEWA', 'qq_channel': 'https://pd.qq.com/s/djmm6l44y'}}, 'about': '\n    <p style="color:red;">\n    <strong>本软件是免费开源的。</strong> 如果你被收费，请立即退款。请访问QQ频道或GitHub下载最新的官方版本。\n    </p>\n    <p style="color:red;">\n        <strong>本软件仅供个人使用，用于学习Python编程、计算机视觉、UI自动化等。</strong> 请勿将其用于任何营利性或商业用途。\n    </p>\n    <p style="color:red;">\n        <strong>使用本软件可能会导致账号被封。</strong> 请在了解风险后再使用。\n    </p>\n', 'screenshots_folder': 'screenshots', 'gui_title': 'OK-WW', 'log_file': 'logs/ok-ww.log', 'error_log_file': 'logs/ok-ww_error.log', 'launcher_log_file': 'logs/launcher.log', 'launcher_error_log_file': 'logs/launcher_error.log', 'version': 'dev', 'onetime_tasks': [['src.task.DailyTask', 'DailyTask'], ['src.task.FarmEchoTask', 'FarmEchoTask'], ['src.task.NightmareNestTask', 'NightmareNestTask'], ['src.task.TacetTask', 'TacetTask'], ['src.task.ForgeryTask', 'ForgeryTask'], ['src.task.SimulationTask', 'SimulationTask'], ['src.task.MultiAccountDailyTask', 'MultiAccountDailyTask'], ['src.task.MergeEchoTask', 'MergeEchoTask'], ['src.task.EnhanceEchoTask', 'EnhanceEchoTask'], ['src.task.ChangeEchoTask', 'ChangeEchoTask'], ['src.task.GardenTask', 'GardenTask'], ['src.task.Farm3CEchoTask', 'Farm3CEchoTask'], ['src.task.Farm3CEchoTask', 'Record3CEchoRouteTask']], 'trigger_tasks': [['src.task.AutoCombatTask', 'AutoCombatTask'], ['src.task.AutoPickTask', 'AutoPickTask'], ['src.task.AutoLoginTask', 'AutoLoginTask'], ['src.task.SkipDialogTask', 'AutoDialogTask'], ['src.task.FastTravelTask', 'FastTravelTask'], ['src.task.MouseResetTask', 'MouseResetTask']], 'scene': ['src.scene.WWScene', 'WWScene'], 'update_pyappify': {'to_version': '1.2.3', 'zip_url': 'https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip', 'sha256': '447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a'}}
+2026-10-24 23:01:22,375 INFO MainThread DeviceManager:__init__ start
+2026-10-24 23:01:22,385 DEBUG MainThread Config:init self.config = {'preferred': 'pc_2558036', 'pc_full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'capture': 'WGC', 'selected_exe': '', 'selected_hwnd': 2558036, 'interaction': 'PostMessage'}
+2026-10-24 23:01:22,385 INFO MainThread hwnd_window:HwndWindow init title:None player_id:-1 exe_name:['Client-Win64-Shipping.exe'] hwnd_class:UnrealWindow top_hwnd_class:[re.compile('CAgreementDlg'), re.compile('CLoginDlg_P_'), 'CefBrowserWindow', 'Chrome_RenderWidgetHostHWND', '#32770', re.compile('CNativeLoginDlg'), 'Static', 'ComboBox', 'ComboLBox', 'Button']
+2026-10-24 23:01:22,386 DEBUG MainThread hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-24 23:01:22,390 INFO MainThread DeviceManager:__init__ end
+2026-10-24 23:01:22,424 DEBUG MainThread screenshot:init Screenshot E:\Better_ww\screenshots None
+2026-10-24 23:01:22,425 DEBUG MainThread screenshot:load font C:\Windows\Fonts\msyh.ttc
+2026-10-24 23:01:22,426 INFO screenshot screenshot:clear E:\Better_ww\screenshots
+2026-10-24 23:01:22,426 DEBUG MainThread FeatureSet:Loading features from E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:01:22,428 INFO MainThread TaskExecutor:install ocr translations error for en_US
+2026-10-24 23:01:22,429 INFO DefaultOCRInit TaskExecutor:start init default ocr
+2026-10-24 23:01:22,963 INFO DefaultOCRInit TaskExecutor:init onnxocr {'use_openvino': True, 'use_npu': True}
+2026-10-24 23:01:22,989 INFO DefaultOCRInit TaskExecutor:use_openvino: True
+2026-10-24 23:01:22,989 INFO DefaultOCRInit TaskExecutor:use_npu: True
+2026-10-24 23:01:22,989 INFO DefaultOCRInit TaskExecutor:use_angle_cls: False
+2026-10-24 23:01:22,989 INFO DefaultOCRInit TaskExecutor:det_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\det\det.onnx
+2026-10-24 23:01:22,990 INFO DefaultOCRInit TaskExecutor:rec_model_dir: E:\Better_ww\.venv\Lib\site-packages\onnxocr\models\ppocrv5\rec\rec.onnx
+2026-10-24 23:01:22,990 INFO DefaultOCRInit TaskExecutor:rec_image_shape: 3, 48, 320
+2026-10-24 23:01:23,895 DEBUG MainThread app:resources.qt_resource_name b'\x00\x03\x00\x00x\xa3\x00q\x00s\x00s\x00\x04\x00\x06\xc4\xee\x00i\x001\x008\x00n\x00\x08\t:h\xfd\x00e\x00s\x00_\x00E\x00S\x00.\x00q\x00m\x00\x08\x0eI\xb5}\x00z\x00h\x00_\x00T\x00W\x00.\x00q\x00m\x00\x08\x05@[=\x00k\x00o\x00_\x00K\x00R\x00.\x00q\x00m\x00\x08\x0e8\x05}\x00z\x00h\x00_\x00C\x00N\x00.\x00q\x00m\x00\x08\x07?;}\x00j\x00a\x00_\x00J\x00P\x00.\x00q\x00m\x00\x04\x00\x06\xa8\x8b\x00d\x00a\x00r\x00k\x00\x05\x00r\xfd\xf4\x00l\x00i\x00g\x00h\x00t\x00\x12\x0c\xf9E\xe3\x00m\x00e\x00s\x00s\x00a\x00g\x00e\x00_\x00w\x00i\x00n\x00d\x00o\x00w\x00.\x00q\x00s\x00s\x00\x0b\x06QI\x87\x00d\x00i\x00s\x00c\x00o\x00r\x00d\x00.\x00s\x00v\x00g\x00\x0e\r\x92\xd4\xa3\x00s\x00t\x00a\x00t\x00u\x00s\x00_\x00b\x00a\x00r\x00.\x00q\x00s\x00s\x00\x08\x08\x87U\x83\x00c\x00a\x00r\x00d\x00.\x00q\x00s\x00s\x00\t\x08\x97\x87\xa7\x00h\x00e\x00a\x00r\x00t\x00.\x00s\x00v\x00g\x00\x08\x0bcU\x87\x00s\x00t\x00o\x00p\x00.\x00s\x00v\x00g\x00\x07\nuXC\x00t\x00a\x00b\x00.\x00q\x00s\x00s' cfg.themeMode
+2026-10-24 23:01:24,061 INFO MainThread app:translator install success <PySide6.QtCore.QLocale()/* Chinese, Simplified Han, China */ at 0x000001C6C31783C0>, 开发工具
+2026-10-24 23:01:24,072 INFO MainThread TaskExecutor:install ocr translations error for zh_CN
+2026-10-24 23:01:24,088 DEBUG MainThread Config:init self.config = {'window_x': 840, 'window_y': 214, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-24 23:01:24,089 DEBUG MainThread ok:locale name zh_CN
+2026-10-24 23:01:24,305 DEBUG MainThread ok:init app end
+2026-10-24 23:01:24,393 DEBUG MainThread Config:init self.config = {'0': 874, '1': 0, '2': 0, '3': 879, '4': 0, '5': 0}
+2026-10-24 23:01:24,393 DEBUG MainThread AutoCombatTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,399 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Auto Target': True, 'Use Liberation': True, 'Check Levitator': True, 'Switch to Healer before and after Combat': True}
+2026-10-24 23:01:24,401 DEBUG MainThread AutoPickTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,423 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Pick Up White List': ['吸收', 'Absorb'], 'Pick Up Black List': ['开始合成', '领取奖励', 'Claim', '合成台', '开始烹饪']}
+2026-10-24 23:01:24,425 DEBUG MainThread AutoLoginTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,431 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-24 23:01:24,434 DEBUG MainThread AutoDialogTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,435 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-24 23:01:24,436 DEBUG MainThread FastTravelTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,440 DEBUG MainThread Config:init self.config = {'_enabled': False}
+2026-10-24 23:01:24,441 DEBUG MainThread MouseResetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,442 DEBUG MainThread Config:init self.config = {'_enabled': True}
+2026-10-24 23:01:24,454 DEBUG MainThread DailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,469 DEBUG MainThread Config:init self.config = {'Which to Farm': 'Tacet Suppression', 'Which Tacet Suppression to Farm': 1, 'Which Forgery Challenge to Farm': 1, 'Material Selection': 'Shell Credit', 'Farm Nightmare Nest for Daily Echo': True, 'Additional Tasks to Run After Daily Task': ['Check Weekly Garden'], 'Exit After Task': False}
+2026-10-24 23:01:24,472 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-24 23:01:24,472 DEBUG MainThread FarmEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,522 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-24 23:01:24,528 DEBUG MainThread Config:init self.config = {'Teleport to Boss': 'No', 'Boss Level': '80', 'Boss': 'Other', 'Repeat Farm Count': 10000, 'Combat Wait Time': 0, 'Echo Pickup Method': 'Walk', 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Which Weekly Boss to Teleport': 1, 'Which Boss Challenge to Teleport': 1, 'Which Special Nightmare to Teleport': 1, 'Exit After Task': False}
+2026-10-24 23:01:24,529 DEBUG MainThread NightmareNestTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,533 DEBUG MainThread Config:init self.config = {'_enabled': True, 'Which to Farm': ['Nightmare Purification', 'Tacet Discord Nest']}
+2026-10-24 23:01:24,533 DEBUG MainThread TacetTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,538 DEBUG MainThread Config:init self.config = {'Which Tacet Suppression to Farm': 1}
+2026-10-24 23:01:24,538 DEBUG MainThread ForgeryTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,543 DEBUG MainThread Config:init self.config = {'Which Forgery Challenge to Farm': 1}
+2026-10-24 23:01:24,543 DEBUG MainThread SimulationTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,547 DEBUG MainThread Config:init self.config = {'Material Selection': 'Shell Credit'}
+2026-10-24 23:01:24,549 DEBUG MainThread MultiAccountDailyTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,553 DEBUG MainThread Config:init self.config = {'Exit After Task': False}
+2026-10-24 23:01:24,554 DEBUG MainThread MergeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,554 DEBUG MainThread Config:init self.config = {}
+2026-10-24 23:01:24,557 DEBUG MainThread EnhanceEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,561 DEBUG MainThread Config:init self.config = {'必须有双爆': True, '双爆出现之前必须全有效词条': True, '双爆总计>=': 13.8, '首条双爆>=': 6.9, '有效词条>=': 3, '第一条必须为有效词条': True, '有效词条': ['暴击', '暴击伤害', '攻击百分比'], 'Pause after Success': True}
+2026-10-24 23:01:24,563 DEBUG MainThread ChangeEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,567 DEBUG MainThread Config:init self.config = {'目标属性': '攻击'}
+2026-10-24 23:01:24,567 DEBUG MainThread GardenTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,567 DEBUG MainThread Config:init self.config = {}
+2026-10-24 23:01:24,630 DEBUG MainThread Farm3CEchoTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,637 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-route5.json', 'Route Queue': '', 'Navigation Interval': 0.2, 'Keep Camera Behind Player': True, 'Auto Glide when Airborne': True, 'Select Levitator Automatically': False, 'Use Liberation': True, 'Switch to Healer before and after Combat': True, 'Combat Timeout': 180, 'Pickup Timeout': 20}
+2026-10-24 23:01:24,637 DEBUG MainThread Record3CEchoRouteTask:ExecutorOperation init <src.scene.WWScene.WWScene object at 0x000001C6C319BF20>
+2026-10-24 23:01:24,642 DEBUG MainThread Config:init self.config = {'Route File': 'routes/3c/local-routeff2.json', 'Route Name': 'Local 3C Route1', 'Start Method': 'Nearest Beacon', 'Capture Teleport Overview': True, 'Capture Map Context': True, 'Star Selection': 'Connected Group', 'Map Selection Path': '', 'Teleport Anchor': '', 'Maximum Marker Gap': 200, 'Recording Radius': 500}
+2026-10-24 23:01:24,642 INFO MainThread task_manager:Found tasks: []
+2026-10-24 23:01:24,752 INFO MainThread task_manager:Built-in task file map: 18 files
+2026-10-24 23:01:24,753 INFO MainThread task_manager:Debug file watcher initialized, watching dirs ['E:\\Better_ww\\ok_tasks', 'E:\\Better_ww\\src\\task']
+2026-10-24 23:01:24,753 INFO MainThread ok:do_init, end
+2026-10-24 23:01:24,753 INFO MainThread ok:OK start id:1953110132928 pid:135548
+2026-10-24 23:01:24,945 INFO MainThread MainWindow:main window __init__
+2026-10-24 23:01:24,951 INFO MainThread MainWindow:Refresh primary button color: #0067c0
+2026-10-24 23:01:24,960 DEBUG MainThread Config:init self.config = {'last_version': 'dev'}
+2026-10-24 23:01:26,099 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-24 23:01:26,105 INFO DefaultOCRInit TaskExecutor:openvino cache_dir: E:\Better_ww\cache\openvino
+2026-10-24 23:01:26,106 INFO DefaultOCRInit TaskExecutor:openvino device candidates ['CPU']; gpu discovery disabled
+2026-10-24 23:01:26,114 DEBUG MainThread StartCard:basic_options.start/stop: F9
+2026-10-24 23:01:26,164 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:26,226 INFO MainThread ok:translation installed for zh_CN
+2026-10-24 23:01:26,380 INFO DefaultOCRInit TaskExecutor:openvino async infer requests: 1
+2026-10-24 23:01:26,491 DEBUG TaskEnable MouseResetTask:schedule mouse reset
+2026-10-24 23:01:26,675 INFO DefaultOCRInit TaskExecutor:onnxocr init finished, result: use_npu=True, test_ocr=[[[[[17.0, 40.0], [326.0, 44.0], [325.0, 133.0], [16.0, 129.0]], ('okscript', 0.9991297721862793)]]], cost: 3.69s
+2026-10-24 23:01:26,675 INFO DefaultOCRInit TaskExecutor:ocr_lib init <onnxocr.onnx_paddleocr.ONNXPaddleOcr object at 0x000001C6BF5DD280> onnxocr
+2026-10-24 23:01:26,675 INFO DefaultOCRInit TaskExecutor:default ocr init end, cost: 4.25s
+2026-10-24 23:01:27,287 DEBUG MainThread MainWindow:add default onetime_tab len 13
+2026-10-24 23:01:27,540 DEBUG MainThread Config:init self.config = {'target_task': 'DailyTask', 'target_images': [], 'target_function': ''}
+2026-10-24 23:01:27,592 DEBUG DebugTab DebugTab:bind_hot_keys
+2026-10-24 23:01:27,606 DEBUG MainThread Config:init self.config = {'code': ''}
+2026-10-24 23:01:27,790 DEBUG MainThread Config:init self.config = {'generate_label_enum': False, 'label_enum_relative_path': 'ok_tasks/LabelEnum.py'}
+2026-10-24 23:01:27,834 INFO MainThread Loaded 0 tasks from cache
+2026-10-24 23:01:27,835 INFO ScheduleRefresh schedule_index_sync:schedule index sync start: 13 onetime_tasks, root=\OK-WW
+2026-10-24 23:01:27,840 INFO ScheduleRefresh schedule_index_sync:schedule index sync skipped: cache is empty/invalid
+2026-10-24 23:01:27,840 INFO ScheduleRefresh Loaded 0 tasks from cache
+2026-10-24 23:01:27,918 INFO ScheduleRefresh Initializing Windows Task Scheduler COM service, root=\OK-WW
+2026-10-24 23:01:28,024 INFO ScheduleRefresh Windows Task Scheduler COM service initialized, root=\OK-WW
+2026-10-24 23:01:28,027 DEBUG ScheduleRefresh Failed to query schedule folder \OK-WW: (-2147352567, '发生意外。', (0, None, None, None, 0, -2147024894), None)
+2026-10-24 23:01:28,031 INFO ScheduleRefresh Saved 0 tasks to cache
+2026-10-24 23:01:28,578 INFO MainThread UpdateCard:using v0.0.0 for nonnumeric test version 'dev'
+2026-10-24 23:01:28,578 INFO MainThread UpdateCard:initialized current_version='v0.0.0', pyappify_module='E:\\Better_ww\\.venv\\Lib\\site-packages\\pyappify\\__init__.py', pyappify_app_version=None, test_mode=True
+2026-10-24 23:01:28,603 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-24 23:01:28,980 INFO MainThread MainWindow:main window __init__ done
+2026-10-24 23:01:28,980 DEBUG MainThread ok:dpi_scaling: 1.0
+2026-10-24 23:01:29,032 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:01:29,049 INFO MainThread ok:pyappify no need to upgrade False 1.2.3 447207edbfb6944beb994347048e155df99775eb18c87dcae54dda125071c94a ['https://github.com/ok-oldking/ok-wuthering-waves/releases/download/v3.5.30/ok-ww-win32.zip']
+2026-10-24 23:01:29,049 INFO MainThread MainWindow:Window has fully displayed
+2026-10-24 23:01:29,049 DEBUG MainThread DeviceManager:calling refresh
+2026-10-24 23:01:29,049 INFO MainThread MainWindow:MainWindow showEvent Kill Launcher After Start
+2026-10-24 23:01:29,050 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-24 23:01:29,052 INFO MainThread MainWindow:schedule pyappify update check in 10000ms
+2026-10-24 23:01:29,135 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-24 23:01:29,136 DEBUG MainThread ok:show_main_window end
+2026-10-24 23:01:29,136 DEBUG MainThread ok:start app.exec()
+2026-10-24 23:01:29,137 INFO RefreshAdb DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,137 INFO MainThread ok:app.exec()
+2026-10-24 23:01:29,137 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-24 23:01:29,138 DEBUG RefreshAdb DeviceManager:set_preferred_device None -1
+2026-10-24 23:01:29,138 INFO RefreshAdb DeviceManager:first start use first or connected device {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,140 INFO RefreshAdb DeviceManager:preferred device did change pc
+2026-10-24 23:01:29,143 DEBUG RefreshAdb DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,144 DEBUG RefreshAdb DeviceManager:refresh {'pc': {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}}
+2026-10-24 23:01:29,144 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-24 23:01:29,144 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-24 23:01:29,148 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-24 23:01:29,148 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-24 23:01:29,149 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-24 23:01:29,149 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-24 23:01:29,149 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-24 23:01:29,149 WARNING RefreshAdb windows_graphics:start_or_stop not self.hwnd_window.exists
+2026-10-24 23:01:29,150 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-24 23:01:29,150 INFO RefreshAdb windows_graphics:destroy windows capture
+2026-10-24 23:01:29,150 INFO RefreshAdb update:use BitBlt_RenderFull capture render_full: True
+2026-10-24 23:01:29,150 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.bitblt.BitBltCaptureMethod'>
+2026-10-24 23:01:29,320 INFO MainThread ScheduleTaskTab:Loaded 0 tasks
+2026-10-24 23:01:29,358 DEBUG MainThread MainWindow:bring_to_front native activation failed: (0, 'SetForegroundWindow', 'No error message is available')
+2026-10-24 23:01:29,379 INFO MainThread pyappify_startup:get_startup_version_change from_version=, to_version=, is_updated=False, is_downgraded=False
+2026-10-24 23:01:29,380 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:29,387 DEBUG MainThread StartTab:device_index_changed 0
+2026-10-24 23:01:29,387 DEBUG MainThread DeviceManager:set_preferred_device None 0
+2026-10-24 23:01:29,387 DEBUG MainThread DeviceManager:preferred device: {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,389 DEBUG MainThread StartTab:capture_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,395 DEBUG MainThread StartTab:interaction_index_changed 0 {'address': '', 'imei': 'pc', 'device': 'windows', 'model': '', 'nick': 'Client-Win64-Shipping.exe', 'width': 0, 'height': 0, 'hwnd': 'Client-Win64-Shipping.exe', 'capture': 'windows', 'connected': False, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 0, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:01:29,397 DEBUG MainThread StartTab:device_index_changed done 0
+2026-10-24 23:01:29,397 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:30,048 INFO global MainWindow:Window geometry updated in ok_config {'window_x': 840, 'window_y': 214, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-24 23:01:33,645 INFO update_window_size hwnd_window:do_update_window_size hwnd changed from 0 to 329368 top 329368 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-24 23:01:33,646 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:01:33,647 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:01:33,647 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:34,565 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:01:34,566 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:01:34,566 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:36,804 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:01:36,804 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:01:36,805 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:01:39,050 INFO pyappify-update UpdateCard:calling pyappify.get_version_list(release_only=True)
+2026-10-24 23:01:39,068 ERROR pyappify-update UpdateCard:pyappify.get_version_list(release_only=True) failed: PyAppify does not support checking for updates for pyappify_version: None Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 167, in run
+    result = operation()
+             ^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\ui\qt\about\UpdateCard.py", line 142, in <lambda>
+    lambda: get_versions(release_only=release_only, exit_event=self.exit_event),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "E:\Better_ww\.venv\Lib\site-packages\pyappify\__init__.py", line 416, in get_version_list
+    raise RuntimeError(
+RuntimeError: PyAppify does not support checking for updates for pyappify_version: None
+
+2026-10-24 23:01:44,082 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:01:44,082 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:01:44,082 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:13,325 INFO ok.core.start_controller start_controller:do_start: call do_refresh True
+2026-10-24 23:02:13,328 INFO ok.core.start_controller DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:02:13,328 DEBUG ok.core.start_controller DeviceManager:do_start
+2026-10-24 23:02:13,328 DEBUG ok.core.start_controller DeviceManager:set_preferred_device None -1
+2026-10-24 23:02:13,328 INFO ok.core.start_controller DeviceManager:first start use first or connected device {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-24 23:02:13,328 INFO ok.core.start_controller DeviceManager:preferred device did change pc_329368
+2026-10-24 23:02:13,361 DEBUG ok.core.start_controller DeviceManager:preferred device: {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-24 23:02:13,361 DEBUG RefreshAdb DeviceManager:do_start
+2026-10-24 23:02:13,361 DEBUG ok.core.start_controller DeviceManager:refresh {'pc_329368': {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}}
+2026-10-24 23:02:13,361 DEBUG RefreshAdb hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-24 23:02:13,362 INFO ok.core.start_controller start_controller:start_device: {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}
+2026-10-24 23:02:13,365 INFO ok.core.start_controller start_controller:test check_device_error msg: 鸣潮   is not connected, please select the game window.
+2026-10-24 23:02:13,365 ERROR ok.core.start_controller start_controller:Game window is not connected BitBlt_True_2560x1440 
+2026-10-24 23:02:13,366 ERROR ok.core.start_controller start_controller:waiting for game to start error 鸣潮   is not connected, please select the game window. 
+2026-10-24 23:02:13,366 INFO RefreshAdb hwnd_window:do_update_window_size hwnd changed from 0 to 329368 top 329368 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-24 23:02:13,367 INFO RefreshAdb hwnd_window:hwnd changed,connected:1
+2026-10-24 23:02:13,368 INFO RefreshAdb hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:02:13,369 INFO RefreshAdb capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-24 23:02:13,371 INFO RefreshAdb windows_graphics:start_or_stop start WGC capture
+2026-10-24 23:02:13,378 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:13,380 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:13,663 INFO RefreshAdb update:use WGC capture
+2026-10-24 23:02:13,663 INFO RefreshAdb DeviceManager:capture method <class 'ok.device.capture_methods.windows_graphics.WindowsGraphicsCaptureMethod'>
+2026-10-24 23:02:13,664 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:15,369 INFO ok.core.start_controller DeviceManager:update_pc_device pc_device: {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe']}
+2026-10-24 23:02:15,369 DEBUG ok.core.start_controller DeviceManager:do_start
+2026-10-24 23:02:15,369 DEBUG ok.core.start_controller hwnd_window:update_frame_size:0x0 to 0x0
+2026-10-24 23:02:15,374 INFO ok.core.start_controller hwnd_window:do_update_window_size hwnd changed from 0 to 329368 top 329368 E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe UnrealWindow real:0,0,2560,1440
+2026-10-24 23:02:15,374 INFO ok.core.start_controller hwnd_window:hwnd changed,connected:1
+2026-10-24 23:02:15,374 INFO ok.core.start_controller hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:02:15,374 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:15,374 INFO ok.core.start_controller capture:check available WINDOWS_BUILD_NUMBER:26100 >= 20348 True
+2026-10-24 23:02:15,387 INFO ok.core.start_controller update:use WGC capture
+2026-10-24 23:02:15,387 INFO ok.core.start_controller DeviceManager:capture method <class 'ok.device.capture_methods.windows_graphics.WindowsGraphicsCaptureMethod'>
+2026-10-24 23:02:15,388 DEBUG ok.core.start_controller DeviceManager:refresh {'pc_329368': {'address': '', 'imei': 'pc_329368', 'device': 'windows', 'model': '', 'nick': '鸣潮  ', 'width': 2560, 'height': 1440, 'hwnd': '鸣潮  ', 'capture': 'windows', 'connected': True, 'full_path': 'E:\\Wuthering Waves\\Wuthering Waves Game\\Client\\Binaries\\Win64\\Client-Win64-Shipping.exe', 'real_hwnd': 329368, 'exe': ['Client-Win64-Shipping.exe'], 'resolution': '2560x1440'}}
+2026-10-24 23:02:15,388 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:15,388 INFO ok.core.start_controller start_controller:test check_device_error msg: 鸣潮   is not connected, please select the game window.
+2026-10-24 23:02:15,404 INFO ok.core.start_controller start_controller:check_device_error: capturing frame (2560, 1440)
+2026-10-24 23:02:15,405 INFO ok.core.start_controller start_controller:check_device_error: checking feature_set size
+2026-10-24 23:02:15,405 INFO ok.core.start_controller FeatureSet:FeatureSet: Width and height changed from 0x0 to 2560x1440
+2026-10-24 23:02:15,405 INFO ok.core.start_controller start_controller:check_device_error: checking resolution
+2026-10-24 23:02:15,405 INFO ok.core.start_controller TaskExecutor:start check_frame_and_resolution
+2026-10-24 23:02:15,531 INFO ok.core.start_controller gpu_driver_settings:Windows HDR enabled: False (\\.\DISPLAY1: enabled=False, supported=True, bits=8)
+2026-10-24 23:02:15,555 INFO ok.core.start_controller gpu_driver_settings:NVIDIA filter profile in use: Unknown (NVIDIA filter profile slot not found for E:\Wuthering Waves\Wuthering Waves Game\Client\Binaries\Win64\Client-Win64-Shipping.exe)
+2026-10-24 23:02:15,765 INFO ok.core.start_controller gpu_driver_settings:NVIDIA Image Sharpening enabled: False
+2026-10-24 23:02:15,766 INFO ok.core.start_controller gpu_driver_settings:AMD image sharpening check skipped: ADLXPybind is not installed
+2026-10-24 23:02:15,934 INFO ok.core.start_controller gpu_driver_settings:NVIDIA RTX Dynamic Vibrance enabled: False
+2026-10-24 23:02:15,934 INFO ok.core.start_controller gpu_driver_settings:NVIDIA RTX HDR enabled: False (Windows HDR is not enabled)
+2026-10-24 23:02:15,935 INFO ok.core.start_controller gpu_driver_settings:GPU driver post-processing detected features: []
+2026-10-24 23:02:15,935 INFO ok.core.start_controller TaskExecutor:queued onetime_task 📍 Record 3C Route from Map
+2026-10-24 23:02:15,935 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x000001C6C289CFE0>
+2026-10-24 23:02:15,937 INFO TaskExecutor TaskExecutor:start execute
+2026-10-24 23:02:15,937 INFO TaskExecutor TaskExecutor:get queued onetime_task 📍 Record 3C Route from Map
+2026-10-24 23:02:15,954 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-24 23:02:15,959 DEBUG TaskExecutor TaskExecutor:start running onetime_task 📍 Record 3C Route from Map
+2026-10-24 23:02:15,961 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x000001C6C3AE6B40>, <src.task.FarmEchoTask.FarmEchoTask object at 0x000001C6C27C4230>, <src.task.NightmareNestTask.NightmareNestTask object at 0x000001C6C2816000>, <src.task.TacetTask.TacetTask object at 0x000001C6C302EC60>, <src.task.ForgeryTask.ForgeryTask object at 0x000001C6C3B22ED0>, <src.task.SimulationTask.SimulationTask object at 0x000001C6C3199EE0>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x000001C6C3B21A60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x000001C6C39F09E0>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x000001C6C313F0B0>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x000001C6C27C41A0>, <src.task.GardenTask.GardenTask object at 0x000001C6C2F7B0B0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x000001C6C289CFE0>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x000001C6C3910C20>, <src.task.AutoPickTask.AutoPickTask object at 0x000001C6C3AE7620>, <src.task.AutoLoginTask.AutoLoginTask object at 0x000001C6C3A56090>, <src.task.SkipDialogTask.AutoDialogTask object at 0x000001C6C308BEC0>, <src.task.FastTravelTask.FastTravelTask object at 0x000001C6C3AE7FE0>, <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>]
+2026-10-24 23:02:15,961 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:15,961 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:02:16,490 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:16,593 DEBUG TaskExecutor FeatureSet:loaded big_map_skull resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:16,594 DEBUG TaskExecutor FeatureSet:loaded big_map_diamond resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:16,597 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:16,676 DEBUG TaskExecutor FeatureSet:loaded teleport_port resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:16,676 DEBUG TaskExecutor FeatureSet:loaded big_map_star resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:17,051 INFO TaskExecutor Record3CEchoRouteTask:3C map markers: capture=2560x1440, diamonds=0, stars=3, scores={'diamond': 0.6064355969429016, 'diamond_top': 0.6563706398010254, 'star': 0.9763928055763245}
+2026-10-24 23:02:17,051 INFO TaskExecutor Record3CEchoRouteTask:3C marker candidates: region=[717, 173, 2227, 1296], stars=[((950.3, 887.7), 0.976), ((1474.3, 685.0), 0.975), ((1301.0, 946.3), 0.974)], template_sizes=diamond:(48, 56),star:(37, 40)
+2026-10-24 23:02:17,052 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:17,135 DEBUG TaskExecutor FeatureSet:loaded map_way_point resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:17,136 DEBUG TaskExecutor FeatureSet:loaded map_way_point_big resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:17,136 DEBUG TaskExecutor FeatureSet:loaded map_way_point_pop_up_box resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:17,249 INFO TaskExecutor FeatureSet:find_one_feature map_way_point took 198.20ms (check_size: 0.00ms, prepare: 87.59ms, match: 106.60ms, post: 4.00ms)
+2026-10-24 23:02:17,350 INFO TaskExecutor Record3CEchoRouteTask:info_set Selected Route Stars 3
+2026-10-24 23:02:17,350 INFO TaskExecutor Record3CEchoRouteTask:info_set Excluded Route Stars 0
+2026-10-24 23:02:17,367 INFO TaskExecutor Record3CEchoRouteTask:3C route selected 3 stars, excluded 0, max_gap=667, radius=667 / 请检查路线预览中的点序
+2026-10-24 23:02:17,368 INFO TaskExecutor Record3CEchoRouteTask:info_set 3C Stage Recording Map Overview / 正在录制传送地图概览
+2026-10-24 23:02:17,634 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:18,550 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:19,327 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:20,084 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:20,621 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,629 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,631 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,698 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,700 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,701 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,706 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,711 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,714 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,715 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,721 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,729 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,735 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,738 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,739 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,740 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,741 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,749 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,757 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,786 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,804 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,809 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,824 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,826 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,847 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,851 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,854 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,856 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,861 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:20,864 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,865 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,866 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,867 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,868 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,869 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,873 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,875 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,876 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,877 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,878 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,879 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,880 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,881 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,881 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,883 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,884 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,885 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,887 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,887 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,889 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,890 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,891 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,891 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,893 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,894 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,895 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,896 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,897 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,898 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,898 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,900 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,901 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,901 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,903 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,904 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,905 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,905 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,907 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,908 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,908 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,910 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,911 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,913 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,913 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,915 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,916 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,917 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,918 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,922 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,923 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,924 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,925 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,926 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,926 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,928 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,928 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,930 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,931 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,931 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,932 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,934 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,936 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,937 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,938 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,939 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,940 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,941 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,942 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,943 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,944 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,945 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,946 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,947 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,948 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,949 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,950 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,952 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,952 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,953 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,954 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,955 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,956 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,957 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,958 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,959 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,960 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,961 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,962 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,963 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,964 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,965 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,969 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,970 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,971 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,972 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,973 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,974 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,975 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,976 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,977 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,978 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,979 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,980 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,981 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,982 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,985 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,986 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,987 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,989 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,990 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,991 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,993 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:20,994 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,000 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,001 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,001 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,003 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,004 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,005 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,006 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,007 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,008 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,009 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,010 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,011 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,011 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,013 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,015 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,017 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,018 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,019 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,020 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,021 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,023 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,024 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,025 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,027 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,029 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,030 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,031 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,033 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,034 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,036 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,037 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,039 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,041 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,041 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,043 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,045 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,047 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,048 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,050 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,051 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,053 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,055 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,056 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,057 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,060 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,061 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,063 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,065 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,066 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,067 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,069 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,070 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,071 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,073 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,075 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,076 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,078 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,080 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,081 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,084 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,086 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,088 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,089 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,091 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,093 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,095 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,096 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,099 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,101 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,101 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,103 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,107 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,110 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,111 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,114 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,118 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,123 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,130 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,133 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,144 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,151 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,157 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,158 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,161 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,161 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,167 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,169 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,170 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,173 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,175 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,177 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,178 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,181 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,183 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,185 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,185 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,187 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,189 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,191 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,191 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,193 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,195 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,196 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,200 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,201 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,201 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,203 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,205 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,206 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,210 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,211 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,211 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,213 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,216 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,217 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,219 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,220 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,221 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,221 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,224 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,227 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,228 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,229 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,231 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,231 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,235 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,238 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,240 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,241 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,245 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,249 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,254 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,256 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,261 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,267 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,276 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,282 DEBUG MainThread handler:removing duplicate task <bound method MainWindow.update_ok_config of <ok.ui.qt.MainWindow.MainWindow(0x1c6c112fef0) at 0x000001C6C3B7BC00>>
+2026-10-24 23:02:21,664 DEBUG TaskExecutor post_message:scroll 1508, 748, -2
+2026-10-24 23:02:22,289 INFO global MainWindow:Window geometry updated in ok_config {'window_x': 118, 'window_y': 141, 'window_width': 1200, 'window_height': 800, 'window_maximized': False, 'navigation_expanded': True, 'use_overlay': False}
+2026-10-24 23:02:22,407 INFO TaskExecutor Record3CEchoRouteTask:info_set 3C Stage Recording Map Context / 正在记录地图菜单
+2026-10-24 23:02:22,425 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:22,485 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [切换地图_0.99]) time: 0.06 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [切换地图_0.99]
+2026-10-24 23:02:22,506 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [切换地图_0.99]) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [切换地图_0.99]
+2026-10-24 23:02:22,657 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [切换地图_0.99]) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [切换地图_0.99]
+2026-10-24 23:02:22,858 INFO TaskExecutor Record3CEchoRouteTask:left_click 切换地图 (2075, 1342) after_sleep 0
+2026-10-24 23:02:22,869 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.00 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:23,019 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.00 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:23,174 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_1.00]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_1.00]
+2026-10-24 23:02:23,324 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_0.97]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_0.97]
+2026-10-24 23:02:23,332 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_0.97]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_0.97]
+2026-10-24 23:02:23,400 DEBUG TaskExecutor task:ocr_zone Box(x=1421, y=173, width=397, height=1051, confidence=100) found result: [罗伊冰原_1.00, 黎那汐塔_1.00, 黑海岸_1.00, 瑝珑_0.96, 梦州_1.00, 今州_1.00]) time: 0.07 scale_factor: 1.00 target_height:0 resized_shape:(1051, 397, 3) all_boxes: [罗伊冰原_1.00, 黎那汐塔_1.00, 黑海岸_1.00, 瑝珑_0.96, 梦州_1.00, 今州_1.00]
+2026-10-24 23:02:23,471 DEBUG TaskExecutor task:ocr_zone Box(x=1946, y=173, width=512, height=1037, confidence=100) found result: [玄方城_1.00, 方擎西峰_1.00, 落渊南丘_1.00, と_0.55, 玄幽东岳_1.00, 梦枢天罗_1.00]) time: 0.06 scale_factor: 1.00 target_height:0 resized_shape:(1037, 512, 3) all_boxes: [玄方城_1.00, 方擎西峰_1.00, 落渊南丘_1.00, と_0.55, 玄幽东岳_1.00, 梦枢天罗_1.00]
+2026-10-24 23:02:23,626 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_0.98]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_0.98]
+2026-10-24 23:02:23,663 DEBUG TaskExecutor task:ocr_zone Box(x=1421, y=173, width=397, height=1051, confidence=100) found result: [罗伊冰原_1.00, 黎那汐塔_1.00, 黑海岸_1.00, 瑝珑_0.96, 梦州_1.00, 今州_1.00]) time: 0.04 scale_factor: 1.00 target_height:0 resized_shape:(1051, 397, 3) all_boxes: [罗伊冰原_1.00, 黎那汐塔_1.00, 黑海岸_1.00, 瑝珑_0.96, 梦州_1.00, 今州_1.00]
+2026-10-24 23:02:23,716 DEBUG TaskExecutor task:ocr_zone Box(x=1946, y=173, width=512, height=1037, confidence=100) found result: [玄方城_1.00, 方擎西峰_1.00, 落渊南丘_1.00, 玄幽东岳_1.00, 梦枢天罗_0.99]) time: 0.04 scale_factor: 1.00 target_height:0 resized_shape:(1037, 512, 3) all_boxes: [玄方城_1.00, 方擎西峰_1.00, 落渊南丘_1.00, 玄幽东岳_1.00, 梦枢天罗_0.99]
+2026-10-24 23:02:23,730 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_0.98]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_0.98]
+2026-10-24 23:02:23,731 DEBUG TaskExecutor base:Sending key esc
+2026-10-24 23:02:23,773 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: [切换地图_0.98]) time: 0.01 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: [切换地图_0.98]
+2026-10-24 23:02:23,929 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.00 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:23,947 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [特行码_0.53]) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [特行码_0.53]
+2026-10-24 23:02:24,101 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.00 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:24,124 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [切换地图_1.00]) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [切换地图_1.00]
+2026-10-24 23:02:24,278 DEBUG TaskExecutor task:ocr_zone Box(x=1464, y=50, width=340, height=86, confidence=100) found result: []) time: 0.00 scale_factor: 1.00 target_height:0 resized_shape:(86, 340, 3) all_boxes: []
+2026-10-24 23:02:24,300 DEBUG TaskExecutor task:ocr_zone Box(x=1741, y=1210, width=794, height=216, confidence=100) found result: [切换地图_0.99]) time: 0.02 scale_factor: 1.00 target_height:0 resized_shape:(216, 794, 3) all_boxes: [切换地图_0.99]
+2026-10-24 23:02:25,393 INFO TaskExecutor Record3CEchoRouteTask:info_set Route File E:\Better_ww\routes\3c\local-routeff3.json
+2026-10-24 23:02:25,393 INFO TaskExecutor Record3CEchoRouteTask:info_set Route Preview E:\Better_ww\routes\3c\local-routeff3.preview.png
+2026-10-24 23:02:25,393 INFO TaskExecutor Record3CEchoRouteTask:info_set Route Points 3
+2026-10-24 23:02:25,394 INFO TaskExecutor Record3CEchoRouteTask:3C route saved metadata / 已保存路线入口信息: {"file": "E:\\Better_ww\\routes\\3c\\local-routeff3.json", "start": {"x": 1508, "y": 748, "tolerance": 50}, "teleport": true, "views": 7, "selection_path": ["瑝珑", "梦州", "落渊南丘"]}
+2026-10-24 23:02:25,394 INFO TaskExecutor Record3CEchoRouteTask:Route saved. Check point order before farming / 路线已保存，请检查点序后开始刷取
+2026-10-24 23:02:25,397 DEBUG TaskExecutor TaskExecutor:end running onetime_task 📍 Record 3C Route from Map
+2026-10-24 23:02:25,433 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-24 23:02:25,441 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,465 DEBUG TaskExecutor FeatureSet:loaded yangyang_sp resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:25,468 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,531 DEBUG TaskExecutor FeatureSet:loaded box_concerto_last_dot resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,531 DEBUG TaskExecutor FeatureSet:loaded char_verina resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,531 DEBUG TaskExecutor FeatureSet:loaded char_yinlin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,532 DEBUG TaskExecutor FeatureSet:loaded char_taoqi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,544 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,616 DEBUG TaskExecutor FeatureSet:loaded char_shorekeeper resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,617 DEBUG TaskExecutor FeatureSet:loaded multiplayer_world_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,620 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,641 DEBUG TaskExecutor FeatureSet:loaded char_suisui resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:25,642 DEBUG TaskExecutor FeatureSet:loaded suisui_forte3 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:25,642 DEBUG TaskExecutor FeatureSet:loaded suisui_forte2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:25,644 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,704 DEBUG TaskExecutor FeatureSet:loaded box_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,704 DEBUG TaskExecutor FeatureSet:loaded box_char_1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,705 DEBUG TaskExecutor FeatureSet:loaded box_char_2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,706 DEBUG TaskExecutor FeatureSet:loaded char_rover resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,706 DEBUG TaskExecutor FeatureSet:loaded box_char2_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,706 DEBUG TaskExecutor FeatureSet:loaded char_yuanwu resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,706 DEBUG TaskExecutor FeatureSet:loaded box_char3_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,707 DEBUG TaskExecutor FeatureSet:loaded box_char1_switch_wave resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,710 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,778 DEBUG TaskExecutor FeatureSet:loaded char_zhezhi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,778 DEBUG TaskExecutor FeatureSet:loaded char_rover_male resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,780 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,863 DEBUG TaskExecutor FeatureSet:loaded char_jianxin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,863 DEBUG TaskExecutor FeatureSet:loaded char_sanhua resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,864 DEBUG TaskExecutor FeatureSet:loaded char_encore resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,866 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:25,929 DEBUG TaskExecutor FeatureSet:loaded char_sanhua2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:25,932 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,010 DEBUG TaskExecutor FeatureSet:loaded char_jinhsi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,012 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,075 DEBUG TaskExecutor FeatureSet:loaded char_jinhsi2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,078 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,138 DEBUG TaskExecutor FeatureSet:loaded chang_changli resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,138 DEBUG TaskExecutor FeatureSet:loaded world_earth_icon resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,141 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,197 DEBUG TaskExecutor FeatureSet:loaded char_changli2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,200 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,259 DEBUG TaskExecutor FeatureSet:loaded char_danjin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,259 DEBUG TaskExecutor FeatureSet:loaded char_mortefi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,260 DEBUG TaskExecutor FeatureSet:loaded char_chixia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,262 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,325 DEBUG TaskExecutor FeatureSet:loaded char_baizhi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,325 DEBUG TaskExecutor FeatureSet:loaded char_calcharo resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,325 DEBUG TaskExecutor FeatureSet:loaded char_jiyan resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,328 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,387 DEBUG TaskExecutor FeatureSet:loaded char_xiangliyao resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,390 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,451 DEBUG TaskExecutor FeatureSet:loaded char_camellya resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,455 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,517 DEBUG TaskExecutor FeatureSet:loaded char_youhu resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,520 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,581 DEBUG TaskExecutor FeatureSet:loaded char_carlotta resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,582 DEBUG TaskExecutor FeatureSet:loaded con_ice resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,586 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,649 DEBUG TaskExecutor FeatureSet:loaded char_carlotta2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,653 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,737 DEBUG TaskExecutor FeatureSet:loaded char_roccia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,744 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,815 DEBUG TaskExecutor FeatureSet:loaded char_phoebe resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,815 DEBUG TaskExecutor FeatureSet:loaded con_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,820 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,893 DEBUG TaskExecutor FeatureSet:loaded char_brant resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,899 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:26,970 DEBUG TaskExecutor FeatureSet:loaded char_cantarella resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:26,985 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,070 DEBUG TaskExecutor FeatureSet:loaded char_zani resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,073 DEBUG TaskExecutor FeatureSet:loaded lib_ready_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,074 DEBUG TaskExecutor FeatureSet:loaded con_full_spectro resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,075 DEBUG TaskExecutor FeatureSet:loaded con_mark_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,077 DEBUG TaskExecutor FeatureSet:loaded lib_mark_char_3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,080 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,148 DEBUG TaskExecutor FeatureSet:loaded char_zani2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,157 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,224 DEBUG TaskExecutor FeatureSet:loaded char_ciaccona resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,228 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,288 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_space resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,289 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,289 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,290 DEBUG TaskExecutor FeatureSet:loaded forte_cartethyia_sword3 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,290 DEBUG TaskExecutor FeatureSet:loaded char_cartethyia resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,293 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,355 DEBUG TaskExecutor FeatureSet:loaded lupa_wolf_icon2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,356 DEBUG TaskExecutor FeatureSet:loaded lupa_wolf_icon1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,357 DEBUG TaskExecutor FeatureSet:loaded char_lupa resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,360 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,420 DEBUG TaskExecutor FeatureSet:loaded char_phrolova resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,423 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,485 DEBUG TaskExecutor FeatureSet:loaded Augusta_lib1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,485 DEBUG TaskExecutor FeatureSet:loaded Augusta resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,488 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,552 DEBUG TaskExecutor FeatureSet:loaded char_iuno resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,553 DEBUG TaskExecutor FeatureSet:loaded iuno_jump resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,553 DEBUG TaskExecutor FeatureSet:loaded iuno_heavy resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,553 DEBUG TaskExecutor FeatureSet:loaded box_extra_action resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,553 DEBUG TaskExecutor FeatureSet:loaded target_box_long2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,556 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,616 DEBUG TaskExecutor FeatureSet:loaded char_galbrena resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,620 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,681 DEBUG TaskExecutor FeatureSet:loaded char_chouyuan resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,685 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,743 DEBUG TaskExecutor FeatureSet:loaded char_chisa resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,746 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,765 DEBUG TaskExecutor FeatureSet:loaded char_chisa2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:27,768 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,796 DEBUG TaskExecutor FeatureSet:loaded char_denia resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:27,798 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,857 DEBUG TaskExecutor FeatureSet:loaded char_douling resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,860 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,917 DEBUG TaskExecutor FeatureSet:loaded char_linnai resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:27,920 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:27,940 DEBUG TaskExecutor FeatureSet:loaded char_linnai2 resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:27,942 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,000 DEBUG TaskExecutor FeatureSet:loaded char_moning resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,003 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,024 DEBUG TaskExecutor FeatureSet:loaded char_moning_new resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,027 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,081 DEBUG TaskExecutor FeatureSet:loaded aemeath_e2 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,081 DEBUG TaskExecutor FeatureSet:loaded char_aemeath resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,085 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,156 DEBUG TaskExecutor FeatureSet:loaded char_xigelika resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,157 DEBUG TaskExecutor FeatureSet:loaded e_forte resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,165 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,235 DEBUG TaskExecutor FeatureSet:loaded char_luhesi resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,236 DEBUG TaskExecutor FeatureSet:loaded luhesi_kick resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,236 DEBUG TaskExecutor FeatureSet:loaded box_luhesi_lib resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,277 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,346 DEBUG TaskExecutor FeatureSet:loaded char_hiyuki resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,346 DEBUG TaskExecutor FeatureSet:loaded hiyuki_right resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,360 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,398 DEBUG TaskExecutor FeatureSet:loaded char_lucilla resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,400 DEBUG TaskExecutor FeatureSet:loaded target_box_short resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,409 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,435 DEBUG TaskExecutor FeatureSet:loaded char_lucy resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,435 DEBUG TaskExecutor FeatureSet:loaded char_rebecca resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,437 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,499 DEBUG TaskExecutor FeatureSet:loaded qingxiao_h1 resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,500 DEBUG TaskExecutor FeatureSet:loaded char_qingxiao resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,503 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,563 DEBUG TaskExecutor FeatureSet:loaded char_jingran resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,566 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,628 DEBUG TaskExecutor FeatureSet:loaded char_hsin resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,630 INFO TaskExecutor AutoCombatTask:warm_up_char_features loaded 61 character templates
+2026-10-24 23:02:28,631 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,652 DEBUG TaskExecutor FeatureSet:loaded char_1_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,655 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,675 DEBUG TaskExecutor FeatureSet:loaded char_2_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,676 DEBUG TaskExecutor FeatureSet:loaded char_3_text resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,676 DEBUG TaskExecutor FeatureSet:loaded mouse_forte resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:28,680 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,735 DEBUG TaskExecutor FeatureSet:loaded edge_levitator resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,735 DEBUG TaskExecutor FeatureSet:loaded box_target_enemy_inner resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded box_target_enemy resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded box_target_mouse resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded box_liberation resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded box_echo resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded box_resonance resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,736 DEBUG TaskExecutor FeatureSet:loaded has_target resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,740 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:28,812 DEBUG TaskExecutor FeatureSet:loaded no_target resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,812 DEBUG TaskExecutor FeatureSet:loaded q resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,812 DEBUG TaskExecutor FeatureSet:loaded e resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,812 DEBUG TaskExecutor FeatureSet:loaded t resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,813 DEBUG TaskExecutor FeatureSet:loaded r resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:28,815 DEBUG TaskExecutor BaseCombatTask:set_key best match Echo Key: Box(name='q', x=2281, y=1343, width=21, height=21, confidence=78)
+2026-10-24 23:02:28,817 DEBUG TaskExecutor BaseCombatTask:set_key best match Liberation Key: Box(name='r', x=2408, y=1342, width=21, height=20, confidence=92)
+2026-10-24 23:02:28,817 INFO TaskExecutor AutoCombatTask:info_set Liberation Key r
+2026-10-24 23:02:28,818 INFO TaskExecutor AutoCombatTask:info_set Echo Key q
+2026-10-24 23:02:28,919 INFO TaskExecutor AutoCombatTask:info_set Chars 弗洛洛, Qingxiao, 莫宁
+2026-10-24 23:02:28,919 INFO TaskExecutor AutoCombatTask:loaded chars success Phrolova 0.9875936508178711
+2026-10-24 23:02:28,919 INFO TaskExecutor AutoCombatTask:loaded chars success Qingxiao 0.9419452548027039
+2026-10-24 23:02:28,919 INFO TaskExecutor AutoCombatTask:loaded chars success Mornye 0.9772288203239441
+2026-10-24 23:02:28,921 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:29,000 DEBUG TaskExecutor FeatureSet:loaded box_target_enemy_long resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,000 DEBUG TaskExecutor FeatureSet:loaded target_enemy_long_inner resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,021 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:29,101 DEBUG TaskExecutor FeatureSet:loaded boss_break_shield resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,105 DEBUG TaskExecutor FeatureSet:loaded f_break resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,110 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:29,186 DEBUG TaskExecutor FeatureSet:loaded boss_break_lock resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,230 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:29,316 DEBUG TaskExecutor FeatureSet:loaded pick_up_f_hcenter_vcenter resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,317 DEBUG TaskExecutor FeatureSet:loaded dialog_3_dots resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:29,321 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:29,321 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:02:38,806 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:02:38,806 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:02:38,807 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:39,420 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:39,420 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:02:39,777 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:39,848 DEBUG TaskExecutor FeatureSet:loaded skip_dialog resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:39,853 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:39,933 DEBUG TaskExecutor FeatureSet:loaded skip_dialog_new resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:39,940 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:39,959 DEBUG TaskExecutor FeatureSet:loaded message resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:39,959 DEBUG TaskExecutor FeatureSet:loaded message_dialog resized width 2560 / original_width:1920,scale_x:1.3333333333333333
+2026-10-24 23:02:41,443 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:02:41,444 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:02:41,446 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:49,422 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:49,423 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:02:51,980 INFO ok.core.start_controller start_controller:queue task while another task is running <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>
+2026-10-24 23:02:51,981 INFO ok.core.start_controller TaskExecutor:queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:02:51,981 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>
+2026-10-24 23:02:51,983 INFO TaskExecutor TaskExecutor:get queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:02:52,013 DEBUG TaskExecutor TaskExecutor:start running onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:02:52,015 INFO TaskExecutor Farm3CEchoTask:3C route selection / 实际路线选择: {"source": "Route File", "route_file_setting": "routes/3c/local-routeff3.json", "files": ["E:\\Better_ww\\routes\\3c\\local-routeff3.json"], "task_module": "E:\\Better_ww\\src\\task\\Farm3CEchoTask.py"}
+2026-10-24 23:02:52,448 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x000001C6C3AE6B40>, <src.task.FarmEchoTask.FarmEchoTask object at 0x000001C6C27C4230>, <src.task.NightmareNestTask.NightmareNestTask object at 0x000001C6C2816000>, <src.task.TacetTask.TacetTask object at 0x000001C6C302EC60>, <src.task.ForgeryTask.ForgeryTask object at 0x000001C6C3B22ED0>, <src.task.SimulationTask.SimulationTask object at 0x000001C6C3199EE0>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x000001C6C3B21A60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x000001C6C39F09E0>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x000001C6C313F0B0>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x000001C6C27C41A0>, <src.task.GardenTask.GardenTask object at 0x000001C6C2F7B0B0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x000001C6C289CFE0>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x000001C6C3910C20>, <src.task.AutoPickTask.AutoPickTask object at 0x000001C6C3AE7620>, <src.task.AutoLoginTask.AutoLoginTask object at 0x000001C6C3A56090>, <src.task.SkipDialogTask.AutoDialogTask object at 0x000001C6C308BEC0>, <src.task.FastTravelTask.FastTravelTask object at 0x000001C6C3AE7FE0>, <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>]
+2026-10-24 23:02:52,448 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:52,448 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:02:52,965 DEBUG TaskExecutor TaskExecutor:found result True 0.014
+2026-10-24 23:02:53,469 INFO TaskExecutor Farm3CEchoTask:Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候
+2026-10-24 23:02:53,484 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:53,555 DEBUG TaskExecutor FeatureSet:loaded arrow resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,575 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:53,655 DEBUG TaskExecutor FeatureSet:loaded star resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,656 DEBUG TaskExecutor FeatureSet:loaded box_minimap resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,657 DEBUG TaskExecutor FeatureSet:loaded box_arrow resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,657 DEBUG TaskExecutor FeatureSet:loaded con_havoc resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,854 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:53,926 DEBUG TaskExecutor FeatureSet:loaded custom_teleport_hcenter_vcenter resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,927 DEBUG TaskExecutor FeatureSet:loaded gray_teleport resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:53,966 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:54,045 DEBUG TaskExecutor FeatureSet:loaded wheel_levitator resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:54,091 DEBUG TaskExecutor BaseCombatTask:set_key best match Echo Key: Box(name='q', x=2281, y=1343, width=21, height=21, confidence=78)
+2026-10-24 23:02:54,092 DEBUG TaskExecutor BaseCombatTask:set_key best match Liberation Key: Box(name='r', x=2408, y=1342, width=21, height=20, confidence=92)
+2026-10-24 23:02:54,093 INFO TaskExecutor Farm3CEchoTask:info_set Liberation Key r
+2026-10-24 23:02:54,093 INFO TaskExecutor Farm3CEchoTask:info_set Echo Key q
+2026-10-24 23:02:54,211 INFO TaskExecutor Farm3CEchoTask:info_set Chars 弗洛洛, Qingxiao, 莫宁
+2026-10-24 23:02:54,211 INFO TaskExecutor Farm3CEchoTask:loaded chars success Phrolova 0.9875935316085815
+2026-10-24 23:02:54,211 INFO TaskExecutor Farm3CEchoTask:loaded chars success Qingxiao 0.9419622421264648
+2026-10-24 23:02:54,212 INFO TaskExecutor Farm3CEchoTask:loaded chars success Mornye 0.9796374440193176
+2026-10-24 23:02:54,212 INFO TaskExecutor globals:yolo_model Using OpenVinoYolo8Detect
+2026-10-24 23:02:55,047 INFO TaskExecutor OpenVinoYolo8Detect:OpenVINO model compiled successfully for CPU 640x640.
+2026-10-24 23:02:55,110 INFO TaskExecutor Farm3CEchoTask:3C vision ready / 3C识别准备完成
+2026-10-24 23:02:55,111 INFO TaskExecutor Farm3CEchoTask:info_set Queued Routes 1
+2026-10-24 23:02:55,112 INFO TaskExecutor Farm3CEchoTask:info_set Current Route 1
+2026-10-24 23:02:55,112 INFO TaskExecutor Farm3CEchoTask:info_set Route Local 3C Route1
+2026-10-24 23:02:55,112 INFO TaskExecutor Farm3CEchoTask:info_set Route File E:\Better_ww\routes\3c\local-routeff3.json
+2026-10-24 23:02:55,113 INFO TaskExecutor Farm3CEchoTask:3C route 1/1: routes/3c/local-routeff3.json
+2026-10-24 23:02:55,113 INFO TaskExecutor Farm3CEchoTask:3C route entry plan / 路线入口信息: {"file": "E:\\Better_ww\\routes\\3c\\local-routeff3.json", "map_image": "E:\\Better_ww\\routes\\3c\\local-routeff3.map.png", "map_region": [717, 173, 2227, 1296], "start": [1508.0, 748.0, 50.0], "waypoints": 3, "entry_mode": "teleport_bookmarks", "teleport": {"anchor": "", "views": 7}, "selection_path": ["瑝珑", "梦州", "落渊南丘"]}
+2026-10-24 23:02:55,550 INFO TaskExecutor Farm3CEchoTask:Teleport to 3C route / 传送到3C路线: Local 3C Route1, anchor=
+2026-10-24 23:02:55,550 DEBUG TaskExecutor base:Sending key m
+2026-10-24 23:02:55,571 INFO ok.task.task MouseResetTask:move mouse back (926, 492)
+2026-10-24 23:02:56,102 INFO TaskExecutor FeatureSet:read_from_json E:\Better_ww\assets E:\Better_ww\assets\coco_annotations.json
+2026-10-24 23:02:56,169 DEBUG TaskExecutor FeatureSet:loaded map_my_location resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:56,169 DEBUG TaskExecutor FeatureSet:loaded boss_check_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:56,170 DEBUG TaskExecutor FeatureSet:loaded boss_no_check_mark resized width 2560 / original_width:3840,scale_x:0.6666666666666666
+2026-10-24 23:02:57,032 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:02:57,032 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:02:57,032 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:02:59,072 INFO TaskExecutor TaskExecutor:wait_until timeout <function FindFeature.wait_feature.<locals>.<lambda> at 0x000001C6C0CDE340> 3 seconds
+2026-10-24 23:02:59,805 INFO TaskExecutor Farm3CEchoTask:3C navigation replay saved / 已保存寻路复现包: E:\Better_ww\logs\3c-replays\20261024-230259-770fd5782f
+2026-10-24 23:02:59,806 INFO TaskExecutor Farm3CEchoTask:info_set 错误 Cannot open map for route entry / 无法打开路线传送地图
+2026-10-24 23:02:59,810 ERROR TaskExecutor TaskExecutor:🗺️ Farm 3C Echo by Route exception stopped Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\task\TaskExecutor.py", line 584, in execute
+    task.run()
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 145, in run
+    self.teleport_to_route(route)
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 334, in teleport_to_route
+    raise RuntimeError('Cannot open map for route entry / 无法打开路线传送地图')
+RuntimeError: Cannot open map for route entry / 无法打开路线传送地图
+
+2026-10-24 23:02:59,841 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-24 23:02:59,847 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:02:59,847 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:02,909 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:03:02,909 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:03:02,932 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:03:09,864 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:09,864 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:12,155 INFO ok.core.start_controller start_controller:queue task while another task is running <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>
+2026-10-24 23:03:12,156 INFO ok.core.start_controller TaskExecutor:queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:03:12,156 INFO ok.core.start_controller start_controller:enabled task <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>
+2026-10-24 23:03:12,166 INFO TaskExecutor TaskExecutor:get queued onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:03:12,198 DEBUG TaskExecutor TaskExecutor:start running onetime_task 🗺️ Farm 3C Echo by Route
+2026-10-24 23:03:12,199 INFO TaskExecutor Farm3CEchoTask:3C route selection / 实际路线选择: {"source": "Route File", "route_file_setting": "routes/3c/local-routeff3.json", "files": ["E:\\Better_ww\\routes\\3c\\local-routeff3.json"], "task_module": "E:\\Better_ww\\src\\task\\Farm3CEchoTask.py"}
+2026-10-24 23:03:12,541 DEBUG TaskExecutor TaskExecutor:get_task_by_class <class 'src.task.MouseResetTask.MouseResetTask'> [<src.task.DailyTask.DailyTask object at 0x000001C6C3AE6B40>, <src.task.FarmEchoTask.FarmEchoTask object at 0x000001C6C27C4230>, <src.task.NightmareNestTask.NightmareNestTask object at 0x000001C6C2816000>, <src.task.TacetTask.TacetTask object at 0x000001C6C302EC60>, <src.task.ForgeryTask.ForgeryTask object at 0x000001C6C3B22ED0>, <src.task.SimulationTask.SimulationTask object at 0x000001C6C3199EE0>, <src.task.MultiAccountDailyTask.MultiAccountDailyTask object at 0x000001C6C3B21A60>, <src.task.MergeEchoTask.MergeEchoTask object at 0x000001C6C39F09E0>, <src.task.EnhanceEchoTask.EnhanceEchoTask object at 0x000001C6C313F0B0>, <src.task.ChangeEchoTask.ChangeEchoTask object at 0x000001C6C27C41A0>, <src.task.GardenTask.GardenTask object at 0x000001C6C2F7B0B0>, <src.task.Farm3CEchoTask.Farm3CEchoTask object at 0x000001C6C3A81A60>, <src.task.Farm3CEchoTask.Record3CEchoRouteTask object at 0x000001C6C289CFE0>] [<src.task.AutoCombatTask.AutoCombatTask object at 0x000001C6C3910C20>, <src.task.AutoPickTask.AutoPickTask object at 0x000001C6C3AE7620>, <src.task.AutoLoginTask.AutoLoginTask object at 0x000001C6C3A56090>, <src.task.SkipDialogTask.AutoDialogTask object at 0x000001C6C308BEC0>, <src.task.FastTravelTask.FastTravelTask object at 0x000001C6C3AE7FE0>, <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>]
+2026-10-24 23:03:12,541 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:12,541 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:13,059 DEBUG TaskExecutor base:Sending key esc
+2026-10-24 23:03:15,091 DEBUG TaskExecutor TaskExecutor:found result True 2.049
+2026-10-24 23:03:15,554 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:03:15,554 INFO update_window_size hwnd_window:do_update_window_size changed,visible:True,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:03:15,554 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:03:15,593 INFO TaskExecutor Farm3CEchoTask:Preparing 3C vision and Echo model / 正在准备3C识别与声骸模型，请稍候
+2026-10-24 23:03:15,990 INFO TaskExecutor Farm3CEchoTask:3C vision ready / 3C识别准备完成
+2026-10-24 23:03:15,990 INFO TaskExecutor Farm3CEchoTask:info_set Queued Routes 1
+2026-10-24 23:03:15,992 INFO TaskExecutor Farm3CEchoTask:info_set Current Route 1
+2026-10-24 23:03:15,992 INFO TaskExecutor Farm3CEchoTask:info_set Route Local 3C Route1
+2026-10-24 23:03:15,992 INFO TaskExecutor Farm3CEchoTask:info_set Route File E:\Better_ww\routes\3c\local-routeff3.json
+2026-10-24 23:03:15,993 INFO TaskExecutor Farm3CEchoTask:3C route 1/1: routes/3c/local-routeff3.json
+2026-10-24 23:03:15,993 INFO TaskExecutor Farm3CEchoTask:3C route entry plan / 路线入口信息: {"file": "E:\\Better_ww\\routes\\3c\\local-routeff3.json", "map_image": "E:\\Better_ww\\routes\\3c\\local-routeff3.map.png", "map_region": [717, 173, 2227, 1296], "start": [1508.0, 748.0, 50.0], "waypoints": 3, "entry_mode": "teleport_bookmarks", "teleport": {"anchor": "", "views": 7}, "selection_path": ["瑝珑", "梦州", "落渊南丘"]}
+2026-10-24 23:03:16,323 INFO TaskExecutor Farm3CEchoTask:Teleport to 3C route / 传送到3C路线: Local 3C Route1, anchor=
+2026-10-24 23:03:16,324 DEBUG TaskExecutor base:Sending key m
+2026-10-24 23:03:19,860 INFO TaskExecutor TaskExecutor:wait_until timeout <function FindFeature.wait_feature.<locals>.<lambda> at 0x000001C688CF4F40> 3 seconds
+2026-10-24 23:03:20,555 INFO TaskExecutor Farm3CEchoTask:3C navigation replay saved / 已保存寻路复现包: E:\Better_ww\logs\3c-replays\20261024-230319-e0158284b0
+2026-10-24 23:03:20,555 INFO TaskExecutor Farm3CEchoTask:info_set 错误 Cannot open map for route entry / 无法打开路线传送地图
+2026-10-24 23:03:20,558 ERROR TaskExecutor TaskExecutor:🗺️ Farm 3C Echo by Route exception stopped Traceback (most recent call last):
+  File "E:\Better_ww\.venv\Lib\site-packages\ok\task\TaskExecutor.py", line 584, in execute
+    task.run()
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 145, in run
+    self.teleport_to_route(route)
+  File "E:\Better_ww\src\task\Farm3CEchoTask.py", line 334, in teleport_to_route
+    raise RuntimeError('Cannot open map for route entry / 无法打开路线传送地图')
+RuntimeError: Cannot open map for route entry / 无法打开路线传送地图
+
+2026-10-24 23:03:20,587 DEBUG MainThread MainWindow:navigate_tab None
+2026-10-24 23:03:20,597 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:20,597 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:20,614 INFO update_window_size hwnd_window:hwnd changed,connected:1
+2026-10-24 23:03:20,614 INFO update_window_size hwnd_window:do_update_window_size changed,visible:False,exists:1 x:0 y:0 window:2560x1440 self.window:2576x1479 real:2560x1440
+2026-10-24 23:03:20,619 DEBUG MainThread StartTab:update_capture
+2026-10-24 23:03:30,612 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:30,613 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:40,622 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:40,622 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:03:50,638 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:03:50,639 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:00,652 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:00,652 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:10,658 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:10,658 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:20,659 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:20,659 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:25,320 INFO ok.task.task MouseResetTask:move mouse back (1268, 1009)
+2026-10-24 23:04:26,321 INFO ok.task.task MouseResetTask:move mouse back (1268, 1009)
+2026-10-24 23:04:27,321 INFO ok.task.task MouseResetTask:move mouse back (1268, 1009)
+2026-10-24 23:04:28,322 INFO ok.task.task MouseResetTask:move mouse back (1268, 1009)
+2026-10-24 23:04:29,322 INFO ok.task.task MouseResetTask:move mouse back (1268, 1009)
+2026-10-24 23:04:30,674 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:30,674 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:36,805 INFO ok.task.task MouseResetTask:move mouse back (1496, 1037)
+2026-10-24 23:04:37,805 INFO ok.task.task MouseResetTask:move mouse back (1496, 1037)
+2026-10-24 23:04:38,806 INFO ok.task.task MouseResetTask:move mouse back (1496, 1037)
+2026-10-24 23:04:39,806 INFO ok.task.task MouseResetTask:move mouse back (1496, 1037)
+2026-10-24 23:04:40,689 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:40,690 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:04:50,700 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:04:50,701 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:00,714 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:00,714 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:10,715 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:10,715 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:20,724 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:20,725 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:30,734 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:30,734 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:40,736 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:40,736 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:05:50,739 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:05:50,740 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:00,747 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:00,748 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:10,754 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:10,754 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:20,767 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:20,767 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:30,772 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:30,772 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:40,782 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:40,783 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:06:50,784 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:06:50,784 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:00,788 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:00,789 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:10,789 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:10,790 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:20,792 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:20,793 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:30,813 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:30,813 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:40,814 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:40,814 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:07:50,831 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:07:50,831 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:00,845 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:00,846 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:10,849 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:10,849 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:20,857 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:20,858 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:30,867 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:30,868 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:40,884 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:40,884 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:08:50,895 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:08:50,895 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:00,910 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:00,911 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:10,912 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:10,912 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:20,919 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:20,919 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:30,929 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:30,929 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:40,946 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:40,946 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:09:50,952 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:09:50,953 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:00,952 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:00,953 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:10,965 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:10,965 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:20,975 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:20,975 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:30,987 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:30,988 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:40,989 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:40,990 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:10:50,990 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:10:50,991 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:11:01,002 DEBUG TaskExecutor MouseResetTask:schedule mouse reset
+2026-10-24 23:11:01,002 DEBUG TaskExecutor handler:removing duplicate task <bound method MouseResetTask.mouse_reset of <src.task.MouseResetTask.MouseResetTask object at 0x000001C6C3AE75C0>>
+2026-10-24 23:11:01,386 INFO Dummy-2 ok:CTRL+C event dump threads
+2026-10-24 23:11:01,493 INFO Dummy-2 ok:quit app
+2026-10-24 23:11:01,493 DEBUG Dummy-2 handler:ExitEvent set event empty queues (<queue.Queue object at 0x000001C6BEA586E0>,) to_stops: (<ok.util.handler.Handler object at 0x000001C6C0DFFA10>, <ok.util.handler.Handler object at 0x000001C6EE016630>, <ok.util.handler.Handler object at 0x000001C6A744BC80>, <ok.util.handler.Handler object at 0x000001C6C319BEF0>, <ok.util.handler.Handler object at 0x000001C6C3C87B30>, <ok.util.handler.Handler object at 0x000001C6C3C37D40>, <ok.notification.pipeline.NotificationPipeline object at 0x000001C6EE7D55B0>)
+2026-10-24 23:11:01,493 INFO Dummy-2 handler:handler stopping global
+2026-10-24 23:11:01,493 INFO Dummy-2 handler:handler stopping DebugTab
+2026-10-24 23:11:01,494 DEBUG screenshot screenshot:Task queue get is None quit
+2026-10-24 23:11:01,494 DEBUG global handler:handler global processing loop finished due to exit event.
+2026-10-24 23:11:01,494 INFO Dummy-2 handler:handler stopping RefreshAdb
+2026-10-24 23:11:01,494 DEBUG DebugTab handler:handler DebugTab processing loop finished due to exit event.
+2026-10-24 23:11:01,494 INFO Dummy-2 handler:handler stopping ok.core.start_controller
+2026-10-24 23:11:01,494 DEBUG RefreshAdb handler:handler RefreshAdb processing loop finished due to exit event.
+2026-10-24 23:11:01,495 INFO Dummy-2 handler:handler stopping StartCard
+2026-10-24 23:11:01,495 DEBUG ok.core.start_controller handler:handler ok.core.start_controller processing loop finished due to exit event.
+2026-10-24 23:11:01,495 DEBUG ok.task.task handler:handler ok.task.task processing loop finished due to exit event.
+2026-10-24 23:11:01,495 INFO Dummy-2 handler:handler stopping ok.task.task
+2026-10-24 23:11:01,495 DEBUG StartCard handler:handler StartCard processing loop finished due to exit event.
+2026-10-24 23:11:01,504 WARNING Dummy-3 windows_graphics:frame_arrived_callback exit_event.is_set() return
+2026-10-24 23:11:01,543 INFO TaskExecutor TaskExecutor:sleep_check error <src.task.AutoCombatTask.AutoCombatTask object at 0x000001C6C3910C20>
+2026-10-24 23:11:01,543 INFO TaskExecutor TaskExecutor:FinishedException, breaking
+2026-10-24 23:11:01,543 INFO TaskExecutor TaskExecutor:Executor destroy
+2026-10-24 23:11:01,629 INFO Dummy-2 windows_graphics:destroy windows capture
+2026-10-24 23:11:01,651 INFO Dummy-4 ok:CTRL+C event dump threads
+2026-10-24 23:11:01,653 INFO MainThread MainWindow:Window closed exit_event.is_set
+2026-10-24 23:11:01,654 INFO Dummy-4 ok:quit app
+2026-10-24 23:11:01,674 DEBUG MainThread DebugTab:Unregister the hotkeys
+2026-10-24 23:11:01,676 INFO MainThread ok:quit app
+2026-10-24 23:11:01,729 INFO Dummy-5 ok:CTRL+C event dump threads
+2026-10-24 23:11:01,744 INFO Dummy-5 ok:quit app

@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "echo_cost": 3,
+  "name": "Local 3C Route1",
+  "map_image": "assets/map-00.png",
+  "map_region": [
+    717,
+    173,
+    2227,
+    1296
+  ],
+  "start": {
+    "x": 1416,
+    "y": 671,
+    "tolerance": 50
+  },
+  "waypoints": [
+    {
+      "x": 1385,
+      "y": 616,
+      "action": "combat"
+    },
+    {
+      "x": 1228,
+      "y": 852,
+      "action": "combat"
+    },
+    {
+      "x": 910,
+      "y": 798,
+      "action": "combat"
+    }
+  ],
+  "teleport": {
+    "anchor": "",
+    "x": 1416,
+    "y": 671,
+    "views": [
+      {
+        "map_image": "assets/map-00.png",
+        "x": 1416,
+        "y": 671,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-02.png",
+        "x": 1415.991316533623,
+        "y": 670.9882634020447,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-03.png",
+        "x": 1415.9726684452316,
+        "y": 670.9812358108035,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-04.png",
+        "x": 1415.9628922393417,
+        "y": 670.9597549638105,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-05.png",
+        "x": 1415.9557703521034,
+        "y": 670.945061616301,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-06.png",
+        "x": 1415.9437702233076,
+        "y": 670.9364703595681,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      },
+      {
+        "map_image": "assets/map-07.png",
+        "x": 1415.9232181761558,
+        "y": 670.9195357766724,
+        "map_region": [
+          717,
+          173,
+          2227,
+          1296
+        ]
+      }
+    ]
+  },
+  "map_context": {
+    "selection_path": [
+      "黎那汐塔",
+      "拉古那",
+      "黎乔利群岛"
+    ]
+  }
+}

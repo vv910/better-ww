@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "created_at_utc": "2026-10-26T03:01:56.184357+00:00",
+  "reason": "RuntimeError: Cannot find route map bookmark / 未找到路线地图书签，请检查所在区域、楼层或重新录制概览",
+  "route": "route.json",
+  "events": "events.jsonl",
+  "arrow_template": "assets/arrow.png",
+  "frames": {
+    "000018": "frames/000018.png",
+    "000019": "frames/000019.png"
+  },
+  "assets": [
+    {
+      "path": "assets/map-00.png",
+      "sha256": "385371253fd52a506cf492b6bad01847b098049c113cc00932169f81c6b38e51"
+    },
+    {
+      "path": "assets/map-02.png",
+      "sha256": "d0a26d272d3c62ff95d788dc4be2b0ba87e255038120c5434f168028bbfaa275"
+    },
+    {
+      "path": "assets/map-03.png",
+      "sha256": "ece99e3ea6333abc23ffd99ce63f8894782d3f1b1f15ccfcbb80fce3d6da3970"
+    },
+    {
+      "path": "assets/map-04.png",
+      "sha256": "7c02042d85d55bbeccd9ea37d62d17bb24b1251193a41e1b786489967bd4434c"
+    },
+    {
+      "path": "assets/map-05.png",
+      "sha256": "28a275f574cbd46a6efb6b212272e45c2590a01d52024ee4e90af4f3c03b8322"
+    },
+    {
+      "path": "assets/map-06.png",
+      "sha256": "15f19bbfa9874186caf3b32fe554bdd85e51c68daea3c9c4d6d8dfa6edd8321d"
+    },
+    {
+      "path": "assets/map-07.png",
+      "sha256": "c17549d4dbde27f4a55ddddd52e2b791d3d712ffae0aba9b8cc1df4cc8d58528"
+    }
+  ],
+  "capture_size": [
+    2560,
+    1440
+  ],
+  "events_total": 57,
+  "events_retained": 57,
+  "frames_total": 19,
+  "frames_evicted": 17,
+  "raw_frame_bytes": 22118400,
+  "truncated": true,
+  "errors": [],
+  "extra": {
+    "navigation_interval": 0.2,
+    "opencv_version": "5.0.0",
+    "runtime_sources_sha256": {
+      "task/Farm3CEchoTask.py": "0b364921ec5e0f9a1de02726c4c9cc68981eb107a851c74b006960d66f32cfe4",
+      "pathing/MapLocalizer.py": "8a4d042cff2640d874dd5f4e177e48500c8f5111e1b067bf2bc7d3a854f74af5",
+      "pathing/TrackingVerifier.py": "34ac193c08b6e0df9c0d717edaee1acf3aaaf994602d9b3abcb2dfc08429a1da",
+      "pathing/RouteApproach.py": "4ea71c87daf7d8517aa352a712cd77868d928033cedf7ea59abf3ae4f1e31c26",
+      "pathing/RouteMapUI.py": "56e1052000e265bf44e5b23eafa87a18f211aacd20a9b1887027985d85256eff",
+      "pathing/RouteMapNavigation.py": "ba83df392966bc65006f588206ccaed2f63ca30079322080b83cd0b6adb8a381",
+      "pathing/RouteMapDrag.py": "3efc81b59ad91e6b7bd0e12df508f5b02bfe4f738a30bf4de1d92e8bd85e6967"
+    }
+  },
+  "timing_note": "Recorded monotonic event times preserve gaps and anchor/hint ages. Replay uses each recorded locate duration as a conservative completion time after its first clock read; intermediate clock readings and CPU execution cannot be reproduced exactly. It cannot certify live freshness."
+}
